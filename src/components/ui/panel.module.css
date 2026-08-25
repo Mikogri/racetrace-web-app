@@ -1,0 +1,112 @@
+.panel {
+  overflow: hidden;
+  background: var(--color-surface-panel);
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.none {
+  padding: 0;
+}
+
+.compact {
+  padding: var(--spacing-card-padding);
+}
+
+.default {
+  padding: var(--spacing-details-padding);
+}
+
+.header {
+  display: grid;
+  gap: var(--spacing-text-gap-xs);
+}
+
+.titleMarker {
+  color: var(--color-brand-primary);
+}
+
+.metric {
+  display: grid;
+  gap: var(--spacing-card-gap);
+}
+
+.metricValue {
+  font-size: var(--font-size-title);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-actions-gap);
+  align-items: center;
+  min-height: var(--component-summary-banner-min-height);
+  padding: var(--spacing-banner-padding-y) var(--spacing-banner-padding-x);
+  color: var(--color-text-summary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  line-height: 16px;
+  background: var(--color-surface-panel);
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel-sm);
+}
+
+.summary > span {
+  text-transform: capitalize;
+}
+
+.summaryDot {
+  flex: 0 0 var(--space-3);
+  width: var(--space-3);
+  height: var(--space-3);
+  background: var(--color-brand-primary);
+  border-radius: var(--radius-pill);
+}
+
+.summarySkeleton {
+  position: relative;
+  display: block;
+  flex: 0 0 92px;
+  width: 92px;
+  height: 12px;
+  overflow: hidden;
+  background: var(--color-surface-panel-raised);
+  border-radius: 2px;
+}
+
+.summarySkeleton:nth-of-type(2) {
+  flex-basis: 74px;
+  width: 74px;
+}
+
+.summarySkeleton:nth-of-type(3) {
+  flex-basis: 82px;
+  width: 82px;
+}
+
+.summarySkeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 8%),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: summary-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes summary-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.divider {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: var(--component-border-width) solid var(--color-border-default);
+}

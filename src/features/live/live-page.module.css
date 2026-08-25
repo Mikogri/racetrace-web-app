@@ -1,0 +1,149 @@
+.sessionGroups {
+  display: grid;
+  gap: 48px;
+}
+
+.sessionGroup {
+  display: grid;
+  gap: 24px;
+}
+
+.sessionGroup h2 {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16px;
+}
+
+.sessionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sessionCard {
+  box-sizing: border-box;
+  display: flex;
+  min-width: 0;
+  min-height: 144px;
+  padding: 20px;
+  color: inherit;
+  text-decoration: none;
+  background: var(--color-surface-panel);
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+  transition:
+    border-color 225ms ease,
+    transform 225ms ease;
+}
+
+.sessionCard:hover {
+  border-color: var(--color-card-hover-border);
+  transform: translateY(-2px);
+}
+
+.sessionCard:active {
+  transform: translateY(0);
+}
+
+.sessionCardEnter {
+  animation: live-session-card-enter 135ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: var(--card-enter-delay);
+}
+
+@keyframes live-session-card-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(0px - var(--spacing-page-section-gap)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cardCopy {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cardHeader {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cardHeader strong {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-data);
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardHeader span,
+.riderCount {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.cardArrow {
+  align-self: flex-end;
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    color 225ms ease,
+    transform 225ms ease;
+}
+
+.sessionCard:hover .cardArrow {
+  color: var(--color-text-primary);
+  transform: translateX(3px);
+}
+
+@media (max-width: 980px) {
+  .sessionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .sessionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sessionCard,
+  .cardArrow {
+    transition: none;
+  }
+
+  .sessionCardEnter { animation: none; }
+}

@@ -1,0 +1,59 @@
+.field {
+  display: flex;
+  gap: var(--spacing-text-box-gap);
+  align-items: center;
+  width: var(--layout-menu-width);
+  padding-block: var(--spacing-control-padding-y);
+  padding-inline: var(--spacing-control-padding-y);
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  transition: border-color var(--component-transition-control);
+}
+
+.field:focus-within {
+  border-color: var(--color-interaction-focus-subtle-border);
+}
+
+.icon {
+  flex: 0 0 var(--component-icon-size-sm);
+  width: var(--component-icon-size-sm);
+  height: var(--component-icon-size-sm);
+  color: var(--color-text-secondary);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-control);
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.input::-webkit-search-cancel-button {
+  width: var(--space-12);
+  height: var(--space-12);
+  margin: 0;
+  cursor: default;
+  background: center / 100% 100% no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.25 2.25l7.5 7.5m0-7.5-7.5 7.5' fill='none' stroke='%23FFFFFF' stroke-width='.8' stroke-linecap='round'/%3E%3C/svg%3E");
+  appearance: none;
+  opacity: 0.8;
+  transition: opacity var(--component-transition-control);
+}
+
+.input::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}

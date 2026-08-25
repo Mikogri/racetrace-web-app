@@ -1,0 +1,63 @@
+.badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 19px;
+  padding: 3px 8px;
+  gap: 5px;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-data);
+  font-size: 10px;
+  font-weight: var(--font-weight-regular);
+  line-height: 13px;
+  text-transform: capitalize;
+  border-radius: 3px;
+}
+
+.live {
+  background: var(--color-live-session-live-background);
+}
+
+.completed {
+  color: var(--color-text-primary);
+  background: var(--color-live-session-completed-background);
+}
+
+.upcoming {
+  color: var(--color-text-primary);
+  background: var(--color-live-session-upcoming-background);
+}
+
+.neutral {
+  color: var(--color-text-primary);
+  background: var(--color-interaction-selected-background);
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  background: currentColor;
+  border-radius: 50%;
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 0 rgb(255 255 255 / 0%);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px 1px rgb(255 255 255 / 35%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+}

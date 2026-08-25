@@ -1,0 +1,41 @@
+.button {
+  display: inline-flex;
+  gap: var(--spacing-control-gap);
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--component-control-min-height);
+  padding: var(--spacing-control-padding-y) var(--spacing-control-padding-x);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  transition: color var(--component-transition-control), background-color var(--component-transition-control), border-color var(--component-transition-control);
+}
+
+.button:hover {
+  background: var(--color-interaction-subtle-hover-background);
+}
+
+.button[aria-expanded='true'] {
+  background: var(--color-interaction-hover-background);
+  border-color: var(--color-border-strong);
+}
+
+.chevron {
+  width: var(--component-select-chevron-size);
+  height: var(--component-select-chevron-size);
+  transition: transform var(--component-transition-control);
+}
+
+.expanded {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 760px) {
+  .button {
+    width: 100%;
+  }
+}

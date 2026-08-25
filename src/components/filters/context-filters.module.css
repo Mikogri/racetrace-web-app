@@ -1,0 +1,13 @@
+.filters {
+  display: flex;
+  gap: var(--spacing-actions-gap);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .filters,
+  .filters > * {
+    width: 100%;
+  }
+}

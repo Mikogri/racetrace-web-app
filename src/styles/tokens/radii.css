@@ -1,0 +1,15 @@
+:root {
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-xl: 10px;
+  --radius-pill: 999px;
+  --radius-panel-sm: var(--radius-sm);
+  --radius-panel: var(--radius-lg);
+  --radius-panel-lg: var(--radius-xl);
+  --radius-control: var(--radius-md);
+  --radius-modal: var(--radius-xl);
+  --radius-badge: var(--radius-sm);
+  --radius-progress: var(--radius-pill);
+  --radius-sector: 1px;
+}

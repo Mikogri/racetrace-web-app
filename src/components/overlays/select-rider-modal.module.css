@@ -1,0 +1,227 @@
+.dialog {
+  width: min(100%, 500px);
+  height: 380px;
+  background: var(--color-surface-page);
+  border-radius: var(--radius-panel);
+}
+
+.dialog > header {
+  box-sizing: border-box;
+  height: 51px;
+  min-height: 0;
+  padding: 16px 20px;
+}
+
+.dialog > header h2 {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: var(--font-weight-regular);
+}
+
+.dialog > header button {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+}
+
+.dialog > header button img {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  transition: opacity var(--component-transition-control);
+}
+
+.dialog > header button:hover img,
+.dialog > header button:focus-visible img {
+  opacity: 1;
+}
+
+.search {
+  box-sizing: border-box;
+  height: 67px;
+  padding: 16px 20px;
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.searchInput {
+  box-sizing: border-box;
+  width: 100%;
+  height: 35px;
+  min-height: 0;
+  gap: var(--space-8);
+  padding: 10px 12px;
+  background: transparent;
+  border-radius: var(--radius-control);
+}
+
+.searchInput input {
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  line-height: 15px;
+}
+
+.searchInput svg {
+  width: 14px;
+  height: 14px;
+  flex-basis: 14px;
+}
+
+.results {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.resultsScroll {
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--space-5);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.resultsScroll::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.scrollbar {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  bottom: var(--space-5);
+  width: var(--component-context-scrollbar-width);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--component-transition-control);
+}
+
+.results:hover .scrollbar {
+  opacity: 1;
+}
+
+.scrollThumb {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: block;
+  background: var(--color-context-scrollbar-thumb);
+  border-radius: var(--radius-pill);
+}
+
+.listbox {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.riderOption {
+  display: flex;
+  width: 100%;
+  min-height: 42px;
+  height: 42px;
+  gap: var(--space-20);
+  align-items: center;
+  padding: var(--space-5) var(--space-15);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: default;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  transition: background-color var(--component-transition-control);
+}
+
+.riderOption:hover,
+.riderOption[aria-selected='true'] {
+  background: var(--color-interaction-selected-background);
+}
+
+.riderOption[aria-selected='true'] {
+  background: color-mix(in srgb, var(--color-interaction-selected-background) 50%, transparent);
+}
+
+.riderDot {
+  flex: 0 0 var(--space-5);
+  width: var(--space-5);
+  height: var(--space-5);
+}
+
+.riderText {
+  display: grid;
+  min-width: 0;
+  gap: 0;
+  font-family: var(--font-family-body);
+}
+
+.riderText strong,
+.riderText span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.riderText strong {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: var(--font-weight-light);
+  opacity: 0.9;
+}
+
+.riderText span {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  line-height: 15px;
+  font-weight: var(--font-weight-medium);
+}
+
+.updateProgress {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--component-border-width);
+  overflow: hidden;
+}
+
+.updateProgress i {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: var(--color-brand-primary);
+  animation: modal-progress 1s ease-in-out infinite;
+}
+
+@keyframes modal-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(320%); }
+}
+
+.dialog > footer {
+  box-sizing: border-box;
+  height: 62px;
+  gap: var(--space-20);
+  padding: 16px 20px;
+}
+
+.dialog > footer button {
+  height: 30px;
+  font-family: var(--font-family-body);
+}
+
+.dialog > footer button:last-child {
+  background: color-mix(in srgb, var(--color-brand-primary) 45%, black);
+}
+
+.dialog > footer button:last-child:disabled {
+  color: color-mix(in srgb, var(--color-text-primary) 65%, transparent);
+  cursor: default;
+  background: color-mix(in srgb, var(--color-brand-primary) 35%, black);
+  border-color: var(--color-border-default);
+  opacity: 0.8;
+}

@@ -1,0 +1,209 @@
+.card {
+  --compare-accent: var(--color-compare-rider-a-accent);
+
+  display: flex;
+  min-width: 0;
+  min-height: 604px;
+  flex-direction: column;
+  gap: var(--space-25);
+  align-items: center;
+  justify-content: flex-start;
+  animation: compare-rider-enter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes compare-rider-enter {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.riderA { --compare-accent: var(--color-compare-rider-a-accent); }
+.riderB { --compare-accent: var(--color-compare-rider-b-accent); }
+
+.visual {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 499px;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.visual img {
+  width: 250px;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.changeButton {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  box-sizing: border-box;
+  width: 31px;
+  height: 31px;
+  padding: var(--space-7);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+}
+
+.riderA .changeButton { left: 0; }
+.riderB .changeButton { right: 0; }
+
+.changeButton:hover {
+  background: var(--color-interaction-subtle-hover-background);
+}
+
+.changeButton img {
+  display: block;
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  opacity: 1;
+  filter: brightness(0) invert(1);
+  transition: opacity var(--component-transition-control);
+}
+
+.changeButton:hover img { opacity: 1; }
+
+.selectArrow {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.3;
+}
+
+.about {
+  display: flex;
+  width: min(100%, 360px);
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: center;
+  text-align: center;
+}
+
+.about h2 {
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-rider-display);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  line-height: 30px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.riderName {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--component-transition-control);
+}
+
+.riderName:hover,
+.riderName:focus-visible {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+}
+
+.team {
+  display: flex;
+  max-width: 100%;
+  gap: var(--space-5);
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-text);
+}
+
+.team > span {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team strong {
+  flex: none;
+  padding: var(--space-3) var(--space-10);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.15em;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-control);
+}
+
+.about p {
+  display: flex;
+  max-width: 100%;
+  gap: var(--space-15);
+  align-items: center;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-text);
+  white-space: nowrap;
+}
+
+.about p i {
+  color: var(--color-brand-primary);
+  font-style: normal;
+}
+
+.empty {
+  min-height: 599px;
+  gap: var(--space-14);
+  justify-content: center;
+}
+
+.selectButton {
+  display: flex;
+  width: 200px;
+  height: 30px;
+  gap: var(--spacing-actions-gap);
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-control-padding-y) 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+}
+
+.selectButton:hover {
+  background: var(--color-interaction-subtle-hover-background);
+}
+
+@media (max-width: 760px) {
+  .card { min-height: 480px; }
+  .visual { height: 380px; }
+  .about p { flex-wrap: wrap; justify-content: center; }
+}

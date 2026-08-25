@@ -1,0 +1,12 @@
+.label {
+  display: inline-flex;
+  gap: var(--spacing-text-gap-sm);
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-body);
+}
+
+.input {
+  accent-color: var(--color-brand-primary);
+}

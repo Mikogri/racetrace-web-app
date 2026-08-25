@@ -1,0 +1,68 @@
+.navigation {
+  position: sticky;
+  top: 0;
+  z-index: var(--component-z-navigation);
+  height: var(--layout-menu-height);
+  background: var(--color-surface-page);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--spacing-details-padding-md);
+}
+
+.brand {
+  position: absolute;
+  top: 50%;
+  left: calc((var(--layout-menu-height) - var(--component-logo-mark-height)) / 2);
+  width: fit-content;
+  transform: translateY(-50%);
+}
+
+.logoViewport {
+  display: block;
+  width: 37px;
+  height: var(--component-logo-mark-height);
+  overflow: hidden;
+}
+
+.logo {
+  width: 72px;
+  max-width: none;
+  transform: translate(-17px, -28px);
+}
+
+.links {
+  display: flex;
+  gap: var(--spacing-actions-gap-lg);
+  align-items: center;
+  justify-content: center;
+}
+
+.link {
+  padding: var(--spacing-icon-button-sm-padding-y) var(--spacing-icon-button-sm-padding-x);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  font-weight: 700;
+  letter-spacing: 15%;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color var(--component-transition-control);
+}
+
+.link:hover,
+.active {
+  color: var(--color-brand-primary);
+}
+
+@media (max-width: 760px) {
+  .navigation {
+    display: none;
+  }
+}

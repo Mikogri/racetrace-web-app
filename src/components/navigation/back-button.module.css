@@ -1,0 +1,37 @@
+.backButton {
+  display: inline-flex;
+  gap: var(--space-8);
+  align-items: center;
+  padding: 0;
+  color: rgb(255 255 255 / 50%);
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  background: transparent;
+  border: 0;
+  transition:
+    color var(--component-transition-control);
+}
+
+.backButton:hover,
+.backButton:focus-visible {
+  color: var(--color-text-primary);
+  background: transparent !important;
+}
+
+.backIcon {
+  flex: none;
+  width: var(--space-15);
+  height: var(--space-15);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+  transition: transform var(--component-transition-control);
+}
+
+.backButton:hover .backIcon,
+.backButton:focus-visible .backIcon {
+  transform: translateX(-3px);
+}

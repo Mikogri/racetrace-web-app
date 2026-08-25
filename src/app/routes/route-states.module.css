@@ -1,0 +1,494 @@
+.skeletonPage {
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  height: calc(
+    100svh - var(--layout-menu-height) - var(--layout-footer-height)
+  );
+  min-height: 0;
+  overflow: hidden;
+}
+
+.homeSkeletonPage {
+  gap: 48px;
+}
+
+.notFoundPage {
+  grid-template-rows: minmax(0, 1fr);
+  height: calc(
+    100svh - var(--layout-menu-height) - var(--layout-footer-height)
+  );
+  min-height: 0;
+  overflow: hidden;
+}
+
+.notFoundSection {
+  min-height: 0;
+}
+
+.notFoundSection > [role="alert"] {
+  height: 100%;
+  min-height: 0;
+}
+
+.skeletonBody {
+  display: grid;
+  gap: var(--spacing-page-section-gap);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.skeleton {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--color-surface-panel-raised);
+  border-radius: var(--radius-sm);
+}
+
+.skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 5%),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeletonHeader {
+  display: grid;
+  gap: var(--spacing-text-gap-sm);
+  max-width: 465px;
+}
+
+.homeSkeletonSections {
+  display: grid;
+  gap: 48px;
+  width: min(100%, 750px);
+  min-height: 0;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.homeHeroSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-15);
+  align-items: center;
+  justify-self: center;
+  width: min(100%, 750px);
+  min-height: 199px;
+}
+
+.homeHeroTitle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: center;
+  width: min(100%, 504px);
+}
+
+.homeHeroDots {
+  display: flex;
+  gap: var(--space-10);
+}
+
+.homeHeroDots span {
+  width: var(--space-5);
+  height: var(--space-5);
+  background: var(--color-border-default);
+  border-radius: var(--radius-pill);
+}
+
+.homeHeroHeading {
+  width: 100%;
+  height: 55px;
+}
+
+.homeHeroEyebrow {
+  width: 152px;
+  height: 18px;
+}
+
+.homeHeroDescription {
+  display: grid;
+  gap: var(--space-5);
+  width: min(100%, 504px);
+}
+
+.homeHeroDescription .skeleton {
+  width: 100%;
+  height: var(--space-10);
+}
+
+.homeHeroDescription .skeleton:last-child {
+  width: 64%;
+  justify-self: center;
+}
+
+.homeSectionSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding-top: 48px;
+  border-top: var(--component-border-width) solid var(--color-border-default);
+}
+
+.homeSectionHeaderSkeleton {
+  display: grid;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: 84px;
+}
+
+.homeSectionTitle {
+  width: 252px;
+  height: 36px;
+}
+
+.homeSectionMetaSkeleton {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.homeSectionMetaSkeleton .skeleton {
+  width: 64px;
+  height: var(--space-12);
+}
+
+.homeSectionDescription {
+  width: 290px;
+  height: var(--space-12);
+}
+
+.homeSectionPanelSkeleton {
+  overflow: hidden;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.homePanelTopSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 92px;
+  padding: var(--space-24);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.homePanelTopSkeleton .skeleton:first-child {
+  width: 195px;
+  height: 23px;
+}
+
+.homePanelTopSkeleton .skeleton:last-child {
+  width: 118px;
+  height: 18px;
+}
+
+.homeMetricSkeleton {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-24);
+  min-height: 87px;
+  padding: var(--space-24);
+}
+
+.homeMetricSkeleton .skeleton {
+  width: 68px;
+  height: 39px;
+}
+
+.homeActionSkeleton {
+  width: 200px;
+  height: 30px;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+}
+
+.captionRow,
+.controls,
+.tableHeaderSkeleton {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.caption,
+.captionShort {
+  width: 84px;
+  height: var(--space-12);
+}
+
+.captionShort {
+  width: 48px;
+}
+
+.title {
+  width: 190px;
+  height: 29px;
+}
+
+.description {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.description .skeleton {
+  width: 100%;
+  height: var(--space-10);
+}
+
+.description .skeleton:last-child {
+  width: 72%;
+}
+
+.controls {
+  align-items: center;
+}
+
+.control,
+.controlWide {
+  width: 118px;
+  height: 30px;
+  border-radius: var(--radius-lg);
+}
+
+.controlWide {
+  width: 250px;
+}
+
+.panel {
+  min-height: 0;
+  overflow: hidden;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.compactPanel {
+  min-height: 125px;
+}
+
+.panelHeader {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-15);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.panelTitle {
+  width: 110px;
+  height: var(--space-12);
+}
+
+.panelDescription {
+  width: 240px;
+  height: var(--space-10);
+}
+
+.tableHeaderSkeleton {
+  justify-content: space-between;
+  padding: var(--space-10) var(--space-15);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.tableHeaderSkeleton .skeleton {
+  width: 70px;
+  height: var(--space-10);
+}
+
+.rows {
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.twoColumn,
+.compareRiders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-grid-gap);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.compareRiders {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.versusSkeleton {
+  width: 28px;
+  height: 18px;
+}
+
+.seasonSkeleton,
+.tabsSkeleton {
+  display: flex;
+  gap: var(--space-18);
+  height: 47px;
+  align-items: center;
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.seasonItem,
+.tabSkeleton {
+  width: 36px;
+  height: var(--space-12);
+}
+
+.tabSkeleton {
+  width: 72px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-grid-gap);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cardSkeleton {
+  overflow: hidden;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.cardSkeleton .skeleton {
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+}
+
+.cardSkeleton .skeleton::after {
+  display: none;
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 0 !important;
+  border-bottom: var(--component-border-width) solid var(--color-border-default) !important;
+  border-radius: 0;
+}
+
+.cardCopy {
+  display: grid;
+  gap: var(--space-12);
+  padding: var(--space-15);
+}
+
+.cardCopy .skeleton {
+  width: 62%;
+  height: var(--space-10);
+}
+
+.cardCopy .cardTitle {
+  width: 45%;
+  height: 22px;
+}
+
+.infoSections {
+  display: grid;
+  gap: 70px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.infoSection {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 580px);
+  gap: 70px;
+  padding-top: var(--space-15);
+  border-top: var(--component-border-width) solid var(--color-border-default);
+}
+
+.infoTitle {
+  width: 180px;
+  height: var(--space-12);
+}
+
+.infoSection > div {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.infoSection > div .skeleton {
+  width: 100%;
+  height: var(--space-10);
+}
+
+.infoSection > div .skeleton:last-child {
+  width: 72%;
+}
+
+.rows .skeleton {
+  height: var(--component-skeleton-row-height);
+  background: transparent;
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+  border-radius: 0;
+}
+
+.rows .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    rgb(255 255 255 / 4%) 32%,
+    transparent 58%
+  );
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 760px) {
+  .controls {
+    flex-wrap: wrap;
+  }
+
+  .homeSkeletonSections {
+    width: 100%;
+  }
+
+  .homeHeroHeading {
+    height: 42px;
+  }
+
+  .homeMetricSkeleton {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .controlWide {
+    width: 100%;
+  }
+
+  .tableHeaderSkeleton .skeleton:nth-child(n + 4) {
+    display: none;
+  }
+
+  .twoColumn,
+  .compareRiders,
+  .cardGrid,
+  .infoSection {
+    grid-template-columns: 1fr;
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .versusSkeleton {
+    display: none;
+  }
+
+  .infoSection {
+    gap: var(--spacing-page-section-gap);
+  }
+}

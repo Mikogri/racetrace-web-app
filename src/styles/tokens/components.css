@@ -1,0 +1,33 @@
+:root {
+  --component-round-image-height: 150px;
+  --component-border-width: 1px;
+  --component-focus-width: 2px;
+  --component-focus-offset: 2px;
+  --component-icon-size-sm: 15px;
+  --component-icon-size: 20px;
+  --component-select-chevron-size: var(--space-12);
+  --component-pagination-item-width: 28px;
+  --component-pagination-item-height: 20px;
+  --component-summary-banner-min-height: 38px;
+  --component-avatar-size: 32px;
+  --component-logo-mark-height: 16px;
+  --component-dot-size: 5px;
+  --component-pattern-dot-size: 0.5px;
+  --component-pattern-dot-gap: var(--space-14);
+  --component-control-min-height: 32px;
+  --component-input-min-height: 42px;
+  --component-dropdown-min-width: 180px;
+  --component-dropdown-wide-min-width: 230px;
+  --component-context-scrollbar-width: 6px;
+  --component-dropdown-max-height: 280px;
+  --component-modal-results-height: 200px;
+  --component-skeleton-row-height: 42px;
+  --component-progress-height: 5px;
+  --component-z-navigation: 20;
+  --component-z-popover: 40;
+  --component-z-dialog: 60;
+  --component-transition-fast: 140ms;
+  --component-transition-standard: 220ms;
+  --component-transition-control: 100ms;
+  --component-shadow-panel: 0 var(--space-8) var(--space-24) var(--color-shadow-panel);
+}

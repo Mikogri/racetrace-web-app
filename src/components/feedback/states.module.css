@@ -1,0 +1,192 @@
+.state {
+  display: grid;
+  gap: var(--spacing-empty-state-gap);
+  place-items: center;
+  min-height: calc(var(--component-modal-results-height) + var(--spacing-details-padding));
+  text-align: center;
+}
+
+.compact {
+  min-height: 100%;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-10);
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.enterState {
+  animation: feedback-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.spinner {
+  width: var(--space-12);
+  height: var(--space-12);
+  border: var(--component-focus-width) solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: spin 700ms linear infinite;
+}
+
+.tableFeedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 314px;
+}
+
+.compactTableFeedback {
+  height: 100%;
+  min-height: 0;
+}
+
+.tableFeedbackContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.tableLoadingContent {
+  flex-direction: row;
+  gap: var(--space-10);
+  color: var(--color-text-secondary);
+}
+
+.tableStateImage,
+.tableStateIcon {
+  width: var(--space-25);
+  height: var(--space-25);
+}
+
+.tableStateImage {
+  object-fit: contain;
+  animation: warning-glow 1.2s ease-in-out infinite alternate;
+}
+
+.tableSpinner {
+  width: var(--space-12);
+  height: var(--space-12);
+  border: var(--component-focus-width) solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: spin 700ms linear infinite;
+}
+
+.tableStateIcon {
+  color: var(--color-text-secondary);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.tableFeedbackLabel {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 17px;
+}
+
+.tableFeedbackCopy {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: center;
+  text-align: center;
+}
+
+.tableErrorLabel {
+  color: var(--color-text-primary);
+}
+
+.tableFeedbackDescription {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-regular);
+}
+
+.tableRetry {
+  min-width: 79px;
+  height: 29px;
+  padding: var(--space-7) var(--space-24);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-medium);
+  line-height: 15px;
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+}
+
+.tableRetry:hover,
+.tableRetry:focus-visible {
+  background: var(--color-interaction-subtle-hover-background);
+  border-color: var(--color-border-strong);
+}
+
+.tableRetry:disabled {
+  color: var(--color-interaction-disabled-text);
+  cursor: default;
+  background: transparent;
+  border-color: var(--color-border-default);
+}
+
+
+.marker {
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-section-title);
+}
+
+.marker {
+  color: var(--color-brand-primary);
+}
+
+.inlineError {
+  color: var(--color-status-error);
+}
+
+.inlineError {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-control);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes feedback-enter {
+  from {
+    transform: translateY(var(--spacing-page-section-gap));
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes warning-glow {
+  from {
+    filter:
+      drop-shadow(0 0 3px rgb(255 91 69 / 65%))
+      drop-shadow(0 0 6px rgb(255 91 69 / 35%));
+  }
+
+  to {
+    filter:
+      drop-shadow(0 0 6px rgb(255 91 69))
+      drop-shadow(0 0 14px rgb(255 91 69 / 90%));
+  }
+}

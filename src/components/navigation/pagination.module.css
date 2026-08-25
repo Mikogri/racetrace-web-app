@@ -1,0 +1,91 @@
+.pagination {
+  display: flex;
+  gap: var(--spacing-actions-gap);
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-control);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.item,
+.activeItem,
+.arrowItem {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--component-pagination-item-width);
+  height: var(--component-pagination-item-height);
+  padding: var(--space-3) var(--space-10);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-regular);
+  line-height: 16px;
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  transition:
+    color var(--component-transition-control),
+    border-color var(--component-transition-control),
+    background-color var(--component-transition-control);
+}
+
+.item:hover,
+.item:focus-visible,
+.arrowItem:hover:not(:disabled),
+.arrowItem:focus-visible {
+  background: var(--color-interaction-subtle-hover-background);
+}
+
+.activeItem {
+  color: var(--color-brand-soft);
+  border-color: var(--color-brand-primary);
+}
+
+.ellipsis {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--component-pagination-item-width);
+  height: var(--component-pagination-item-height);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  line-height: 16px;
+}
+
+.arrowItem:disabled {
+  color: var(--color-interaction-disabled-text);
+  cursor: default;
+}
+
+.arrow {
+  width: calc(var(--space-10) / 2);
+  height: var(--space-10);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+}
+
+@media (max-width: 520px) {
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,28 @@
+.control {
+  display: inline-flex;
+  gap: var(--spacing-actions-gap);
+  flex-wrap: wrap;
+}
+
+.option {
+  min-width: var(--component-control-min-height);
+  min-height: var(--component-control-min-height);
+  padding-inline: var(--spacing-control-padding-x);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  cursor: pointer;
+  background: transparent;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  transition: color var(--component-transition-control), background-color var(--component-transition-control);
+}
+
+.option:hover {
+  background: var(--color-interaction-subtle-hover-background);
+}
+
+.option[aria-pressed='true'] {
+  color: var(--color-text-primary);
+  background: var(--color-interaction-selected-background);
+}

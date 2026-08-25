@@ -1,0 +1,381 @@
+.chartPanel {
+  overflow: hidden;
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-actions-gap);
+  align-items: end;
+  justify-content: space-between;
+  padding: var(--spacing-table-cell-padding-y)
+    var(--spacing-table-cell-padding-x);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.heading p {
+  max-width: 42rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-caption);
+}
+
+.scroll {
+  overflow-x: auto;
+  padding: var(--spacing-table-cell-padding-y)
+    var(--spacing-table-cell-padding-x);
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  min-width: 46rem;
+  height: auto;
+}
+
+.libraryChart {
+  width: 100%;
+  min-width: 0;
+}
+
+.libraryChart :focus {
+  outline: none;
+}
+
+.rechartsGrid {
+  stroke: var(--color-border-default);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-dasharray: 1.5 3;
+}
+
+.rechartsTick {
+  fill: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+}
+
+.activeScatterPoint {
+  filter:
+    drop-shadow(0 0 3px var(--active-point-color))
+    drop-shadow(0 0 8px var(--active-point-color));
+  animation: active-point-glow 1200ms ease-in-out infinite alternate;
+}
+
+@keyframes active-point-glow {
+  from {
+    filter:
+      drop-shadow(0 0 2px var(--active-point-color))
+      drop-shadow(0 0 5px var(--active-point-color));
+  }
+
+  to {
+    filter:
+      drop-shadow(0 0 5px var(--active-point-color))
+      drop-shadow(0 0 12px var(--active-point-color));
+  }
+}
+
+.gridLine,
+.radarGrid,
+.radarAxis {
+  fill: none;
+  stroke: var(--color-border-default);
+  stroke-width: 1.5;
+}
+
+.gridLine {
+  stroke-linecap: round;
+  stroke-dasharray: 1.5 3;
+}
+
+.axisLine {
+  fill: none;
+  stroke: var(--color-border-default);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.axisLabel,
+.averageLabel,
+.radarLabel,
+.radarNumber {
+  fill: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: 12px;
+}
+
+.axisLabel {
+  fill: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+}
+
+.averageLabel,
+.radarNumber {
+  fill: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.radarLabel {
+  fill: var(--color-text-secondary);
+  font-size: 8px;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.radarNumber {
+  fill: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+}
+
+.series {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lineChart .series {
+  stroke-width: 1.5;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  opacity: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.lineChart .point {
+  display: none;
+}
+
+.seriesArea {
+  pointer-events: none;
+}
+
+.point {
+  fill-opacity: 0.4;
+  stroke-width: 1;
+}
+
+.average {
+  stroke: var(--color-result-winner-text);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.averageLabel {
+  fill: var(--color-result-winner-text);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-actions-gap);
+  padding: 0 var(--spacing-table-cell-padding-x)
+    var(--spacing-table-cell-padding-y);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-caption);
+}
+
+.legend a,
+.legend span {
+  display: inline-flex;
+  gap: var(--spacing-table-cell-gap);
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.legend a:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.legend i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+}
+
+.empty {
+  padding: var(--spacing-table-cell-padding-y)
+    var(--spacing-table-cell-padding-x);
+  color: var(--color-text-secondary);
+}
+
+.radarLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr);
+  gap: var(--spacing-grid-gap);
+  align-items: center;
+  padding: var(--spacing-table-cell-padding-y)
+    var(--spacing-table-cell-padding-x);
+}
+
+.radar {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.radarCanvas {
+  position: relative;
+  width: min(100%, 620px);
+  aspect-ratio: 620 / 384;
+  margin-inline: auto;
+}
+
+.radarLabels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.radarLabelGroup {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  font-family: var(--font-family-data);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.radarLabelGroup span {
+  color: var(--color-text-secondary);
+  font-size: 8px;
+  font-weight: var(--font-weight-medium);
+  line-height: 10px;
+  text-transform: uppercase;
+}
+
+.radarLabelGroup strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: 14px;
+}
+
+.radarValue {
+  fill: rgb(74 74 74 / 25%);
+  stroke: var(--color-border-default);
+  stroke-width: 1.5;
+}
+
+.radarPoint {
+  fill: var(--color-brand-soft);
+  stroke: var(--color-brand-primary);
+  stroke-width: 2;
+}
+
+.radarValues {
+  display: grid;
+  gap: var(--spacing-card-gap);
+}
+
+.radarValues div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-actions-gap);
+  padding-bottom: var(--spacing-table-cell-gap);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.radarValues span {
+  color: var(--color-text-secondary);
+}
+
+.low {
+  color: var(--color-rating-low);
+  fill: var(--color-rating-low);
+}
+
+.medium {
+  color: var(--color-rating-medium);
+  fill: var(--color-rating-medium);
+}
+
+.high {
+  color: var(--color-rating-high);
+  fill: var(--color-rating-high);
+}
+
+.veryHigh {
+  color: var(--color-rating-performance-high);
+  fill: var(--color-rating-performance-high);
+}
+
+.top {
+  color: var(--color-rating-top);
+  fill: var(--color-rating-top);
+}
+
+.missing {
+  color: var(--color-text-secondary);
+  fill: var(--color-text-secondary);
+}
+
+.compact .heading {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.compact.chartPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.radarChart.compact.chartPanel {
+  gap: var(--space-8);
+}
+
+.compact .scroll {
+  overflow-x: hidden;
+  padding: 0;
+}
+
+.compact .chart {
+  width: 100%;
+  min-width: 0;
+  height: 275px;
+}
+
+.scatterChart.compact .chart {
+  min-width: 0;
+  height: 291px;
+}
+
+.compact .radarLayout {
+  grid-template-columns: 1fr;
+  padding: 0;
+}
+
+.compact .radar {
+  max-height: none;
+}
+
+.compact .radarCanvas {
+  width: min(100%, 382px);
+}
+
+.radarChart.compact .radarLayout {
+  flex: 1;
+  min-height: 0;
+}
+
+.radarChart.compact .radarCanvas {
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+}
+
+.compact .radarValues {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .radarLayout {
+    grid-template-columns: 1fr;
+  }
+}

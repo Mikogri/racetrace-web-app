@@ -1,0 +1,70 @@
+.popover {
+  position: absolute;
+  top: calc(100% + var(--space-5));
+  left: 0;
+  z-index: var(--component-z-popover);
+  min-width: var(--component-dropdown-min-width);
+  padding: var(--spacing-context-menu-padding);
+  background: var(--color-surface-panel);
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--component-shadow-panel);
+  backdrop-filter: blur(var(--spacing-card-padding));
+  transform-origin: top center;
+  animation: context-menu-open var(--component-transition-control) ease-out;
+}
+
+.scrollArea {
+  max-height: calc(var(--component-dropdown-max-height) - 2 * var(--spacing-context-menu-padding));
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.scrollArea::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.scrollbar {
+  position: absolute;
+  top: var(--spacing-context-menu-padding);
+  right: var(--spacing-context-menu-padding);
+  bottom: var(--spacing-context-menu-padding);
+  width: var(--component-context-scrollbar-width);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--component-transition-control);
+}
+
+.popover:hover .scrollbar {
+  opacity: 1;
+}
+
+.thumb {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: block;
+  background: var(--color-context-scrollbar-thumb);
+  border-radius: var(--radius-pill);
+}
+
+@keyframes context-menu-open {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .popover {
+    right: 0;
+    width: 100%;
+  }
+}

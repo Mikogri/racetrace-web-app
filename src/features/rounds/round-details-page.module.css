@@ -1,0 +1,230 @@
+.pageHeaderStack {
+  display: grid;
+  gap: var(--space-15);
+  justify-items: start;
+  width: 100%;
+}
+
+.pageHeaderStack h1 {
+  font-family: var(--font-family-mono);
+  font-size: 28px;
+  font-weight: var(--font-weight-medium);
+  line-height: 31px;
+  letter-spacing: 0;
+}
+
+.filterRow {
+  display: flex;
+  gap: var(--space-18);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filterDot {
+  width: 4px;
+  height: 4px;
+  background: rgb(99 99 99);
+  border-radius: 50%;
+}
+
+.podium {
+  display: flex;
+  gap: var(--space-18);
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 163px;
+}
+
+.podiumColumn,
+.podiumPlaceholder {
+  width: min(230px, 30%);
+}
+
+.podiumPosition2 {
+  padding-top: var(--space-15);
+}
+
+.podiumPosition3 {
+  padding-top: var(--space-25);
+}
+
+.podiumCard {
+  display: grid;
+  gap: var(--space-14);
+  justify-items: center;
+  min-height: 138px;
+  padding: var(--space-14) var(--space-25);
+  text-align: center;
+  border: var(--component-border-width) solid rgb(91 91 91);
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.podiumPosition1 .podiumCard {
+  border-color: rgb(115 75 0);
+}
+
+.podiumPosition3 .podiumCard {
+  border-color: rgb(181 70 0);
+}
+
+.podiumIdentity,
+.podiumIdentity div,
+.podiumTime {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.podiumIdentity {
+  gap: var(--space-5);
+}
+
+.podiumIdentity span,
+.podiumIdentity a,
+.podiumTime span {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-mono);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  text-transform: none;
+  white-space: nowrap;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.podiumIdentity small,
+.podiumTime small {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: 10px;
+  font-weight: var(--font-weight-regular);
+  text-transform: none;
+  white-space: nowrap;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.podiumPosition {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: 22px;
+  font-weight: var(--font-weight-regular);
+  text-transform: none;
+  line-height: 29px;
+}
+
+.podiumPosition1 .podiumPosition {
+  color: var(--color-result-winner-text);
+}
+
+.podiumPosition3 .podiumPosition {
+  color: #b54600;
+}
+
+.podiumPosition2 .podiumTime small,
+.podiumPosition3 .podiumTime small {
+  color: var(--color-result-loss-text);
+}
+
+.podiumIdentity a {
+  position: relative;
+  display: inline-block;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: color var(--component-transition-control);
+}
+
+.podiumIdentity a::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--component-transition-control);
+}
+
+.podiumIdentity a:hover,
+.podiumIdentity a:focus-visible {
+  color: var(--color-text-secondary);
+}
+
+.podiumIdentity a:hover::after,
+.podiumIdentity a:focus-visible::after {
+  opacity: 1;
+}
+
+.leaderboard {
+  overflow: hidden;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.leaderboardHeader {
+  display: flex;
+  gap: var(--space-10);
+  align-items: center;
+  justify-content: space-between;
+  min-height: 71px;
+  padding: var(--space-14);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.leaderboardHeader > div:first-child {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.leaderboardHeader h2,
+.leaderboardHeader p {
+  margin: 0;
+}
+
+.leaderboardHeader h2 {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: 18px;
+  font-weight: var(--font-weight-medium);
+}
+
+.leaderboardHeader p {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .metadata,
+  .summary,
+  .filterRow {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .filterDot {
+    display: none;
+  }
+
+  .podium {
+    display: grid;
+  }
+
+  .podiumColumn,
+  .podiumPlaceholder {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .leaderboardHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

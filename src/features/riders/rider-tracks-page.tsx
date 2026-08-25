@@ -1,0 +1,218 @@
+import { useMemo } from "react";
+import { useOutletContext } from "react-router-dom";
+import { SortableTableHeader } from "../../components/data-display/data-table";
+import { CyclingText } from "../../components/data-display/cycling-text";
+import { PerformanceValue } from "../../components/data-display/performance-value";
+import { RatingValue } from "../../components/data-display/rating-value";
+import { formatOneDecimal } from "../../utils/formatters";
+import { TableFeedbackState } from "../../components/feedback/states";
+import { Pagination } from "../../components/navigation/pagination";
+import { AppTooltip } from "../../components/overlays/tooltip";
+import { useClientTable } from "../../hooks/use-client-table";
+import type { RiderOutletContext } from "./rider-route-layout";
+import styles from "./rider-pages.module.css";
+
+type TrackSort =
+  | "track"
+  | "venue"
+  | "rating"
+  | "pace"
+  | "consistency"
+  | "preFinal"
+  | "final"
+  | "confidence";
+type OverviewTrackRow =
+  RiderOutletContext["overview"]["trackStatistics"][number];
+type TrackRow = OverviewTrackRow & { averagePreFinalPosition: number | null };
+
+const accessors = {
+  track: (row: TrackRow) => row.trackName,
+  venue: (row: TrackRow) =>
+    `${row.venueName ?? ""} ${row.countryCode ?? ""}`,
+  rating: (row: TrackRow) => row.rating,
+  pace: (row: TrackRow) => row.pace,
+  consistency: (row: TrackRow) => row.consistency,
+  preFinal: (row: TrackRow) => row.averagePreFinalPosition,
+  final: (row: TrackRow) => row.averageFinalPosition,
+  confidence: (row: TrackRow) => row.confidence,
+} satisfies Record<
+  TrackSort,
+  (row: TrackRow) => string | number | null | undefined
+>;
+
+export default function RiderTracksPage() {
+  const { overview, sessionResults, isUpdating, hasDataError, retryData } =
+    useOutletContext<RiderOutletContext>();
+  const rows = useMemo(() => {
+    const positionsByTrack = new Map<string, number[]>();
+    sessionResults
+      .filter(
+        (result) =>
+          !result.isFinal &&
+          result.isClassified &&
+          result.position !== null &&
+          result.trackId !== null,
+      )
+      .forEach((result) =>
+        positionsByTrack.set(result.trackId as string, [
+          ...(positionsByTrack.get(result.trackId as string) ?? []),
+          result.position as number,
+        ]),
+      );
+    return overview.trackStatistics.map((row): TrackRow => {
+      const positions = positionsByTrack.get(row.trackId) ?? [];
+      return {
+        ...row,
+        averagePreFinalPosition:
+          positions.length > 0
+            ? positions.reduce((sum, position) => sum + position, 0) /
+              positions.length
+            : row.averageQualifyingPosition,
+      };
+    });
+  }, [overview.trackStatistics, sessionResults]);
+  const table = useClientTable<TrackRow, TrackSort>(
+    rows,
+    accessors,
+    "track",
+    "desc",
+    15,
+  );
+  if (hasDataError)
+    return (
+      <div className={`${styles.content} ${styles.resultsPage}`}>
+        <TableFeedbackState type="error" onRetry={retryData} animate={false} />
+      </div>
+    );
+  if (rows.length === 0)
+    return (
+      <div className={`${styles.content} ${styles.resultsPage}`}>
+        <TableFeedbackState type="empty" animate={false} />
+      </div>
+    );
+
+  return (
+    <div className={`${styles.content} ${styles.resultsPage}`}>
+      <div className={styles.riderResultsScroll} tabIndex={0}>
+        <table
+          className={`${styles.riderResultsTable} ${styles.riderTracksTable}`}
+        >
+          <thead>
+          <tr>
+            <th aria-label="Index" />
+            <SortableTableHeader
+              label="Track"
+              sortKey="track"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Venue"
+              sortKey="venue"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Rating"
+              sortKey="rating"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Pace"
+              sortKey="pace"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Consistency"
+              sortKey="consistency"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Confidence"
+              sortKey="confidence"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Pre-Final avg."
+              sortKey="preFinal"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+            <SortableTableHeader
+              label="Final avg."
+              sortKey="final"
+              activeSort={table.sortBy}
+              direction={table.sortDirection}
+              onSort={table.updateSort}
+            />
+          </tr>
+          </thead>
+          <tbody>
+          {table.items.map((row, index) => (
+            <tr className={styles.riderResultRow} key={row.trackId}>
+              <td>{(table.page - 1) * table.pageSize + index + 1}</td>
+              <td>
+                <AppTooltip content={row.trackName ?? "--"}>
+                  <span className={styles.resultPrimaryText}>
+                    {isUpdating ? <CyclingText value={row.trackName ?? "--"} /> : row.trackName ?? "--"}
+                  </span>
+                </AppTooltip>
+              </td>
+              <td>
+                <AppTooltip content={`${row.venueName ?? "--"}, ${row.countryCode ?? "--"}`}>
+                  <span className={styles.resultPrimaryText}>
+                    {isUpdating ? (
+                      <CyclingText value={`${row.venueName ?? "--"}, ${row.countryCode ?? "--"}`} />
+                    ) : (
+                      <>{row.venueName ?? "--"}, {row.countryCode ?? "--"}</>
+                    )}
+                  </span>
+                </AppTooltip>
+              </td>
+              <td>
+                <RatingValue value={row.rating} animate={isUpdating} animationLoop />
+              </td>
+              <td>
+                <PerformanceValue value={row.pace} animate={isUpdating} animationLoop />
+              </td>
+              <td>
+                <PerformanceValue value={row.consistency} animate={isUpdating} animationLoop />
+              </td>
+              <td>
+                <PerformanceValue value={row.confidence} percent animate={isUpdating} animationLoop />
+              </td>
+              <td>
+                {isUpdating ? (
+                  <CyclingText value={row.averagePreFinalPosition == null ? "--" : formatOneDecimal(row.averagePreFinalPosition)} />
+                ) : row.averagePreFinalPosition == null ? "--" : formatOneDecimal(row.averagePreFinalPosition)}
+              </td>
+              <td>
+                {isUpdating ? (
+                  <CyclingText value={row.averageFinalPosition == null ? "--" : formatOneDecimal(row.averageFinalPosition)} />
+                ) : row.averageFinalPosition == null ? "--" : formatOneDecimal(row.averageFinalPosition)}
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        page={table.page}
+        totalPages={table.totalPages}
+        pageSize={table.pageSize}
+        onPageChange={table.setPage}
+      />
+    </div>
+  );
+}

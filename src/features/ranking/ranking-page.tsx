@@ -1,0 +1,406 @@
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import { AnimatedNumber } from "../../components/data-display/animated-number";
+import {
+  DataTable,
+  DataTableHeader,
+  RiderTableRow,
+  SortableTableHeader,
+  type SortDirection,
+} from "../../components/data-display/data-table";
+import { PerformanceValue } from "../../components/data-display/performance-value";
+import { RatingValue } from "../../components/data-display/rating-value";
+import { RequestDetails } from "../../components/data-display/request-details";
+import { RiderCell } from "../../components/data-display/rider-cell";
+import { ContextFilters } from "../../components/filters/context-filters";
+import { useContextFilterOptions } from "../../components/filters/api/get-filter-options";
+import { TableFeedbackState } from "../../components/feedback/states";
+import { SearchInput } from "../../components/forms/search-input";
+import {
+  PageContainer,
+  PageHeader,
+  Section,
+} from "../../components/layout/page-container";
+import { Pagination } from "../../components/navigation/pagination";
+import { SegmentedControl } from "../../components/navigation/segmented-control";
+import { SummaryBanner } from "../../components/ui/panel";
+import { useDebouncedValue } from "../../hooks/use-debounced-value";
+import { useMetricsFilters } from "../../hooks/use-metrics-filters";
+import type { RiderSummary } from "../../types/domain";
+import { formatCategoryLabel } from "../../utils/categories";
+import { useRanking, type RankingSort } from "./api/get-ranking";
+import styles from "./ranking-page.module.css";
+
+// Keep the diagnostics implementation available without exposing it in the UI.
+// Change to true to restore Request Details on the Ranking page.
+const SHOW_RANKING_REQUEST_DETAILS = false;
+
+const rankingSorts: RankingSort[] = [
+  "position",
+  "fullName",
+  "totalPoints",
+  "rating",
+  "pace",
+  "consistency",
+  "confidence",
+  "qualifyingRate",
+  "finalsCount",
+];
+
+export default function RankingPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { filters, setFilters } = useMetricsFilters();
+  const filterOptions = useContextFilterOptions();
+  const appliedFilters = useMemo(() => {
+    const allClassesSelected =
+      filterOptions.options.classes.length > 0 &&
+      filterOptions.options.classes.every((option) =>
+        filters.classes.includes(option.value),
+      );
+    return allClassesSelected ? { ...filters, classes: [] } : filters;
+  }, [filterOptions.options.classes, filters]);
+  const search = searchParams.get("search") ?? "";
+  const debouncedSearch = useDebouncedValue(search, 300);
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const defaultSort: RankingSort = "rating";
+  const requestedSort = searchParams.get("sortBy");
+  const sortBy = rankingSorts.includes(requestedSort as RankingSort)
+    ? (requestedSort as RankingSort)
+    : defaultSort;
+  const requestedDirection = searchParams.get("sortDirection");
+  const defaultDirection: SortDirection = "desc";
+  const sortDirection: SortDirection =
+    requestedDirection === "asc" || requestedDirection === "desc"
+      ? requestedDirection
+      : defaultDirection;
+  const rankingQuery = useRanking({
+    filters: appliedFilters,
+    search: debouncedSearch,
+    page,
+    sortBy,
+    sortDirection,
+  });
+  const rankingData = rankingQuery.data;
+  const rankingError = rankingQuery.isError;
+  const showInitialLoading = rankingQuery.isPending && !rankingData;
+  const rankingUpdating = !showInitialLoading && rankingQuery.isFetching;
+  const hasRankingRows = Boolean(rankingData && rankingData.items.length > 0);
+  const displayRankingError = !hasRankingRows && rankingError;
+  const feedbackUpdating = rankingUpdating && !hasRankingRows;
+  const categoryLabel = formatCategoryLabel(
+    filters.categories[0] ?? "elite_men",
+  );
+  const showFullPageFeedback = showInitialLoading || displayRankingError;
+  const summaryContent =
+    rankingData && rankingData.items.length > 0
+      ? `${categoryLabel} · ${rankingData.summary.sessionsCount} Sessions · ${rankingData.summary.finalsCount} Finals · ${rankingData.summary.ridersCount} Riders`
+      : `${categoryLabel} · -- Sessions · -- Finals · -- Riders`;
+
+  const updateParam = (key: string, value: string) => {
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        if (value) next.set(key, value);
+        else next.delete(key);
+        if (key !== "page") next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
+  const updateSort = (nextSort: RankingSort) => {
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        const nextDirection: SortDirection =
+          sortBy === nextSort && sortDirection === "desc" ? "asc" : "desc";
+        next.set("sortBy", nextSort);
+        next.set("sortDirection", nextDirection);
+        next.delete("page");
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
+  const retryRanking = () => rankingQuery.refetch();
+
+  return (
+    <PageContainer
+      className={showFullPageFeedback ? styles.feedbackPage : undefined}
+    >
+      <PageHeader
+        title="Ranking"
+        eyebrow="Performance // Standings // Categories"
+        description="See how riders compare across the selected season or date range, including their results, performance and key race statistics."
+      />
+      <Section>
+        <div className={styles.filterRow}>
+          <div className={styles.filterControls}>
+            <SegmentedControl
+              label="Category"
+              options={filterOptions.options.categories}
+              value={filters.categories[0] ?? "elite_men"}
+              onChange={(category) =>
+                setFilters({ ...filters, categories: [category] })
+              }
+            />
+            <ContextFilters
+              options={filterOptions.options}
+              value={filters}
+              onChange={setFilters}
+              disabled={filterOptions.isPending}
+              showCategories={false}
+            />
+          </div>
+          <SearchInput
+            value={search}
+            placeholder="Search..."
+            onChange={(event) =>
+              updateParam("search", event.currentTarget.value)
+            }
+          />
+        </div>
+        <SummaryBanner loading={rankingQuery.isFetching}>
+          {summaryContent}
+        </SummaryBanner>
+      </Section>
+      <Section
+        className={showFullPageFeedback ? styles.feedbackSection : undefined}
+        aria-labelledby="leaderboard-title"
+      >
+        {SHOW_RANKING_REQUEST_DETAILS ? (
+          <RequestDetails data={rankingData} />
+        ) : null}
+        <div className={styles.transitionStage}>
+          {showInitialLoading ? (
+            <TableFeedbackState type="loading" />
+          ) : displayRankingError ? (
+            <div className={styles.feedbackTransition}>
+              <TableFeedbackState
+                type="error"
+                onRetry={() => void retryRanking()}
+              />
+            </div>
+          ) : (
+            <div
+              className={`${styles.tableFrame} ${hasRankingRows ? styles.leaderboardEnter : ""} ${feedbackUpdating ? styles.feedbackRefreshing : ""}`}
+            >
+              <header className={styles.tableHeader}>
+                <h2 id="leaderboard-title" className={styles.tableTitle}>
+                  Leaderboard
+                </h2>
+                <p className={styles.tableDescription}>
+                  Rider positions and performance overview
+                </p>
+              </header>
+              {feedbackUpdating && !displayRankingError ? (
+                <div
+                  className={styles.feedbackProgress}
+                  role="progressbar"
+                  aria-label="Loading ranking data"
+                >
+                  <span />
+                </div>
+              ) : null}
+              {rankingData && rankingData.items.length === 0 ? (
+                <TableFeedbackState type="empty" />
+              ) : null}
+              {rankingData && rankingData.items.length > 0 ? (
+                <div className={styles.scanArea}>
+                  <DataTable
+                    className={styles.rankingTable}
+                    embedded
+                    loading={rankingUpdating}
+                  >
+                    <DataTableHeader>
+                      <tr>
+                        <SortableTableHeader
+                          label=""
+                          ariaLabel="Position"
+                          sortKey="position"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Rider"
+                          column="rider"
+                          sortKey="fullName"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Points"
+                          sortKey="totalPoints"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Rating"
+                          sortKey="rating"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Pace"
+                          sortKey="pace"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Consistency"
+                          sortKey="consistency"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Confidence"
+                          sortKey="confidence"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Qualified"
+                          sortKey="qualifyingRate"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                        <SortableTableHeader
+                          label="Finals"
+                          sortKey="finalsCount"
+                          activeSort={sortBy}
+                          direction={sortDirection}
+                          onSort={updateSort}
+                        />
+                      </tr>
+                    </DataTableHeader>
+                    <tbody>
+                      {rankingData.items.map((row) => {
+                        const rider: RiderSummary = {
+                          id: row.riderId,
+                          name: row.fullName,
+                          team: row.teamName,
+                          country: row.countryCode,
+                          category: null,
+                          profileImageUrl: row.profileImageUrl,
+                        };
+                        return (
+                          <RiderTableRow
+                            key={row.riderId}
+                            riderId={row.riderId}
+                          >
+                            <td>
+                              {rankingUpdating ? (
+                                <AnimatedNumber
+                                  value={row.position}
+                                  duration={400}
+                                  loop
+                                />
+                              ) : (
+                                row.position
+                              )}
+                            </td>
+                            <td data-column="rider">
+                              <RiderCell
+                                rider={rider}
+                                compact
+                                cycling={rankingUpdating}
+                              />
+                            </td>
+                            <td>
+                              <span className={styles.points}>
+                                {rankingUpdating ? (
+                                  <AnimatedNumber
+                                    value={row.totalPoints}
+                                    duration={600}
+                                    loop
+                                  />
+                                ) : (
+                                  row.totalPoints
+                                )}
+                              </span>
+                            </td>
+                            <td>
+                              <RatingValue
+                                value={row.rating}
+                                animate={rankingUpdating}
+                                animationLoop
+                                animationDuration={470}
+                              />
+                            </td>
+                            <td>
+                              <PerformanceValue
+                                value={row.pace}
+                                animate={rankingUpdating}
+                                animationLoop
+                                animationDuration={450}
+                              />
+                            </td>
+                            <td>
+                              <PerformanceValue
+                                value={row.consistency}
+                                animate={rankingUpdating}
+                                animationLoop
+                                animationDuration={460}
+                              />
+                            </td>
+                            <td>
+                              <PerformanceValue
+                                value={row.confidence}
+                                percent
+                                animate={rankingUpdating}
+                                animationLoop
+                                animationDuration={440}
+                              />
+                            </td>
+                            <td>
+                              <PerformanceValue
+                                value={row.qualifyingRate * 100}
+                                percent
+                                animate={rankingUpdating}
+                                animationLoop
+                                animationDuration={430}
+                              />
+                            </td>
+                            <td>
+                              {rankingUpdating ? (
+                                <AnimatedNumber
+                                  value={row.finalsCount}
+                                  duration={400}
+                                  loop
+                                />
+                              ) : (
+                                row.finalsCount
+                              )}
+                            </td>
+                          </RiderTableRow>
+                        );
+                      })}
+                    </tbody>
+                  </DataTable>
+                </div>
+              ) : null}
+            </div>
+          )}
+        </div>
+        {!rankingError && rankingData && rankingData.items.length > 0 ? (
+          <Pagination
+            page={rankingData.page}
+            totalPages={rankingData.totalPages}
+            pageSize={rankingData.pageSize}
+            onPageChange={(nextPage) => updateParam("page", String(nextPage))}
+          />
+        ) : null}
+      </Section>
+    </PageContainer>
+  );
+}

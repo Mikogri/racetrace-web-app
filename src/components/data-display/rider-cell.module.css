@@ -1,0 +1,92 @@
+.rider {
+  display: inline-flex;
+  gap: var(--spacing-card-gap);
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.avatar {
+  flex: 0 0 var(--component-avatar-size);
+  width: var(--component-avatar-size);
+  height: var(--component-avatar-size);
+  object-fit: cover;
+  border-radius: var(--radius-pill);
+}
+
+.text {
+  display: grid;
+  gap: var(--spacing-table-cell-gap);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.nameLine {
+  display: flex;
+  gap: var(--spacing-table-cell-gap);
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.name {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-control);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color var(--component-transition-control);
+}
+
+.name::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--component-transition-control);
+}
+
+a.name:hover,
+a.name:focus-visible {
+  color: var(--color-text-secondary);
+}
+
+a.name:hover::after,
+a.name:focus-visible::after {
+  opacity: 1;
+}
+
+a.name:focus-visible {
+  border-radius: var(--radius-control);
+  outline: var(--component-border-width) solid var(--color-brand-soft);
+  outline-offset: 3px;
+}
+
+.country {
+  flex: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-control);
+}
+
+.metadata {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}

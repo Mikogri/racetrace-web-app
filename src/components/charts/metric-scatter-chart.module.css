@@ -1,0 +1,71 @@
+.panel {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.panel h2 {
+  width: fit-content;
+  min-height: 18px;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+}
+
+.panel h2 span { color: var(--color-brand-primary); }
+
+.chart {
+  width: 100%;
+  min-height: 270px;
+  flex: 1;
+}
+
+.grid {
+  stroke: var(--color-border-default);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 3;
+}
+
+.tick,
+.axisLabel {
+  fill: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-caption);
+}
+
+.empty {
+  display: grid;
+  height: 100%;
+  min-height: 270px;
+  place-items: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-actions-gap);
+  padding-top: var(--space-8);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-caption);
+}
+
+.legend span {
+  display: inline-flex;
+  gap: var(--spacing-table-cell-gap);
+  align-items: center;
+}
+
+.legend i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+}

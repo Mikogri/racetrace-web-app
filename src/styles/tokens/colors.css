@@ -1,0 +1,106 @@
+:root {
+  --color-surface-page: var(--palette-neutral-950);
+  --color-surface-panel: var(--palette-neutral-900);
+  --color-surface-panel-raised: var(--palette-neutral-800);
+  --color-surface-backdrop: rgb(0 0 0 / 72%);
+  --color-surface-pattern-dot: rgb(100 100 100 / 35%);
+  --color-context-scrollbar-thumb: rgb(82 82 82 / 80%);
+
+  --color-brand-primary: var(--palette-olive-500);
+  --color-brand-soft: var(--palette-olive-100);
+
+  --color-text-primary: var(--palette-white);
+  --color-text-secondary: var(--palette-neutral-300);
+  --color-text-summary: rgb(200 200 200);
+  --color-text-muted: rgb(165 165 165 / 70%);
+  --color-text-brand-soft: var(--palette-olive-100);
+  --color-text-on-brand: var(--palette-white);
+
+  --color-border-default: rgb(100 100 100 / 35%);
+  --color-border-strong: rgb(255 255 255 / 40%);
+  --color-card-hover-border: rgb(255 255 255 / 30%);
+
+  --color-interaction-selected-background: rgb(60 60 60 / 50%);
+  --color-interaction-hover-background: rgb(60 60 60 / 30%);
+  --color-interaction-subtle-hover-background: rgb(60 60 60 / 35%);
+  --color-interaction-focus: var(--palette-olive-500);
+  --color-interaction-focus-subtle-border: color-mix(in srgb, var(--color-brand-primary) 35%, var(--color-border-default));
+  --color-interaction-disabled-background: rgb(106 140 61 / 30%);
+  --color-interaction-disabled-text: rgb(255 255 255 / 45%);
+
+  --color-rating-low: var(--palette-red-strong);
+  --color-rating-medium: var(--palette-orange-500);
+  --color-rating-high: color-mix(in srgb, var(--palette-olive-300) 90%, black);
+  --color-rating-top: var(--palette-gold-500);
+  --color-rating-performance-high: var(--palette-cyan-500);
+  --color-rating-performance-top: var(--palette-purple-500);
+  --color-rating-high-background: rgb(196 255 118 / 30%);
+
+  --color-status-error: var(--palette-red-strong);
+  --color-status-warning: var(--palette-gold-500);
+  --color-status-success: var(--palette-olive-300);
+  --color-status-success-background: rgb(196 255 118 / 30%);
+  --color-status-info: var(--palette-blue-500);
+
+  --color-result-winner-text: var(--palette-gold-500);
+  --color-result-winner-accent: #ffa600;
+  --color-highlight-top-rider-background: rgb(255 192 89 / 5%);
+
+  --color-chart-pre-final: color-mix(in srgb, var(--palette-blue-500) 85%, black);
+  --color-chart-final: color-mix(in srgb, var(--palette-purple-500) 85%, black);
+  --color-chart-points: color-mix(in srgb, var(--palette-gold-500) 75%, black);
+  --color-chart-rating: var(--color-chart-final);
+  --color-chart-consistency-blue: var(--palette-blue-500);
+  --color-chart-consistency-blue-light: #7797d2;
+  --color-chart-consistency-blue-dark: #4f73b8;
+  --color-chart-consistency-purple: var(--palette-purple-500);
+  --color-chart-consistency-purple-dark: #b96eea;
+  --color-chart-consistency-purple-light: #d99aff;
+  --color-chart-consistency-red: #d9827c;
+  --color-chart-consistency-red-dark: #b96c68;
+
+  --color-podium-first-text: var(--palette-gold-500);
+  --color-podium-first-border: var(--palette-gold-700);
+  --color-podium-first-background: rgb(115 75 0 / 18%);
+  --color-podium-second-text: var(--palette-silver-500);
+  --color-podium-second-border: var(--palette-silver-700);
+  --color-podium-second-background: rgb(91 91 91 / 18%);
+  --color-podium-third-text: var(--palette-bronze-500);
+  --color-podium-third-border: var(--palette-bronze-500);
+  --color-podium-third-background: rgb(181 70 0 / 14%);
+
+  --color-event-class-world-cup-text: rgb(218 166 82 / 70%);
+  --color-event-class-world-cup-border: rgb(218 166 82 / 70%);
+  --color-event-class-world-championship-text: var(--palette-red-strong);
+  --color-event-class-world-championship-border: var(--palette-red-strong);
+
+  --color-compare-rider-a-accent: var(--palette-olive-500);
+  --color-compare-rider-a-background: rgb(106 140 61 / 40%);
+  --color-compare-rider-b-accent: var(--palette-blue-500);
+  --color-compare-rider-b-background: rgb(97 134 204 / 40%);
+  --color-compare-rider-a-bar: color-mix(in srgb, var(--color-compare-rider-a-accent) 80%, black);
+  --color-compare-rider-b-bar: color-mix(in srgb, var(--color-compare-rider-b-accent) 80%, black);
+
+  --color-sector-gain-background: rgb(172 201 130 / 35%);
+  --color-sector-loss-background: rgb(200 117 117 / 35%);
+  --color-sector-gain-text: var(--palette-olive-300);
+  --color-sector-loss-text: var(--palette-red-soft);
+  --color-result-loss-text: var(--palette-red-soft);
+  --color-sector-neutral-text: var(--palette-neutral-300);
+
+  --color-live-indicator: var(--palette-red-strong);
+  --color-live-background: color-mix(in srgb, var(--palette-red-strong) 55%, black);
+  --color-live-background-muted: color-mix(in srgb, var(--palette-red-strong) 25%, transparent);
+  --color-live-session-completed-background: rgb(196 255 118 / 30%);
+  --color-live-session-live-background: #9a3d3d;
+  --color-live-session-upcoming-background: rgb(255 255 255 / 12%);
+  --color-live-chart-rider-default: rgb(165 165 165 / 70%);
+  --color-live-chart-rider-1: var(--color-rating-top);
+  --color-live-chart-rider-2: var(--palette-blue-500);
+  --color-live-chart-rider-3: var(--palette-purple-500);
+  --color-live-chart-rider-4: var(--palette-gold-500);
+  --color-live-chart-rider-5: var(--palette-red-soft);
+  --color-live-chart-rider-6: #63e8ff;
+
+  --color-shadow-panel: rgb(0 0 0 / 32%);
+}

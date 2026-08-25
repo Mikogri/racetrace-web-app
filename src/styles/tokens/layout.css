@@ -1,0 +1,18 @@
+:root {
+  --layout-content-max-width: 1200px;
+  --layout-menu-height: 60px;
+  --layout-footer-height: 53px;
+  --layout-menu-width: 250px;
+  --layout-text-max-width: 720px;
+  --layout-content-sidebar-min-width: 160px;
+  --layout-modal-width: 500px;
+  --layout-dialog-margin: var(--space-15);
+  --layout-table-min-width: 760px;
+  --layout-mobile-breakpoint: 760px;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --layout-footer-height: 109px;
+  }
+}

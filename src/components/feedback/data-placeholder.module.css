@@ -1,0 +1,17 @@
+.placeholder {
+  display: flex;
+  gap: var(--spacing-details-gap);
+  min-height: calc(var(--component-skeleton-row-height) * 3);
+  align-items: center;
+}
+
+.marker {
+  color: var(--color-brand-primary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-section-title);
+}
+
+.copy {
+  display: grid;
+  gap: var(--spacing-text-gap-sm);
+}

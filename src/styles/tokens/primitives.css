@@ -1,0 +1,29 @@
+:root {
+  --palette-neutral-950: #0c0d0d;
+  --palette-neutral-900: #181819;
+  --palette-neutral-800: #242425;
+  --palette-neutral-700: #3c3c3c;
+  --palette-neutral-500: #646464;
+  --palette-neutral-300: #a5a5a5;
+  --palette-white: #ffffff;
+
+  --palette-olive-500: #6a8c3d;
+  --palette-olive-300: #71ce5e;
+  --palette-olive-200: #acc982;
+  --palette-olive-100: #d5ff9e;
+  --palette-olive-050: #c4ff76;
+
+  --palette-blue-500: #6186cc;
+  --palette-cyan-500: #63e8ff;
+  --palette-purple-500: #cd84fe;
+  --palette-red-soft: #ef6262;
+  --palette-red-strong: #fb5050;
+  --palette-orange-500: #ff6a00;
+  --palette-gold-500: #d4a017;
+  --palette-gold-700: #734b00;
+  --palette-gold-soft: #ffc059;
+  --palette-world-cup: #daa652;
+  --palette-bronze-500: #b54600;
+  --palette-silver-500: #a5a5a5;
+  --palette-silver-700: #5b5b5b;
+}

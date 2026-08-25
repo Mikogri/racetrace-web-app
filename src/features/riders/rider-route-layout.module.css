@@ -1,0 +1,262 @@
+.riderPage {
+  display: block;
+  padding: 0;
+}
+
+.riderHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-24);
+  justify-content: center;
+  min-height: 214px;
+  padding: var(--space-24);
+}
+
+.riderIdentity {
+  display: flex;
+  gap: var(--space-15);
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.profile {
+  display: flex;
+  flex: 0 0 125px;
+  align-items: center;
+  justify-content: center;
+  width: 125px;
+  height: 125px;
+  overflow: hidden;
+  background: var(--color-surface-page);
+  border: 2px solid #242424;
+  border-radius: var(--radius-pill);
+}
+
+.profile img {
+  flex: 0 0 auto;
+  width: 120%;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+  align-self: flex-start;
+  transform: none;
+}
+
+.riderCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.nation,
+.team,
+.riderMeta {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+}
+
+.nation {
+  gap: var(--space-10);
+  letter-spacing: 0.15em;
+}
+
+.flag {
+  display: block;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 12px;
+  overflow: hidden;
+  object-fit: cover;
+  border: var(--component-border-width) solid rgb(255 255 255 / 32%);
+  border-radius: 2px;
+}
+
+.flagPlaceholder {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 12px;
+  background: var(--color-surface-panel-raised);
+  border: var(--component-border-width) solid rgb(255 255 255 / 32%);
+  border-radius: 2px;
+}
+
+.riderName {
+  overflow: hidden;
+  max-width: min(600px, 70vw);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-medium);
+  line-height: 31px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.team {
+  gap: var(--space-5);
+}
+
+.teamName {
+  overflow: hidden;
+  max-width: min(420px, 55vw);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teamCode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 19px;
+  padding: var(--space-3) var(--space-8);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: 13px;
+  letter-spacing: 0.15em;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: 3px;
+}
+
+.riderMeta {
+  gap: var(--space-8);
+}
+
+.metaSeparator {
+  color: var(--color-brand-primary);
+}
+
+.tabsRow {
+  height: 47px;
+  padding-inline: var(--space-24);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.filtersRow {
+  min-height: 66px;
+  padding: var(--space-18) var(--space-24);
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.contentArea {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-page-section-gap);
+  padding: 0 var(--space-24) var(--space-24);
+  overflow: hidden;
+}
+
+.tabContent {
+  min-width: 0;
+}
+
+.tabContentForward {
+  animation: rider-tab-forward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tabContentBackward {
+  animation: rider-tab-backward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rider-tab-forward {
+  from {
+    transform: translateX(250px);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes rider-tab-backward {
+  from {
+    transform: translateX(-250px);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabContentForward,
+  .tabContentBackward {
+    animation: none;
+  }
+}
+
+.contentArea > :not(.updateProgress) {
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contentAreaUpdating > :not(.updateProgress) {
+  opacity: 0.6;
+}
+
+.updateProgress {
+  position: absolute;
+  top: 0;
+  right: var(--space-24);
+  left: var(--space-24);
+  z-index: 4;
+  height: var(--component-border-width);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.updateProgress span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: var(--color-brand-primary);
+  animation: rider-update-progress 1s ease-in-out infinite;
+}
+
+@keyframes rider-update-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(320%); }
+}
+
+@media (max-width: 760px) {
+  .riderHeader {
+    min-height: auto;
+  }
+
+  .profile {
+    flex-basis: 96px;
+    width: 96px;
+    height: 96px;
+  }
+
+  .profile img {
+    width: 120%;
+    max-width: none;
+    height: auto;
+    transform: none;
+  }
+
+  .riderName {
+    max-width: calc(100vw - 158px);
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .tabsRow {
+    overflow: hidden;
+  }
+
+  .filtersRow {
+    height: auto;
+  }
+}

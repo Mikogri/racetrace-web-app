@@ -1,0 +1,50 @@
+.value {
+  font-family: var(--font-family-data);
+  font-weight: var(--font-weight-medium);
+}
+
+.sizesmall {
+  font-size: var(--font-size-control);
+}
+
+.sizemedium {
+  font-size: var(--font-size-body);
+}
+
+.sizelarge {
+  font-size: var(--font-size-title);
+}
+
+.low {
+  color: var(--color-rating-low);
+}
+
+.medium {
+  color: var(--color-rating-medium);
+}
+
+.high {
+  color: var(--color-rating-high);
+}
+
+.veryHigh {
+  color: var(--color-rating-performance-high);
+}
+
+.cappedTop {
+  color: var(--color-rating-high);
+}
+
+.top {
+  color: var(--color-rating-performance-top);
+}
+
+.missing,
+.suffix {
+  color: var(--color-text-secondary);
+}
+
+.suffix {
+  margin-left: var(--spacing-text-gap-xs);
+  font-size: var(--font-size-caption);
+}

@@ -1,0 +1,98 @@
+@import './tokens/primitives.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/radii.css';
+@import './tokens/layout.css';
+@import './tokens/components.css';
+@import './reset.css';
+
+:root {
+  font-family: var(--font-family-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at center, var(--color-surface-pattern-dot) 0 var(--component-pattern-dot-size), transparent var(--component-pattern-dot-size)),
+    var(--color-surface-page);
+  background-size:
+    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap))
+    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap));
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: '';
+  background: linear-gradient(90deg, transparent, var(--color-surface-page) 18%, var(--color-surface-page) 82%, transparent);
+}
+
+a {
+  color: inherit;
+}
+
+button:hover:not(:disabled):not([aria-pressed='true']):not([aria-expanded='true']):not([data-button-variant='primary']) {
+  background-color: var(--color-interaction-subtle-hover-background);
+}
+
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-surface:focus,
+.recharts-surface:focus-visible {
+  outline: none;
+}
+
+.recharts-wrapper *:focus,
+.recharts-wrapper *:focus-visible,
+.recharts-bar-rectangle:focus,
+.recharts-bar-rectangle:focus-visible,
+.recharts-rectangle:focus,
+.recharts-rectangle:focus-visible {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--component-focus-width) solid var(--color-interaction-focus);
+  outline-offset: var(--component-focus-offset);
+}
+
+::selection {
+  color: var(--color-text-primary);
+  background: var(--color-compare-rider-b-background);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

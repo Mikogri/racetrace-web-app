@@ -1,0 +1,132 @@
+.scrollArea {
+  position: relative;
+  max-width: 100%;
+  overflow: auto;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.tableProgress {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  height: var(--component-border-width);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tableProgress span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: var(--color-brand-primary);
+  animation: table-progress 1s ease-in-out infinite;
+}
+
+@keyframes table-progress {
+  from {
+    transform: translateX(-110%);
+  }
+
+  to {
+    transform: translateX(320%);
+  }
+}
+
+.embedded {
+  border: 0;
+  border-radius: 0;
+}
+
+.table {
+  width: 100%;
+  min-width: var(--layout-table-min-width);
+  font-size: var(--font-size-control);
+  background: var(--color-surface-page);
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.loading .table {
+  opacity: 0.6;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  background: var(--color-surface-page);
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color var(--component-transition-control);
+}
+
+.sortArrow {
+  flex: none;
+  width: var(--space-10);
+  height: var(--space-10);
+  color: inherit;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.sortButton:hover,
+.sortButton:focus-visible {
+  color: var(--color-text-primary);
+  background-color: transparent !important;
+}
+
+.table th,
+.table td {
+  padding: var(--spacing-table-cell-padding-y) var(--space-15);
+  white-space: nowrap;
+  border-bottom: var(--component-border-width) solid var(--color-border-default);
+}
+
+.table th {
+  padding: var(--space-10) var(--space-15);
+  font-weight: inherit;
+}
+
+.table [data-column="rider"] {
+  width: 100%;
+}
+
+.table td {
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-control);
+  font-weight: var(--font-weight-light);
+}
+
+.table tbody td * {
+  font-weight: inherit;
+}
+
+.row:last-child td,
+.row:last-child th {
+  border-bottom: 0;
+}
+
+.row {
+  transition: background-color var(--component-transition-control);
+}
