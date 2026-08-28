@@ -173,14 +173,49 @@ const trackStatisticsSchema = z.object({
   startsCount: z.number().int(),
 });
 
-const riderOverviewSchema = z.object({
+/**
+ * The API currently deployed from the stable 24.08 snapshot predates the
+ * expanded overview payload. Keep the newer fields available to the UI while
+ * accepting that snapshot by filling them with safe empty values. The detail
+ * page can still render statistics, round results and track statistics.
+ */
+const riderOverviewSchema = z.preprocess((value) => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+
+  const payload = { ...(value as Record<string, unknown>) };
+  const statistics = payload.statistics;
+  const riderId =
+    statistics && typeof statistics === "object" && !Array.isArray(statistics)
+      ? (statistics as Record<string, unknown>).riderId
+      : null;
+
+  payload.sessionResults ??= [];
+  payload.teamHistory ??= [];
+  payload.pressurePerformance ??= {
+    riderId,
+    pressurePerformance: null,
+    pressureTrend: "unavailable",
+    sampleCount: 0,
+    evidence: "unavailable",
+    summary: {
+      qualifyingPace: null,
+      finalPace: null,
+      delta: null,
+      tendency: "unavailable",
+      pairedRounds: 0,
+    },
+    points: [],
+  };
+
+  return payload;
+}, z.object({
   statistics: statisticsSchema,
   roundResults: z.array(roundResultSchema),
   trackStatistics: z.array(trackStatisticsSchema),
   sessionResults: riderSessionResultsSchema,
   pressurePerformance: pressurePerformanceSchema,
   teamHistory: riderTeamHistorySchema,
-});
+}));
 
 export type RiderOverview = z.infer<typeof riderOverviewSchema>;
 
