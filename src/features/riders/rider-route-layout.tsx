@@ -19,8 +19,6 @@ import {
 } from "../../utils/categories";
 import { riderImageFromId } from "../../utils/rider-image";
 import { useRiderOverview, type RiderOverview } from "./api/get-rider-overview";
-import { useRiderSessions } from "./api/get-rider-sessions";
-import { usePressurePerformance } from "./api/get-pressure-performance";
 import {
   type RiderSessionResult,
 } from "./api/get-rider-sessions";
@@ -200,15 +198,7 @@ export default function RiderRouteLayout() {
     overviewQuery.isFetching;
   const hasDataError = overviewQuery.isError && !overviewQuery.data;
   const overview = overviewQuery.data ?? emptyRiderOverview(riderId);
-  // The stable API snapshot does not include the newer overview aggregates.
-  // Fall back to the established rider endpoints so older deployments still
-  // populate the Results chart and pressure-performance section.
-  const sessionsQuery = useRiderSessions(riderId);
-  const pressureQuery = usePressurePerformance(riderId, appliedFilters);
-  const sessionResults =
-    overview.sessionResults.length > 0
-      ? overview.sessionResults
-      : (sessionsQuery.data ?? []);
+  const sessionResults = overview.sessionResults;
   const statistics = overviewQuery.data?.statistics;
   const riderImage = riderImageFromId(
     statistics?.uciId ?? riderId,
@@ -352,13 +342,8 @@ export default function RiderRouteLayout() {
                 overview,
                 sessionResults,
                 teamHistory: overview.teamHistory,
-                pressurePerformance:
-                  overview.pressurePerformance.pressurePerformance !== null ||
-                  overview.pressurePerformance.points.length > 0
-                    ? overview.pressurePerformance
-                    : (pressureQuery.data ?? null),
-                pressurePerformanceLoading:
-                  overviewQuery.isPending || pressureQuery.isPending,
+                pressurePerformance: overview.pressurePerformance,
+                pressurePerformanceLoading: overviewQuery.isPending,
                 isUpdating,
                 hasDataError,
                 retryData: () => {
