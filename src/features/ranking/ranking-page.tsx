@@ -134,18 +134,27 @@ export default function RankingPage() {
     appliedFilters,
     debouncedSearch,
   );
-  const hasExplicitFilters =
-    ["seasons", "tracks", "conditions", "classes", "categories"].some(
-      (key) => searchParams.has(key),
-    ) || searchParams.has("search");
+  const rankingContextSignature = JSON.stringify({
+    seasons: appliedFilters.seasons,
+    categories: appliedFilters.categories,
+  });
+  const hasNarrowingFilters =
+    appliedFilters.tracks.length > 0 ||
+    appliedFilters.conditions.length > 0 ||
+    appliedFilters.classes.length > 0 ||
+    debouncedSearch.trim().length > 0;
   const rankingQuery = useRanking({
     filters: appliedFilters,
     search: debouncedSearch,
     page,
     sortBy,
     sortDirection,
-    ...(!hasExplicitFilters && sortBy !== "fullName"
-      ? { comparison: "previousRound" as const }
+    ...(sortBy !== "fullName"
+      ? {
+          comparison: hasNarrowingFilters
+            ? ("defaultFilters" as const)
+            : ("previousRound" as const),
+        }
       : {}),
   });
   const rankingData = rankingQuery.data;
@@ -153,12 +162,16 @@ export default function RankingPage() {
   const [comparisonTable, setComparisonTable] =
     useState<RankingResponse | null>(null);
   const activeFilterSignature = useRef(filterSignature);
+  const activeRankingContextSignature = useRef(rankingContextSignature);
 
   useEffect(() => {
     if (activeFilterSignature.current === filterSignature) return;
-    setComparisonTable(lastSettledTable.current);
+    const contextChanged =
+      activeRankingContextSignature.current !== rankingContextSignature;
+    setComparisonTable(contextChanged ? null : lastSettledTable.current);
     activeFilterSignature.current = filterSignature;
-  }, [filterSignature]);
+    activeRankingContextSignature.current = rankingContextSignature;
+  }, [filterSignature, rankingContextSignature]);
 
   useEffect(() => {
     if (!rankingQuery.isSuccess || rankingQuery.isFetching || !rankingData) {

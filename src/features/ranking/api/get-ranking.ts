@@ -47,7 +47,7 @@ const rankingResponseSchema = z.object({
     ridersCount: z.number().int(),
   }),
   comparisonBasis: z
-    .literal("previousRound")
+    .enum(["previousRound", "defaultFilters"])
     .nullable()
     .optional()
     .transform((value) => value ?? null),
@@ -73,7 +73,7 @@ type RankingParams = {
   pageSize?: number;
   sortBy: RankingSort;
   sortDirection: "asc" | "desc";
-  comparison?: "previousRound";
+  comparison?: "previousRound" | "defaultFilters";
 };
 
 const csv = (values: string[]) =>
