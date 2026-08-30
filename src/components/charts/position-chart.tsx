@@ -162,6 +162,7 @@ export function PositionChart({
   xEdgePadding = 0,
   showArea = true,
   heightOverride,
+  averageLineColor = "var(--color-rating-top)",
 }: {
   title: string;
   description?: string;
@@ -175,6 +176,7 @@ export function PositionChart({
   xEdgePadding?: number;
   showArea?: boolean;
   heightOverride?: number;
+  averageLineColor?: string | "series";
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
   const definitionId = useId().replace(/:/g, "");
@@ -382,7 +384,11 @@ export function PositionChart({
                       <ReferenceLine
                         key={`${item.id}-average`}
                         y={average}
-                        stroke="var(--color-result-winner-text)"
+                        stroke={
+                          averageLineColor === "series"
+                            ? item.color
+                            : averageLineColor
+                        }
                         strokeWidth={1}
                         strokeOpacity={0.7}
                         strokeDasharray="3 3"

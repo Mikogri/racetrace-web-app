@@ -431,6 +431,7 @@ export function ComparePositionChart({ data }: { data: CompareData }) {
       xEdgePadding={1}
       positionPadding={5}
       heightOverride={349}
+      averageLineColor="series"
       className={styles.resultsChart}
     />
   );
