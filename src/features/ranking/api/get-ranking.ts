@@ -47,7 +47,7 @@ const rankingResponseSchema = z.object({
     ridersCount: z.number().int(),
   }),
   comparisonBasis: z
-    .enum(["previousRound", "defaultFilters"])
+    .enum(["previousRound", "defaultFilters", "previousFilters"])
     .nullable()
     .optional()
     .transform((value) => value ?? null),
@@ -73,7 +73,11 @@ type RankingParams = {
   pageSize?: number;
   sortBy: RankingSort;
   sortDirection: "asc" | "desc";
-  comparison?: "previousRound" | "defaultFilters";
+  comparison?: "previousRound" | "defaultFilters" | "previousFilters";
+  comparisonFilters?: {
+    filters: MetricsFilters;
+    search: string;
+  };
 };
 
 const csv = (values: string[]) =>
@@ -235,6 +239,12 @@ export function useRanking(params: RankingParams) {
               sortBy: params.sortBy,
               sortDirection: params.sortDirection,
               comparison: params.comparison,
+              comparisonSeason: csv(params.comparisonFilters?.filters.seasons ?? []),
+              comparisonTrackId: csv(params.comparisonFilters?.filters.tracks ?? []),
+              comparisonConditionId: csv(params.comparisonFilters?.filters.conditions ?? []),
+              comparisonCompetitionClassId: csv(params.comparisonFilters?.filters.classes ?? []),
+              comparisonCategory: params.comparisonFilters?.filters.categories[0],
+              comparisonSearch: params.comparisonFilters?.search,
             },
           }),
   });

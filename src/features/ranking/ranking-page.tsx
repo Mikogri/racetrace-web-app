@@ -30,7 +30,6 @@ import type { MetricsFilters, RiderSummary } from "../../types/domain";
 import { formatCategoryLabel } from "../../utils/categories";
 import {
   useRanking,
-  type RankingResponse,
   type RankingSort,
 } from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
@@ -143,32 +142,45 @@ export default function RankingPage() {
     appliedFilters.conditions.length > 0 ||
     appliedFilters.classes.length > 0 ||
     debouncedSearch.trim().length > 0;
+  const lastSettledFilters = useRef<{
+    filters: MetricsFilters;
+    search: string;
+  } | null>(null);
+  const [comparisonFilters, setComparisonFilters] = useState<{
+    filters: MetricsFilters;
+    search: string;
+  } | null>(null);
+  const activeFilterSignature = useRef(filterSignature);
+  const activeRankingContextSignature = useRef(rankingContextSignature);
+
+  const comparison =
+    sortBy === "fullName"
+      ? undefined
+      : comparisonFilters
+        ? ("previousFilters" as const)
+        : hasNarrowingFilters
+          ? ("defaultFilters" as const)
+          : ("previousRound" as const);
   const rankingQuery = useRanking({
     filters: appliedFilters,
     search: debouncedSearch,
     page,
     sortBy,
     sortDirection,
-    ...(sortBy !== "fullName"
-      ? {
-          comparison: hasNarrowingFilters
-            ? ("defaultFilters" as const)
-            : ("previousRound" as const),
-        }
+    ...(comparison ? { comparison } : {}),
+    ...(comparison === "previousFilters" && comparisonFilters
+      ? { comparisonFilters }
       : {}),
   });
   const rankingData = rankingQuery.data;
-  const lastSettledTable = useRef<RankingResponse | null>(null);
-  const [comparisonTable, setComparisonTable] =
-    useState<RankingResponse | null>(null);
-  const activeFilterSignature = useRef(filterSignature);
-  const activeRankingContextSignature = useRef(rankingContextSignature);
 
   useEffect(() => {
     if (activeFilterSignature.current === filterSignature) return;
     const contextChanged =
       activeRankingContextSignature.current !== rankingContextSignature;
-    setComparisonTable(contextChanged ? null : lastSettledTable.current);
+    setComparisonFilters(
+      contextChanged ? null : lastSettledFilters.current,
+    );
     activeFilterSignature.current = filterSignature;
     activeRankingContextSignature.current = rankingContextSignature;
   }, [filterSignature, rankingContextSignature]);
@@ -177,18 +189,18 @@ export default function RankingPage() {
     if (!rankingQuery.isSuccess || rankingQuery.isFetching || !rankingData) {
       return;
     }
-    lastSettledTable.current = rankingData;
-  }, [rankingData, rankingQuery.dataUpdatedAt, rankingQuery.isFetching, rankingQuery.isSuccess]);
-
-  const previousRowsByRider = useMemo(
-    () =>
-      comparisonTable
-        ? new Map(
-            comparisonTable.items.map((row) => [row.riderId, row]),
-          )
-        : null,
-    [comparisonTable],
-  );
+    lastSettledFilters.current = {
+      filters: appliedFilters,
+      search: debouncedSearch,
+    };
+  }, [
+    appliedFilters,
+    debouncedSearch,
+    rankingData,
+    rankingQuery.dataUpdatedAt,
+    rankingQuery.isFetching,
+    rankingQuery.isSuccess,
+  ]);
   const rankingError = rankingQuery.isError;
   const showInitialLoading = rankingQuery.isPending && !rankingData;
   const rankingUpdating = !showInitialLoading && rankingQuery.isFetching;
@@ -215,6 +227,37 @@ export default function RankingPage() {
       },
       { replace: true },
     );
+  };
+
+  const updateRankingFilters = (nextFilters: MetricsFilters) => {
+    const contextChanged =
+      JSON.stringify({
+        seasons: filters.seasons,
+        categories: filters.categories,
+      }) !==
+      JSON.stringify({
+        seasons: nextFilters.seasons,
+        categories: nextFilters.categories,
+      });
+    setComparisonFilters(
+      contextChanged
+        ? null
+        : lastSettledFilters.current ?? {
+            filters: appliedFilters,
+            search: debouncedSearch,
+          },
+    );
+    setFilters(nextFilters);
+  };
+
+  const updateSearch = (value: string) => {
+    setComparisonFilters(
+      lastSettledFilters.current ?? {
+        filters: appliedFilters,
+        search: debouncedSearch,
+      },
+    );
+    updateParam("search", value);
   };
 
   const updateSort = (nextSort: RankingSort) => {
@@ -251,13 +294,13 @@ export default function RankingPage() {
               options={filterOptions.options.categories}
               value={filters.categories[0] ?? "elite_men"}
               onChange={(category) =>
-                setFilters({ ...filters, categories: [category] })
+                updateRankingFilters({ ...filters, categories: [category] })
               }
             />
             <ContextFilters
               options={filterOptions.options}
               value={filters}
-              onChange={setFilters}
+              onChange={updateRankingFilters}
               disabled={filterOptions.isPending}
               showCategories={false}
             />
@@ -265,9 +308,7 @@ export default function RankingPage() {
           <SearchInput
             value={search}
             placeholder="Search..."
-            onChange={(event) =>
-              updateParam("search", event.currentTarget.value)
-            }
+            onChange={(event) => updateSearch(event.currentTarget.value)}
           />
         </div>
         <SummaryBanner loading={rankingQuery.isFetching}>
@@ -393,16 +434,10 @@ export default function RankingPage() {
                     </DataTableHeader>
                     <tbody>
                       {rankingData.items.map((row) => {
-                        const previousRow = previousRowsByRider?.get(row.riderId);
-                        const positionChange = previousRowsByRider
-                          ? previousRow
-                            ? previousRow.position - row.position
-                            : null
-                          : row.positionChange;
                         const visiblePositionChange =
                           rankingUpdating || sortBy === "fullName"
                             ? null
-                            : positionChange;
+                            : row.positionChange;
                         const rider: RiderSummary = {
                           id: row.riderId,
                           name: row.fullName,
