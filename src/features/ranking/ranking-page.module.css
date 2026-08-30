@@ -144,9 +144,9 @@
 }
 
 .changeIndicator {
+  position: relative;
   display: inline-flex;
-  gap: 2px;
-  align-items: center;
+  align-items: flex-start;
   color: var(--color-text-secondary);
   font-family: var(--font-family-mono-variable);
   font-size: 10px;
@@ -164,16 +164,19 @@
 }
 
 .changeArrow {
-  width: 5px;
-  height: 5px;
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 4px;
+  height: 4px;
   border-width: 1px 1px 0 0;
   border-style: solid;
   border-color: currentcolor;
-  transform: translateY(1px) rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .changeIndicator[data-direction="down"] .changeArrow {
-  transform: translateY(-1px) rotate(135deg);
+  transform: rotate(135deg);
 }
 
 .scanArea {
