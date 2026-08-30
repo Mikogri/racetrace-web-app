@@ -176,7 +176,7 @@
   border-width: 1px 1px 0 0;
   border-style: solid;
   border-color: currentcolor;
-  transform: rotate(-45deg);
+  transform: translateY(2px) rotate(-45deg);
 }
 
 .changeIndicator[data-direction="down"] .changeArrow {
@@ -189,7 +189,6 @@
   margin-block: 4px;
   border-radius: 1px;
   background: currentcolor;
-  transform: translateY(2px);
 }
 
 .scanArea {
