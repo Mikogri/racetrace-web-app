@@ -163,10 +163,14 @@
   color: var(--color-status-error);
 }
 
+.changeIndicator:not([data-direction="same"]) {
+  padding-left: 6px;
+}
+
 .changeArrow {
   position: absolute;
   top: 0;
-  left: -6px;
+  left: 0;
   width: 4px;
   height: 4px;
   border-width: 1px 1px 0 0;
