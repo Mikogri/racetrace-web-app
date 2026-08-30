@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AnimatedNumber } from "../../components/data-display/animated-number";
 import {
@@ -26,9 +26,13 @@ import { SegmentedControl } from "../../components/navigation/segmented-control"
 import { SummaryBanner } from "../../components/ui/panel";
 import { useDebouncedValue } from "../../hooks/use-debounced-value";
 import { useMetricsFilters } from "../../hooks/use-metrics-filters";
-import type { RiderSummary } from "../../types/domain";
+import type { MetricsFilters, RiderSummary } from "../../types/domain";
 import { formatCategoryLabel } from "../../utils/categories";
-import { useRanking, type RankingSort } from "./api/get-ranking";
+import {
+  useRanking,
+  type RankingResponse,
+  type RankingSort,
+} from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
 
 // Keep the diagnostics implementation available without exposing it in the UI.
@@ -46,6 +50,52 @@ const rankingSorts: RankingSort[] = [
   "qualifyingRate",
   "finalsCount",
 ];
+
+function rankingFilterSignature(filters: MetricsFilters, search: string) {
+  return JSON.stringify({
+    seasons: filters.seasons,
+    tracks: filters.tracks,
+    conditions: filters.conditions,
+    classes: filters.classes,
+    categories: filters.categories,
+    search,
+  });
+}
+
+function roundedChange(value: number) {
+  return Math.round(value * 100) / 100;
+}
+
+function ChangeIndicator({ value }: { value: number | null }) {
+  if (value === null) return null;
+  const normalized = roundedChange(value);
+  const direction = normalized > 0 ? "up" : normalized < 0 ? "down" : "same";
+  return (
+    <span className={styles.changeIndicator} data-direction={direction}>
+      {direction !== "same" ? (
+        <span className={styles.changeArrow} aria-hidden="true" />
+      ) : null}
+      {Math.abs(normalized).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+}
+
+function ValueWithChange({
+  children,
+  change,
+}: {
+  children: ReactNode;
+  change: number | null;
+}) {
+  return (
+    <span className={styles.valueWithChange}>
+      {children}
+      <ChangeIndicator value={change} />
+    </span>
+  );
+}
 
 export default function RankingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,14 +123,52 @@ export default function RankingPage() {
     requestedDirection === "asc" || requestedDirection === "desc"
       ? requestedDirection
       : defaultDirection;
+  const filterSignature = rankingFilterSignature(
+    appliedFilters,
+    debouncedSearch,
+  );
+  const hasExplicitFilters =
+    ["seasons", "tracks", "conditions", "classes", "categories"].some(
+      (key) => searchParams.has(key),
+    ) || searchParams.has("search");
   const rankingQuery = useRanking({
     filters: appliedFilters,
     search: debouncedSearch,
     page,
     sortBy,
     sortDirection,
+    ...(!hasExplicitFilters && sortBy !== "fullName"
+      ? { comparison: "previousRound" as const }
+      : {}),
   });
   const rankingData = rankingQuery.data;
+  const lastSettledTable = useRef<RankingResponse | null>(null);
+  const [comparisonTable, setComparisonTable] =
+    useState<RankingResponse | null>(null);
+  const activeFilterSignature = useRef(filterSignature);
+
+  useEffect(() => {
+    if (activeFilterSignature.current === filterSignature) return;
+    setComparisonTable(lastSettledTable.current);
+    activeFilterSignature.current = filterSignature;
+  }, [filterSignature]);
+
+  useEffect(() => {
+    if (!rankingQuery.isSuccess || rankingQuery.isFetching || !rankingData) {
+      return;
+    }
+    lastSettledTable.current = rankingData;
+  }, [rankingData, rankingQuery.dataUpdatedAt, rankingQuery.isFetching, rankingQuery.isSuccess]);
+
+  const previousRowsByRider = useMemo(
+    () =>
+      comparisonTable
+        ? new Map(
+            comparisonTable.items.map((row) => [row.riderId, row]),
+          )
+        : null,
+    [comparisonTable],
+  );
   const rankingError = rankingQuery.isError;
   const showInitialLoading = rankingQuery.isPending && !rankingData;
   const rankingUpdating = !showInitialLoading && rankingQuery.isFetching;
@@ -285,6 +373,16 @@ export default function RankingPage() {
                     </DataTableHeader>
                     <tbody>
                       {rankingData.items.map((row) => {
+                        const previousRow = previousRowsByRider?.get(row.riderId);
+                        const positionChange = previousRowsByRider
+                          ? previousRow
+                            ? previousRow.position - row.position
+                            : null
+                          : row.positionChange;
+                        const visiblePositionChange =
+                          rankingUpdating || sortBy === "fullName"
+                            ? null
+                            : positionChange;
                         const rider: RiderSummary = {
                           id: row.riderId,
                           name: row.fullName,
@@ -299,6 +397,9 @@ export default function RankingPage() {
                             riderId={row.riderId}
                           >
                             <td>
+                              <ValueWithChange
+                                change={visiblePositionChange}
+                              >
                               {rankingUpdating ? (
                                 <AnimatedNumber
                                   value={row.position}
@@ -308,6 +409,7 @@ export default function RankingPage() {
                               ) : (
                                 row.position
                               )}
+                              </ValueWithChange>
                             </td>
                             <td data-column="rider">
                               <RiderCell

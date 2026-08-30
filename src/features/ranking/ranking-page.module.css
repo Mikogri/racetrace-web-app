@@ -135,6 +135,47 @@
   color: var(--color-rating-top);
 }
 
+.valueWithChange {
+  display: inline-flex;
+  gap: var(--space-5);
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.changeIndicator {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono-variable);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 450;
+  line-height: 1;
+}
+
+.changeIndicator[data-direction="up"] {
+  color: var(--color-status-success);
+}
+
+.changeIndicator[data-direction="down"] {
+  color: var(--color-status-error);
+}
+
+.changeArrow {
+  width: 5px;
+  height: 5px;
+  border-width: 1px 1px 0 0;
+  border-style: solid;
+  border-color: currentcolor;
+  transform: translateY(1px) rotate(-45deg);
+}
+
+.changeIndicator[data-direction="down"] .changeArrow {
+  transform: translateY(-1px) rotate(135deg);
+}
+
 .scanArea {
   overflow: hidden;
 }

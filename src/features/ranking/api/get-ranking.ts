@@ -32,6 +32,7 @@ const rankingRiderSchema = z.object({
   finalsCount: z.number().int(),
   qualifyingRate: z.number(),
   profileImageUrl: nullableStringSchema,
+  positionChange: z.number().int().nullable().optional().transform((value) => value ?? null),
 });
 
 const rankingResponseSchema = z.object({
@@ -45,6 +46,11 @@ const rankingResponseSchema = z.object({
     finalsCount: z.number().int(),
     ridersCount: z.number().int(),
   }),
+  comparisonBasis: z
+    .literal("previousRound")
+    .nullable()
+    .optional()
+    .transform((value) => value ?? null),
 });
 
 export type RankingResponse = z.infer<typeof rankingResponseSchema>;
@@ -67,6 +73,7 @@ type RankingParams = {
   pageSize?: number;
   sortBy: RankingSort;
   sortDirection: "asc" | "desc";
+  comparison?: "previousRound";
 };
 
 const csv = (values: string[]) =>
@@ -227,6 +234,7 @@ export function useRanking(params: RankingParams) {
               pageSize: params.pageSize ?? GLOBAL_PAGE_SIZE,
               sortBy: params.sortBy,
               sortDirection: params.sortDirection,
+              comparison: params.comparison,
             },
           }),
   });
