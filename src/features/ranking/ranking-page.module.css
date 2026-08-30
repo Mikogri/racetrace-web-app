@@ -189,6 +189,7 @@
   margin-block: 4px;
   border-radius: 1px;
   background: currentcolor;
+  transform: translateY(2px);
 }
 
 .scanArea {
