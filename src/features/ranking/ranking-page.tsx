@@ -70,18 +70,21 @@ function ChangeIndicator({ value }: { value: number | null }) {
   if (value === null) return null;
   const normalized = roundedChange(value);
   const direction = normalized > 0 ? "up" : normalized < 0 ? "down" : "same";
-  const label =
-    direction === "same"
-      ? "-"
-      : Math.abs(normalized).toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-        });
+  const label = Math.abs(normalized).toLocaleString("en-US", {
+    maximumFractionDigits: 2,
+  });
   return (
-    <span className={styles.changeIndicator} data-direction={direction}>
+    <span
+      className={styles.changeIndicator}
+      data-direction={direction}
+      aria-label={direction === "same" ? "No position change" : undefined}
+    >
       {direction !== "same" ? (
         <span className={styles.changeArrow} aria-hidden="true" />
-      ) : null}
-      <span>{label}</span>
+      ) : (
+        <span className={styles.noChangeIcon} aria-hidden="true" />
+      )}
+      {direction !== "same" ? <span>{label}</span> : null}
     </span>
   );
 }

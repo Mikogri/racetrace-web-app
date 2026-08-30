@@ -183,6 +183,14 @@
   transform: rotate(135deg);
 }
 
+.noChangeIcon {
+  width: 8px;
+  height: 1px;
+  margin-block: 4px;
+  border-radius: 1px;
+  background: currentcolor;
+}
+
 .scanArea {
   overflow: hidden;
 }
