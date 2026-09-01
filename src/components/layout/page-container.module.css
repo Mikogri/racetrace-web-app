@@ -30,9 +30,9 @@
 .description {
   max-width: 465px;
   color: rgb(165 165 165);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-mono-variable) !important;
   font-size: 12px;
-  font-weight: var(--font-weight-regular);
+  font-weight: 450;
 }
 
 .pageCaption {
@@ -41,9 +41,9 @@
   gap: 8px;
   align-items: center;
   color: var(--color-text-secondary);
-  font-family: var(--font-family-mono) !important;
+  font-family: var(--font-family-mono-variable) !important;
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 450;
   text-transform: none;
 }
 

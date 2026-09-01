@@ -120,6 +120,7 @@ function RunTime({
   time,
   gap,
   status,
+  startTime,
   loading,
   winner,
   winnerLabel,
@@ -127,6 +128,7 @@ function RunTime({
   time: number | null;
   gap: number | null;
   status: string | null;
+  startTime?: string | null | undefined;
   loading: boolean;
   winner: boolean;
   winnerLabel: string;
@@ -134,6 +136,9 @@ function RunTime({
   const normalizedStatus = status?.trim().toUpperCase();
   if (normalizedStatus && ["ON TRACK", "LIVE", "RUNNING"].includes(normalizedStatus)) {
     return <LoadingText value="--" loading={loading} />;
+  }
+  if (normalizedStatus && ["UPCOMING", "SCHEDULED", "TO START"].includes(normalizedStatus)) {
+    return <LoadingText value={startTime ?? "--"} loading={loading} />;
   }
   if (normalizedStatus && ["DNS", "DNF", "DSQ"].includes(normalizedStatus)) {
     return (
@@ -259,17 +264,14 @@ export function SessionResultsTable({
       <tbody>
         {orderedRows.map((row, rowIndex) => {
           const isSessionWinner = row === sessionLeader;
-          const rider: RiderSummary | null =
-            row.riderId === null
-              ? null
-              : {
-                  id: row.riderId,
-                  name: row.fullName,
-                  team: row.teamName,
-                  country: row.countryCode,
-                  category,
-                  profileImageUrl: null,
-                };
+          const rider: RiderSummary = {
+            id: row.riderId ?? "",
+            name: row.fullName,
+            team: row.teamName,
+            country: row.countryCode,
+            category,
+            profileImageUrl: null,
+          };
           const times = new Map(row.times.map((time) => [time.index, time]));
           const group = liveGroup(row);
           const previousGroup = rowIndex > 0 ? liveGroup(orderedRows[rowIndex - 1]) : null;
@@ -318,10 +320,13 @@ export function SessionResultsTable({
                       />
                     </small>
                   </div>
-                ) : rider ? (
-                  <RiderCell rider={rider} compact cycling={loading} />
                 ) : (
-                  <LoadingText value={row.fullName} loading={loading} />
+                  <RiderCell
+                    rider={rider}
+                    compact
+                    cycling={loading}
+                    linked={row.riderId !== null}
+                  />
                 )}
               </td>
               {sectorIndexes.map((index) => {
@@ -355,6 +360,7 @@ export function SessionResultsTable({
                   time={row.finalTime}
                   gap={row.finalGapToBest}
                   status={row.status}
+                  startTime={row.startTime}
                   loading={loading}
                   winner={isSessionWinner}
                   winnerLabel={liveGrouping ? "Leader" : "Winner"}

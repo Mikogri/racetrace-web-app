@@ -8,8 +8,14 @@ export const routes = {
   compare: '/compare',
   about: '/about',
   privacyPolicy: '/privacy-policy',
-  liveResults: (sessionKey: string, context?: string, roundId?: string, season?: number) =>
-    `/live/results/${encodeURIComponent(sessionKey)}${context ? `?context=${encodeURIComponent(context)}${roundId ? `&roundId=${encodeURIComponent(roundId)}` : ""}${season ? `&season=${season}` : ""}` : ""}`,
+  liveResults: (sessionKey: string, context?: string, roundId?: string, season?: number) => {
+    const query = new URLSearchParams();
+    if (context) query.set("context", context);
+    if (roundId) query.set("roundId", roundId);
+    if (season) query.set("season", String(season));
+    const suffix = query.size > 0 ? `?${query.toString()}` : "";
+    return `/live/results/${encodeURIComponent(sessionKey)}${suffix}`;
+  },
   round: (roundId: string) => `/results/rounds/${encodeURIComponent(roundId)}`,
   rider: (riderId: string) => `/riders/${encodeURIComponent(riderId)}`,
   riderResults: (riderId: string) => `/riders/${encodeURIComponent(riderId)}/results`,

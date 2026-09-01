@@ -40,6 +40,11 @@ a {
   color: inherit;
 }
 
+strong,
+b {
+  font-weight: var(--font-weight-semibold);
+}
+
 button:hover:not(:disabled):not([aria-pressed='true']):not([aria-expanded='true']):not([data-button-variant='primary']) {
   background-color: var(--color-interaction-subtle-hover-background);
 }
@@ -61,6 +66,7 @@ button:hover:not(:disabled):not([aria-pressed='true']):not([aria-expanded='true'
 }
 
 :focus-visible {
+  border-radius: var(--radius-control);
   outline: var(--component-focus-width) solid var(--color-interaction-focus);
   outline-offset: var(--component-focus-offset);
 }

@@ -197,8 +197,9 @@
 
 .leaderboardHeader p {
   color: var(--color-text-secondary);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-mono-variable);
   font-size: 12px;
+  font-weight: 450;
 }
 
 @media (max-width: 760px) {

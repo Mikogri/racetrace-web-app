@@ -133,10 +133,6 @@ export default function RankingPage() {
     appliedFilters,
     debouncedSearch,
   );
-  const rankingContextSignature = JSON.stringify({
-    seasons: appliedFilters.seasons,
-    categories: appliedFilters.categories,
-  });
   const hasNarrowingFilters =
     appliedFilters.tracks.length > 0 ||
     appliedFilters.conditions.length > 0 ||
@@ -151,7 +147,6 @@ export default function RankingPage() {
     search: string;
   } | null>(null);
   const activeFilterSignature = useRef(filterSignature);
-  const activeRankingContextSignature = useRef(rankingContextSignature);
 
   const comparison =
     sortBy === "fullName"
@@ -176,14 +171,9 @@ export default function RankingPage() {
 
   useEffect(() => {
     if (activeFilterSignature.current === filterSignature) return;
-    const contextChanged =
-      activeRankingContextSignature.current !== rankingContextSignature;
-    setComparisonFilters(
-      contextChanged ? null : lastSettledFilters.current,
-    );
+    setComparisonFilters(lastSettledFilters.current);
     activeFilterSignature.current = filterSignature;
-    activeRankingContextSignature.current = rankingContextSignature;
-  }, [filterSignature, rankingContextSignature]);
+  }, [filterSignature]);
 
   useEffect(() => {
     if (!rankingQuery.isSuccess || rankingQuery.isFetching || !rankingData) {

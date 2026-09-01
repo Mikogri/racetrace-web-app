@@ -111,9 +111,9 @@
 .tableDescription {
   max-width: 465px;
   color: rgb(165 165 165);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-mono-variable);
   font-size: var(--font-size-control);
-  font-weight: var(--font-weight-regular);
+  font-weight: 450;
 }
 
 .rankingTable th:nth-child(n + 3),

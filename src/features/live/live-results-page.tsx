@@ -12,6 +12,7 @@ import { BackButton } from "../../components/navigation/back-button";
 import { SummaryBanner } from "../../components/ui/panel";
 import { routes } from "../../config/routes";
 import { formatCategoryLabel } from "../../utils/categories";
+import { formatCountryName } from "../../utils/countries";
 import {
   SessionResultsTable,
   type ResultSort,
@@ -52,6 +53,9 @@ export default function LiveResultsPage() {
       items: results.items.map((item) => ({
         ...item,
         riderId: item.uciId ? (riderIdsQuery.data?.get(item.uciId) ?? null) : null,
+        countryCode: null,
+        teamId: null,
+        teamName: formatCountryName(item.countryCode),
       })),
     } : undefined,
     [results, riderIdsQuery.data],

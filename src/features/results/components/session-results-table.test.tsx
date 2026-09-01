@@ -31,6 +31,7 @@ const data: SessionResults = {
       teamId: null,
       teamName: null,
       status: "finished",
+      startTime: null,
       topSpeed: 77.4,
       averageSpeed: null,
       finalTime: 101.25,
@@ -53,6 +54,7 @@ const data: SessionResults = {
       teamId: null,
       teamName: null,
       status: "dnf",
+      startTime: null,
       topSpeed: null,
       averageSpeed: null,
       finalTime: 107.411,
@@ -75,6 +77,7 @@ const data: SessionResults = {
       teamId: null,
       teamName: null,
       status: "dns",
+      startTime: null,
       topSpeed: null,
       averageSpeed: null,
       finalTime: 0,
@@ -95,6 +98,7 @@ const data: SessionResults = {
       teamId: null,
       teamName: null,
       status: "perfect_run",
+      startTime: null,
       topSpeed: null,
       averageSpeed: null,
       finalTime: 100,
@@ -113,6 +117,65 @@ const data: SessionResults = {
 };
 
 describe("SessionResultsTable", () => {
+  it("keeps rider metadata visible when the rider cannot be resolved locally", () => {
+    const unresolvedRiderData: SessionResults = {
+      ...data,
+      items: [{
+        ...data.items[0],
+        riderId: null,
+        fullName: "Jonty Williamson",
+        countryCode: null,
+        teamName: "New Zealand",
+      }],
+    };
+
+    render(
+      <MemoryRouter>
+        <SessionResultsTable
+          data={unresolvedRiderData}
+          category="junior_men"
+          sortBy="finalTime"
+          sortDirection="desc"
+          onSort={vi.fn()}
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Jonty Williamson")).toBeInTheDocument();
+    expect(screen.getByText("New Zealand")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Jonty Williamson" })).not.toBeInTheDocument();
+  });
+
+  it("shows the published start time for an upcoming rider", () => {
+    const upcomingData: SessionResults = {
+      ...data,
+      items: [{
+        ...data.items[0],
+        position: null,
+        finalTime: null,
+        finalGapToBest: null,
+        status: "Upcoming",
+        startTime: "11:00:30",
+        times: [],
+      }],
+    };
+
+    render(
+      <MemoryRouter>
+        <SessionResultsTable
+          data={upcomingData}
+          category="junior_men"
+          sortBy="finalTime"
+          sortDirection="desc"
+          onSort={vi.fn()}
+          liveGrouping
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("11:00:30")).toBeInTheDocument();
+  });
+
   it("never marks a sector with a positive gap as green", () => {
     const inconsistentSectorRank: SessionResults = {
       ...data,

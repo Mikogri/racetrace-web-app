@@ -4,6 +4,7 @@ import {
   isLiveRoundStatus,
   liveTimingPresentation,
   normalizeChronoRacePayload,
+  normalizeTissotLivePayload,
   resolveChronoRaceJsonUrl,
   resolveChronoRaceSessionStatus,
   type LiveRound,
@@ -209,5 +210,93 @@ describe("ChronoRace live result normalization", () => {
       { split: 1, gap: -1 },
       { split: 2, gap: 1 },
     ]);
+  });
+
+  it("normalizes the Tissot World Championship format for the live table", () => {
+    const normalized = normalizeTissotLivePayload({
+      event: { number: 6, name: "Men Junior Downhill" },
+      results: [
+        {
+          resultType: "Time",
+          key: "44",
+          rider: {
+            key: "44",
+            bib: 44,
+            name: "WILLIAMSON Jonty",
+            nation: "NZL",
+            uciRiderId: "10169244772",
+          },
+          splits: [
+            { value: "27.674", rank: 1 },
+            { value: "1:43.997", rank: 1 },
+          ],
+          rank: 1,
+          value: "3:39.541",
+          time: "3:39.541",
+          speed: "56.870",
+          progression: 0,
+          approaching: false,
+        },
+      ],
+    });
+
+    expect(normalized.Riders["10169244772"]).toMatchObject({
+      GivenName: "Jonty",
+      FamilyName: "Williamson",
+      Nation: "NZL",
+    });
+    expect(normalized.Results[0]).toMatchObject({
+      Position: 1,
+      RaceTime: 219541,
+      Status: "Finished",
+      Speed: 56.87,
+    });
+  });
+
+  it("adds riders from the Tissot start list without duplicating existing results", () => {
+    const normalized = normalizeTissotLivePayload({
+      results: [{
+        rider: { key: "1", name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" },
+        rank: 1,
+        time: "3:30.000",
+      }],
+      startList: {
+        results: [
+          { rider: { key: "1", name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" }, rank: 1, value: "11:00:00" },
+          { rider: { key: "2", name: "PIERRON Amaury", nation: "FRA", uciRiderId: "1002" }, rank: 2, value: "11:00:30" },
+        ],
+      },
+    });
+
+    expect(normalized.Results).toHaveLength(2);
+    expect(normalized.Results[1]).toMatchObject({
+      RaceNr: "1002",
+      Status: "Upcoming",
+      RaceTime: null,
+      StartTime: "11:00:30",
+    });
+    expect(normalized.NextToStart).toHaveLength(1);
+  });
+
+  it("does not duplicate Tissot start-list riders during table normalization", () => {
+    const tissotPayload = normalizeTissotLivePayload({
+      results: [{
+        rider: { key: "1", bib: 1, name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" },
+        rank: 1,
+        time: "3:30.000",
+      }],
+      startList: {
+        results: [
+          { rider: { key: "1", bib: 1, name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" }, rank: 1, value: "11:00:00" },
+          { rider: { key: "2", bib: 22, name: "PIERRON Amaury", nation: "FRA", uciRiderId: "1002" }, rank: 2, value: "11:00:30" },
+        ],
+      },
+    });
+
+    const table = normalizeChronoRacePayload(tissotPayload, session);
+
+    expect(table.items.filter((item) => !item.isPerfectRun)).toHaveLength(2);
+    expect(table.items.filter((item) => item.fullName === "Amaury Pierron")).toHaveLength(1);
+    expect(table.items.find((item) => item.fullName === "Amaury Pierron")?.startTime).toBe("11:00:30");
   });
 });

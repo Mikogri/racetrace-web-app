@@ -20,6 +20,26 @@ const liveRoundContextSchema = z.object({
   context_name: z.string().nullish(),
 });
 
+const tissotCatalogSchema = z.object({
+  provider: z.literal("tissot"),
+  season: z.number().int(),
+  competitionCode: z.string().nullish(),
+  competitionName: z.string().nullish(),
+  sessions: z.array(z.object({
+    id: z.string(),
+    provider: z.literal("tissot"),
+    competitionCode: z.string(),
+    eventNumber: z.number().int().positive(),
+    phaseNumber: z.number().int().positive(),
+    name: z.string(),
+    sessionType: z.string().nullish(),
+    category: z.string().nullish(),
+    status: z.string(),
+    sessionDate: z.string().nullish(),
+    riderCount: z.number().int().nonnegative().nullish(),
+  })),
+});
+
 const resolvedRidersSchema = z.object({
   items: z.array(z.object({
     riderId: entityIdSchema,
@@ -51,8 +71,13 @@ export const liveSessionRawSchema = z
     session_date: z.string().nullish(),
     sessionDate: z.string().nullish(),
     riderIds: z.array(entityIdSchema).optional(),
+    riderCount: z.number().int().nonnegative().nullish(),
     chronorace_url: z.string().url().nullish(),
     chronoraceUrl: z.string().url().nullish(),
+    provider: z.enum(["chronorace", "tissot"]).optional(),
+    competitionCode: z.string().nullish(),
+    eventNumber: z.number().int().positive().nullish(),
+    phaseNumber: z.number().int().positive().nullish(),
     rounds: z
       .object({
         id: entityIdSchema.optional(),
@@ -80,8 +105,12 @@ export const liveSessionRawSchema = z
     season: value.rounds?.season_year ?? null,
     contextName: value.rounds?.context_name ?? null,
     competitionName: value.rounds?.competition_levels?.name ?? null,
-    riderCount: value.riderIds?.length ?? null,
+    riderCount: value.riderCount ?? value.riderIds?.length ?? null,
     chronoraceUrl: value.chronoraceUrl ?? value.chronorace_url ?? null,
+    provider: value.provider ?? "chronorace",
+    competitionCode: value.competitionCode ?? null,
+    eventNumber: value.eventNumber ?? null,
+    phaseNumber: value.phaseNumber ?? null,
   }));
 
 const resultTimeSchema = z
@@ -122,6 +151,7 @@ export const sessionResultSchema = z
     teamId: entityIdSchema.nullish().transform((value) => value ?? null),
     teamName: nullableStringSchema,
     status: nullableStringSchema,
+    startTime: nullableStringSchema.optional(),
     topSpeed: nullableNumberSchema,
     averageSpeed: nullableNumberSchema,
     finalTime: nullableNumberSchema,
@@ -143,6 +173,7 @@ export const sessionResultSchema = z
     teamId: value.teamId,
     teamName: value.teamName,
     status: value.status,
+    startTime: value.startTime,
     topSpeed: value.topSpeed,
     averageSpeed: value.averageSpeed,
     finalTime: value.finalTime,
@@ -200,6 +231,154 @@ type ChronoCatalogNode = {
 };
 
 const LIVE_REFRESH_INTERVAL = 3_000;
+const TISSOT_API_ROOT = "https://prod.server.tissottiming.com";
+const CHRONORACE_API_ROOT = "https://prod.chronorace.be/api/results";
+
+async function getExternalJson(
+  url: string,
+  signal: AbortSignal,
+  allowNotFound = false,
+) {
+  const response = await fetch(url, {
+    signal,
+    headers: { Accept: "application/json" },
+  });
+  if (allowNotFound && response.status === 404) return null;
+  if (!response.ok) {
+    throw new ApiError(`Live timing source returned ${response.status}.`, {
+      code: "http",
+      status: response.status,
+    });
+  }
+  return response.json() as Promise<unknown>;
+}
+
+function containsText(value: unknown, fragment: string) {
+  return stringValue(value)?.toLocaleLowerCase().includes(fragment.toLocaleLowerCase()) === true;
+}
+
+function tissotCategory(value: unknown) {
+  if (containsText(value, "women junior") || containsText(value, "junior women")) return "junior_women";
+  if (containsText(value, "men junior") || containsText(value, "junior men")) return "junior_men";
+  if (containsText(value, "women elite") || containsText(value, "elite women")) return "elite_women";
+  if (containsText(value, "men elite") || containsText(value, "elite men")) return "elite_men";
+  return null;
+}
+
+function tissotSessionType(value: string) {
+  if (/qual/i.test(value)) return "qualifying";
+  if (/semi/i.test(value)) return "semi_final";
+  if (/final/i.test(value)) return "final";
+  return value.trim().toLocaleLowerCase().replaceAll(" ", "_");
+}
+
+function tissotSessionName(value: string) {
+  if (/qual/i.test(value)) return "Qualification";
+  if (/final/i.test(value)) return "Final";
+  return value.trim();
+}
+
+async function getDirectTissotCatalog(season: number, signal: AbortSignal) {
+  const competitionsPayload = await getExternalJson(
+    `${TISSOT_API_ROOT}/competitions?year=${season}`,
+    signal,
+  );
+  const competitions = (Array.isArray(competitionsPayload) ? competitionsPayload : [])
+    .map(asRecord)
+    .filter((item): item is Record<string, unknown> => item !== null)
+    .filter((item) =>
+      stringValue(item.sport)?.toLocaleUpperCase() === "MTB" &&
+      containsText(item.name, "world championship") &&
+      (containsText(item.name, "downhill") ||
+        containsText(item.code, "dhi") ||
+        stringValue(item.code)?.toLocaleLowerCase() === "mtbwch"),
+    );
+
+  for (const competition of competitions) {
+    const code = stringValue(competition.code)?.trim().toLocaleLowerCase();
+    if (!code || !/^[a-z0-9_-]+$/i.test(code)) continue;
+    const competitionKey = `${code}${season}`;
+    const [eventsPayload, schedulePayload] = await Promise.all([
+      getExternalJson(`${TISSOT_API_ROOT}/competitions/${competitionKey}/events`, signal, true),
+      getExternalJson(`${TISSOT_API_ROOT}/competitions/${competitionKey}/schedule`, signal, true),
+    ]);
+    const events = (Array.isArray(eventsPayload) ? eventsPayload : [])
+      .map(asRecord)
+      .filter((item): item is Record<string, unknown> => item !== null)
+      .flatMap((event) => {
+        const category = tissotCategory(event.name);
+        return category && (containsText(event.name, "downhill") || containsText(competition.name, "downhill"))
+          ? [{ event, category }]
+          : [];
+      });
+    if (events.length === 0) continue;
+    const schedule = asRecord(schedulePayload);
+    const scheduleItems = (Array.isArray(schedule?.items) ? schedule.items : [])
+      .map(asRecord)
+      .filter((item): item is Record<string, unknown> => item !== null);
+    const sessions = (await Promise.all(events.map(async ({ event, category }) => {
+      const eventNumber = numberValue(event.number);
+      if (!eventNumber) return [];
+      const phasesPayload = await getExternalJson(
+        `${TISSOT_API_ROOT}/competitions/${competitionKey}/events/${eventNumber}/phases`,
+        signal,
+        true,
+      );
+      const phases = (Array.isArray(phasesPayload) ? phasesPayload : [])
+        .map(asRecord)
+        .filter((item): item is Record<string, unknown> => item !== null);
+      return phases.flatMap((phase) => {
+        const phaseNumber = numberValue(phase.number);
+        if (!phaseNumber) return [];
+        const scheduled = scheduleItems.find((item) =>
+          numberValue(item.eventId) === eventNumber && numberValue(item.phaseId) === phaseNumber,
+        );
+        const phaseName = stringValue(phase.name) ?? stringValue(scheduled?.name) ?? "Session";
+        return [{
+          id: `tissot-${competitionKey}-${eventNumber}-${phaseNumber}`,
+          provider: "tissot" as const,
+          competitionCode: code,
+          eventNumber,
+          phaseNumber,
+          name: tissotSessionName(phaseName),
+          sessionType: tissotSessionType(phaseName),
+          category,
+          status: scheduled?.isLive === true
+            ? "live"
+            : scheduled?.hasResult === true ? "completed" : "scheduled",
+          sessionDate: stringValue(scheduled?.date) ?? stringValue(phase.start),
+          riderCount: null,
+        }];
+      });
+    }))).flat();
+    return tissotCatalogSchema.parse({
+      provider: "tissot",
+      season,
+      competitionCode: code,
+      competitionName: stringValue(competition.name),
+      sessions,
+    });
+  }
+
+  return tissotCatalogSchema.parse({
+    provider: "tissot",
+    season,
+    competitionCode: null,
+    competitionName: null,
+    sessions: [],
+  });
+}
+
+async function getDirectTissotResults(session: LiveSession, signal: AbortSignal) {
+  const competitionKey = `${session.competitionCode?.toLocaleLowerCase()}${session.season}`;
+  const phaseUrl = `${TISSOT_API_ROOT}/competitions/${encodeURIComponent(competitionKey)}/events/${session.eventNumber}/phases/${session.phaseNumber}`;
+  const [resultsPayload, startList] = await Promise.all([
+    getExternalJson(`${phaseUrl}/results`, signal, true),
+    getExternalJson(`${phaseUrl}/startlist`, signal, true),
+  ]);
+  const results = asRecord(resultsPayload) ?? { results: [] };
+  return { ...results, startList };
+}
 const ACTIVE_ROUND_STATUSES = new Set(["live", "active", "running"]);
 
 export function isLiveRoundStatus(status: string | null | undefined) {
@@ -318,7 +497,11 @@ export function discoverChronoRaceSessions(
           contextName,
           competitionName: round.competitionClassName,
           riderCount: null,
-          chronoraceUrl: `/api/v1/live/chronorace/results/${encodeURIComponent(contextName)}/${encodeURIComponent(key)}`,
+          chronoraceUrl: `${CHRONORACE_API_ROOT}/generic/uci/${encodeURIComponent(contextName)}/dh/${encodeURIComponent(key)}`,
+          provider: "chronorace" as const,
+          competitionCode: null,
+          eventNumber: null,
+          phaseNumber: null,
         },
       ];
     });
@@ -333,6 +516,123 @@ export function resolveChronoRaceSessionStatus(payload: unknown) {
   }
   const results = Array.isArray(root.Results) ? root.Results.length : 0;
   return results > 0 ? "completed" : "scheduled";
+}
+
+function tissotMilliseconds(value: unknown) {
+  const text = stringValue(value);
+  if (!text) return null;
+  const normalized = text.replace(/^\+/, "").replace(",", ".");
+  const parts = normalized.split(":");
+  if (parts.length > 3) return null;
+  let seconds = 0;
+  for (const part of parts) {
+    const parsed = Number(part);
+    if (!Number.isFinite(parsed)) return null;
+    seconds = seconds * 60 + parsed;
+  }
+  return seconds > 0 ? Math.round(seconds * 1_000) : null;
+}
+
+function splitTissotName(value: string | null) {
+  const parts = value?.split(/\s+/).filter(Boolean) ?? [];
+  const family: string[] = [];
+  while (parts.length && parts[0] === parts[0].toLocaleUpperCase()) {
+    family.push(parts.shift()!);
+  }
+  return {
+    firstName: displayCase(parts.join(" ") || null),
+    lastName: displayCase(family.join(" ") || null),
+  };
+}
+
+export function normalizeTissotLivePayload(payload: unknown) {
+  const root = asRecord(payload) ?? {};
+  const sourceResults = (Array.isArray(root.results) ? root.results : [])
+    .map(asRecord)
+    .filter((item): item is Record<string, unknown> => item !== null);
+  const startListRoot = asRecord(root.startList);
+  const sourceStartList = (Array.isArray(startListRoot?.results) ? startListRoot.results : [])
+    .map(asRecord)
+    .filter((item): item is Record<string, unknown> => item !== null);
+  const leader = sourceResults.find((result) => numberValue(result.rank) === 1);
+  const leaderTime = tissotMilliseconds(leader?.time ?? leader?.value);
+  const riders: Record<string, unknown> = {};
+  const results: Record<string, unknown>[] = [];
+  const onTrack: Record<string, unknown>[] = [];
+
+  sourceResults.forEach((result, index) => {
+    const rider = asRecord(result.rider) ?? {};
+    const key = identifierValue(rider.uciRiderId) ?? identifierValue(rider.key) ?? String(index + 1);
+    const names = splitTissotName(stringValue(rider.name));
+    riders[key] = {
+      RaceNr: numberValue(rider.bib),
+      UciRiderId: identifierValue(rider.uciRiderId),
+      GivenName: names.firstName,
+      FamilyName: names.lastName,
+      Nation: stringValue(rider.nation),
+    };
+    const rawTime = stringValue(result.time) ?? stringValue(result.value);
+    const parsedTime = tissotMilliseconds(rawTime);
+    const finishTime = rawTime?.startsWith("+") && leaderTime !== null && parsedTime !== null
+      ? leaderTime + parsedTime
+      : parsedTime;
+    const rawSplits = Array.isArray(result.splits) ? result.splits : [];
+    const times = rawSplits.flatMap((rawSplit) => {
+      const split = asRecord(rawSplit);
+      const time = tissotMilliseconds(split?.value);
+      return time === null ? [] : [{ RaceTime: time, Position: numberValue(split?.rank) }];
+    });
+    const statusValue = stringValue(result.value)?.toUpperCase();
+    const status = ["DNF", "DNS", "DSQ"].includes(statusValue ?? "")
+      ? statusValue
+      : finishTime !== null ? "Finished" : "On Track";
+    const normalized = {
+      RaceNr: key,
+      Position: numberValue(result.rank),
+      RaceTime: status === "Finished" ? finishTime : null,
+      Status: status,
+      InResult: status === "Finished",
+      Speed: numberValue(result.speed),
+      Times: times,
+    };
+    results.push(normalized);
+    if ((result.approaching === true || (numberValue(result.progression) ?? 0) > 0) && finishTime === null) {
+      onTrack.push({ ...normalized, SortOrder: index + 1 });
+    }
+  });
+
+  const resultRiderKeys = new Set(Object.keys(riders));
+  sourceStartList.forEach((entry, index) => {
+    const rider = asRecord(entry.rider) ?? {};
+    const key = identifierValue(rider.uciRiderId) ?? identifierValue(rider.key) ?? `start-${index + 1}`;
+    if (resultRiderKeys.has(key)) return;
+    const names = splitTissotName(stringValue(rider.name));
+    riders[key] = {
+      RaceNr: numberValue(rider.bib),
+      UciRiderId: identifierValue(rider.uciRiderId),
+      GivenName: names.firstName,
+      FamilyName: names.lastName,
+      Nation: stringValue(rider.nation),
+    };
+    results.push({
+      RaceNr: key,
+      Position: null,
+      RaceTime: null,
+      Status: "Upcoming",
+      InResult: false,
+      Speed: null,
+      Times: [],
+      StartOrder: numberValue(entry.rank) ?? index + 1,
+      StartTime: stringValue(entry.value),
+    });
+  });
+
+  return {
+    Riders: riders,
+    Results: results,
+    OnTrack: onTrack,
+    NextToStart: results.filter((result) => result.Status === "Upcoming"),
+  };
 }
 
 function displayCase(value: string | null) {
@@ -397,6 +697,7 @@ type DirectResult = {
   countryCode: string | null;
   teamName: string | null;
   status: string | null;
+  startTime?: string | null;
   isOnTrack: boolean;
   finalTime: number | null;
   times: DirectTiming[];
@@ -494,6 +795,17 @@ export function liveTimingPresentation(payload: unknown): {
   // separate course step.
   const splitCount = 4;
   const riders = chronoRiderMap(root);
+  const resultRaceNumbers = new Set(allResults.flatMap((result) => {
+    const raceNumber = identifierValue(result.RaceNr) ?? identifierValue(result.Key);
+    return raceNumber ? [raceNumber] : [];
+  }));
+  const sourceRiders = asRecord(root.Riders) ?? {};
+  const availableStartListCount = Object.entries(sourceRiders)
+    .filter(([technicalKey, rawRider]) => {
+      const raceNumber = identifierValue(asRecord(rawRider)?.RaceNr);
+      return !resultRaceNumbers.has(technicalKey) &&
+        (!raceNumber || !resultRaceNumbers.has(raceNumber));
+    }).length;
   const leaderAtSplit = new Map(
     leader ? timingEntries(leader).map((timing) => [timing.split, timing.time] as const) : [],
   );
@@ -572,7 +884,10 @@ export function liveTimingPresentation(payload: unknown): {
     summary: {
       finished: allResults.filter((result) => chronoMilliseconds(result.RaceTime) !== null).length,
       onTrack: onTrack.length,
-      toStart: Array.isArray(root.NextToStart) ? root.NextToStart.length : 0,
+      toStart: Math.max(
+        Array.isArray(root.NextToStart) ? root.NextToStart.length : 0,
+        availableStartListCount,
+      ),
       splitCount,
     },
   };
@@ -596,7 +911,29 @@ export function normalizeChronoRacePayload(
       return raceNumber ? [raceNumber] : [];
     }),
   );
-  const rawResults = Array.isArray(root.Results) ? root.Results : [];
+  const sourceResults = Array.isArray(root.Results) ? root.Results : [];
+  const resultRaceNumbers = new Set(sourceResults.flatMap((raw) => {
+    const result = asRecord(raw);
+    const raceNumber = identifierValue(result?.RaceNr) ?? identifierValue(result?.Key);
+    return raceNumber ? [raceNumber] : [];
+  }));
+  const startListResults = Object.entries(riders).flatMap(([technicalKey, rawRider]) => {
+    const rider = asRecord(rawRider);
+    if (!rider) return [];
+    const bib = identifierValue(rider.RaceNr);
+    if (resultRaceNumbers.has(technicalKey) || (bib && resultRaceNumbers.has(bib))) {
+      return [];
+    }
+    return [{
+      RaceNr: technicalKey,
+      Position: null,
+      RaceTime: null,
+      Status: "Upcoming",
+      InResult: false,
+      Times: [],
+    }];
+  });
+  const rawResults = [...sourceResults, ...startListResults];
   const directResults: DirectResult[] = rawResults.flatMap((raw, rowIndex) => {
     const result = asRecord(raw);
     if (!result) return [];
@@ -647,6 +984,7 @@ export function normalizeChronoRacePayload(
         countryCode: stringValue(rider.Nation) ?? stringValue(rider.UciCode)?.slice(0, 3) ?? null,
         teamName: displayCase(stringValue(rider.UciTeamName)),
         status,
+        startTime: stringValue(result.StartTime) ?? stringValue(rider.StartTime),
         isOnTrack,
         finalTime,
         times,
@@ -699,6 +1037,7 @@ export function normalizeChronoRacePayload(
       teamId: null,
       teamName: result.teamName,
       status: result.status,
+      startTime: result.startTime,
       topSpeed: null,
       averageSpeed: null,
       finalTime: result.finalTime,
@@ -740,6 +1079,7 @@ export function normalizeChronoRacePayload(
       teamId: null,
       teamName: null,
       status: null,
+      startTime: null,
       topSpeed: null,
       averageSpeed: null,
       finalTime: perfectFinal,
@@ -808,22 +1148,52 @@ export function useLiveRound(params: {
       );
       return { ...selected, contextName: detail.context_name ?? null };
     },
-    refetchInterval: LIVE_REFRESH_INTERVAL,
+    staleTime: Number.POSITIVE_INFINITY,
   });
 }
 
 export function useChronoRaceCatalog(round: LiveRound | null | undefined) {
   const context = round?.contextName ?? "";
+  const isWorldChampionship =
+    round?.competitionClassCode?.toLowerCase() === "wch" ||
+    round?.competitionClassName?.toLowerCase().includes("world champ") === true;
+  const useTissot = Boolean(round && isWorldChampionship);
+  const catalogKey = useTissot ? `tissot-${round?.season ?? ""}` : context;
   return useQuery({
-    queryKey: liveQueryKeys.catalog(context),
-    enabled: context.length > 0,
-    queryFn: ({ signal }) =>
-      apiClient.get(
-        `/api/v1/live/chronorace/catalog/${encodeURIComponent(context)}`,
-        z.unknown(),
-        { signal },
-      ),
-    select: (payload) => (round ? discoverChronoRaceSessions(payload, round) : []),
+    queryKey: liveQueryKeys.catalog(catalogKey),
+    enabled: Boolean(round && (useTissot || context.length > 0)),
+    queryFn: ({ signal }) => useTissot
+      ? getDirectTissotCatalog(round?.season ?? new Date().getUTCFullYear(), signal)
+      : getExternalJson(
+          `${CHRONORACE_API_ROOT}/uci/dh/cms/${encodeURIComponent(context)}`,
+          signal,
+        ),
+    select: (payload) => {
+      if (!round) return [];
+      const tissot = tissotCatalogSchema.safeParse(payload);
+      if (tissot.success) {
+        return tissot.data.sessions.map((session) => liveSessionRawSchema.parse({
+          ...session,
+          round_id: round.roundId,
+          rounds: {
+            id: round.roundId,
+            round_number: round.roundNumber,
+            season_year: round.season,
+            context_name: null,
+            competition_levels: {
+              code: round.competitionClassCode,
+              name: round.competitionClassName ?? tissot.data.competitionName,
+            },
+            tracks: {
+              name: round.trackName,
+              venue: round.venueName,
+              country_code: round.countryCode,
+            },
+          },
+        }));
+      }
+      return discoverChronoRaceSessions(payload, round);
+    },
     refetchInterval: LIVE_REFRESH_INTERVAL,
   });
 }
@@ -847,20 +1217,25 @@ export function useChronoRaceSessionSnapshot(session: LiveSession | undefined) {
   const context = session?.contextName ?? "";
   const key = session?.id ?? "";
   return useQuery({
-    queryKey: liveQueryKeys.chronoResults(context, key),
-    enabled: Boolean(session?.id && session.contextName),
+    queryKey: liveQueryKeys.chronoResults(session?.provider ?? "chronorace", `${context}-${key}`),
+    enabled: Boolean(session?.id && (session.provider === "tissot" || session.contextName)),
     queryFn: async ({ signal }) => {
-      if (!session || !context || !key)
+      if (!session || !key)
         throw new ApiError("ChronoRace source is not configured for this session.", {
           code: "validation",
         });
-      const payload = await apiClient.get(
-        `/api/v1/live/chronorace/results/${encodeURIComponent(context)}/${encodeURIComponent(key)}`,
-        z.unknown(),
-        { signal },
-      );
-      const status = resolveChronoRaceSessionStatus(payload);
-      const resultPayload = asRecord(payload) ?? { Riders: {}, Results: [] };
+      const payload = session.provider === "tissot"
+        ? await getDirectTissotResults(session, signal)
+        : await getExternalJson(
+            `${CHRONORACE_API_ROOT}/generic/uci/${encodeURIComponent(context)}/dh/${encodeURIComponent(key)}`,
+            signal,
+          );
+      const resultPayload = session.provider === "tissot"
+        ? normalizeTissotLivePayload(payload)
+        : (asRecord(payload) ?? { Riders: {}, Results: [] });
+      const status = session.provider === "tissot"
+        ? session.status
+        : resolveChronoRaceSessionStatus(resultPayload);
       const presentation = liveTimingPresentation(resultPayload);
       return {
         status,

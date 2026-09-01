@@ -26,7 +26,7 @@ export function PanelHeader({ title, description }: { title: string; description
         {hasMarker ? ' ' : null}
         {visibleTitle}
       </Typography>
-      {description ? <Typography variant="caption">{description}</Typography> : null}
+      {description ? <Typography variant="caption" className={styles.headerDescription}>{description}</Typography> : null}
     </div>
   )
 }

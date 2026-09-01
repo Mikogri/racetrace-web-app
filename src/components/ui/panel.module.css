@@ -26,6 +26,11 @@
   color: var(--color-brand-primary);
 }
 
+.headerDescription {
+  font-family: var(--font-family-mono-variable);
+  font-weight: 450;
+}
+
 .metric {
   display: grid;
   gap: var(--spacing-card-gap);
