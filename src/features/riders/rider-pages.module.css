@@ -136,7 +136,7 @@
 }
 
 .pressureChartHeader strong {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   font-family: var(--font-family-data);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
@@ -144,11 +144,11 @@
   white-space: nowrap;
 }
 
-.pressureChartHeader strong[data-trend="improves"] {
+.pressureChartHeader strong[data-trend="positive"] {
   color: var(--color-status-success);
 }
 
-.pressureChartHeader strong[data-trend="drops"] {
+.pressureChartHeader strong[data-trend="negative"] {
   color: var(--color-status-error);
 }
 

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { ChartTooltip } from "../overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
+import { metricAxisConfiguration } from "./chart-data";
 import styles from "./metric-scatter-chart.module.css";
 
 export type MetricScatterPoint = {
@@ -39,6 +40,8 @@ export function MetricScatterChart({
   emptyMode?: "message" | "chart";
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
+  const xAxis = metricAxisConfiguration(points.map((point) => point.x));
+  const yAxis = metricAxisConfiguration(points.map((point) => point.y));
   return (
     <div className={styles.panel}>
       <h2><span>//</span> {title}</h2>
@@ -52,8 +55,8 @@ export function MetricScatterChart({
               <XAxis
                 type="number"
                 dataKey="x"
-                domain={[0, 100]}
-                ticks={[0, 25, 50, 75, 100]}
+                domain={xAxis.domain}
+                ticks={xAxis.ticks}
                 tickLine={false}
                 axisLine={false}
                 tick={{ className: styles.tick }}
@@ -64,8 +67,8 @@ export function MetricScatterChart({
               <YAxis
                 type="number"
                 dataKey="y"
-                domain={[0, 100]}
-                ticks={[0, 25, 50, 75, 100]}
+                domain={yAxis.domain}
+                ticks={yAxis.ticks}
                 tickLine={false}
                 axisLine={false}
                 width={36}

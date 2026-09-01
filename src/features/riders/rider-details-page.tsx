@@ -235,6 +235,7 @@ export default function RiderDetailsPage() {
         : "R--";
     return {
       label: `${roundLabel} ${result.abbreviation}`,
+      tooltipKey: `${result.season ?? round?.season ?? "----"}-${result.roundId}-${result.sessionId}`,
       tooltipLabel: `${result.season ?? round?.season ?? "----"} · ${roundLabel} · ${result.abbreviation}`,
       position: result.isClassified ? result.position : null,
       color,
@@ -352,6 +353,9 @@ export default function RiderDetailsPage() {
   const chartSeries = (points: PositionChartPoint[], color: string) => [
     { id: riderId, name: data.fullName, color, href: riderHref, points },
   ];
+  const displayedPressurePerformance = pressurePerformance?.pressurePerformance == null
+    ? null
+    : Math.round(pressurePerformance.pressurePerformance * 100) / 100;
 
   return (
     <div className={`${styles.content} ${styles.statsContent}`}>
@@ -466,10 +470,20 @@ export default function RiderDetailsPage() {
             <div className={styles.pressureChartBlock}>
               <div className={styles.pressureChartHeader}>
                 <h2><span>//</span> Final Pace - Pre-Final Pace</h2>
-                <strong data-trend={pressurePerformance?.pressureTrend ?? "unavailable"}>
-                  {pressurePerformance?.pressurePerformance == null
+                <strong
+                  data-trend={
+                    displayedPressurePerformance == null
+                      ? "unavailable"
+                      : displayedPressurePerformance > 0
+                        ? "positive"
+                        : displayedPressurePerformance < 0
+                          ? "negative"
+                          : "neutral"
+                  }
+                >
+                  {displayedPressurePerformance == null
                     ? "--"
-                    : `${pressurePerformance.pressurePerformance > 0 ? "↑" : pressurePerformance.pressurePerformance < 0 ? "↓" : "→"} ${pressurePerformance.pressurePerformance > 0 ? "+" : ""}${pressurePerformance.pressurePerformance.toFixed(2)}`}
+                    : `${displayedPressurePerformance > 0 ? "↑" : displayedPressurePerformance < 0 ? "↓" : "→"} ${displayedPressurePerformance > 0 ? "+" : ""}${displayedPressurePerformance.toFixed(2)}`}
                 </strong>
               </div>
               <PressureDeltaChart points={pressurePerformance?.points ?? []} />

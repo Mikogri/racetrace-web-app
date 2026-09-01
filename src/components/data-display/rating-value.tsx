@@ -51,11 +51,15 @@ export function RatingValue({
   const formatted = formatValue(value)
 
   const ratingTone = getRatingTone(value)
-  const cappedToneClass = (currentValue: number) => currentValue >= 75
+  const cappedToneClass = (currentValue: number) => {
+    const displayedValue = Math.round(currentValue * 10) / 10
+
+    return displayedValue >= 75
     ? styles.cappedTop
-    : currentValue > 55
+    : displayedValue > 55
       ? styles.medium
       : styles.low
+  }
   const displayedToneClass = capAtHigh ? cappedToneClass(value) : styles[ratingTone]
   const animatedToneClass = (currentValue: number) => {
     const currentTone = getRatingTone(currentValue)

@@ -13,10 +13,12 @@ import {
 } from "recharts";
 import { Panel, PanelHeader } from "../ui/panel";
 import { ChartTooltip, TooltipRows } from "../overlays/tooltip";
+import { positionChartPointKey } from "./chart-data";
 import styles from "./charts.module.css";
 
 export type PositionChartPoint = {
   label: string;
+  tooltipKey?: string;
   tooltipLabel?: string;
   position: number | null;
   status?: string | null;
@@ -243,7 +245,8 @@ export function PositionChart({
                   const rows = series.flatMap((item) => {
                     const matchingPoint = item.points.find(
                       (candidate) =>
-                        candidate.label === point.label &&
+                        positionChartPointKey(candidate) ===
+                          positionChartPointKey(point) &&
                         candidate.position !== null &&
                         accepts(candidate.position),
                     );
