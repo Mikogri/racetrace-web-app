@@ -1,6 +1,6 @@
 :root {
-  --color-surface-page: var(--palette-neutral-950);
-  --color-surface-panel: var(--palette-neutral-900);
+  --color-surface-page: rgb(9, 9, 10);
+  --color-surface-panel: rgb(21, 21, 22);
   --color-surface-panel-raised: var(--palette-neutral-800);
   --color-surface-backdrop: rgb(0 0 0 / 72%);
   --color-surface-pattern-dot: rgb(100 100 100 / 35%);
