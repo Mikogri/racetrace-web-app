@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Dialog > renders the same portal, header, footer and accessibility attributes 1`] = `"<div class="_backdrop_28d8af"><div class="_dialog_28d8af custom-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><header class="_header_28d8af"><h2 class="_base_5b02ce _panelTitle_5b02ce" id="dialog-title">Select Rider</h2><button type="button" aria-label="Close dialog" class="_iconButton_852a75 _small_852a75"><img class="_closeIcon_28d8af" alt="" src="/src/assets/icons/close.png"></button></header><input aria-label="Search"><footer class="_footer_28d8af"><button type="button">Confirm</button></footer></div></div>"`;

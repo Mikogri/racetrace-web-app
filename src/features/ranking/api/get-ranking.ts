@@ -1,3 +1,4 @@
+import { metricsApiQuery, serializeFilterValues as csv } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -79,9 +80,6 @@ type RankingParams = {
     search: string;
   };
 };
-
-const csv = (values: string[]) =>
-  values.length > 0 ? values.join(",") : undefined;
 
 const firstNames = [
   "Loic",
@@ -228,10 +226,7 @@ export function useRanking(params: RankingParams) {
         : apiClient.get("/api/v1/ranking", rankingResponseSchema, {
             signal,
             query: {
-              season: csv(params.filters.seasons),
-              trackId: csv(params.filters.tracks),
-              conditionId: csv(params.filters.conditions),
-              competitionClassId: csv(params.filters.classes),
+              ...metricsApiQuery(params.filters),
               category: params.filters.categories[0] ?? "elite_men",
               search: params.search,
               page: params.page,

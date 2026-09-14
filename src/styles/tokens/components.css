@@ -1,4 +1,5 @@
 :root {
+  --component-data-updating-opacity: 0.5;
   --component-round-image-height: 150px;
   --component-border-width: 1px;
   --component-focus-width: 2px;

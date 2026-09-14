@@ -1,3 +1,4 @@
+import { metricsApiQuery } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -35,8 +36,6 @@ export const pressurePerformanceSchema = z.object({
 
 export type PressurePerformance = z.infer<typeof pressurePerformanceSchema>;
 
-const csv = (values: string[]) => values.length > 0 ? values.join(",") : undefined;
-
 export function usePressurePerformance(riderId: string, filters: MetricsFilters) {
   return useQuery({
     queryKey: riderQueryKeys.pressurePerformance(riderId, filters),
@@ -45,13 +44,7 @@ export function usePressurePerformance(riderId: string, filters: MetricsFilters)
       pressurePerformanceSchema,
       {
         signal,
-        query: {
-          season: csv(filters.seasons),
-          trackId: csv(filters.tracks),
-          conditionId: csv(filters.conditions),
-          competitionClassId: csv(filters.classes),
-          category: filters.categories[0],
-        },
+        query: metricsApiQuery(filters),
       },
     ),
     placeholderData: keepPreviousData,

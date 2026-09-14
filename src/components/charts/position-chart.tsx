@@ -32,6 +32,7 @@ export type PositionChartSeries = {
   color: string;
   href?: string;
   points: PositionChartPoint[];
+  averagePosition?: number | null;
 };
 
 type LibraryPoint = PositionChartPoint & {
@@ -371,18 +372,8 @@ export function PositionChart({
               })}
               {!connectLines && showAverages
                 ? series.map((item) => {
-                    const points = scatterPoints(
-                      item,
-                      maximumPointCount,
-                      accepts,
-                      normalize,
-                    );
-                    if (points.length === 0) return null;
-                    const average =
-                      points.reduce(
-                        (sum, point) => sum + point.plottedPosition,
-                        0,
-                      ) / points.length;
+                    const average = item.averagePosition;
+                    if (average == null) return null;
                     return (
                       <ReferenceLine
                         key={`${item.id}-average`}

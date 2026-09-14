@@ -263,23 +263,15 @@ export default function RiderDetailsPage() {
       `${right.roundStartDate ?? ""}-${String(right.roundNumber ?? 0).padStart(2, "0")}-${right.roundId}`,
     ),
   );
-  const pointsByRound = orderedRoundResults.reduce<PositionChartPoint[]>(
-    (points, round) => {
-      const cumulativePoints =
-        (points[points.length - 1]?.position ?? 0) + round.awardedPoints;
-    const roundLabel = `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`;
-      return [
-        ...points,
-        {
-          label: roundLabel,
-          position: cumulativePoints,
-          color: "var(--color-chart-points)",
-          tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · ${cumulativePoints} total points`,
-        },
-      ];
-    },
-    [],
-  );
+  const pointsByRound: PositionChartPoint[] = orderedRoundResults.map((round) => {
+    const cumulativePoints = overview.chartStatistics.cumulativePointsByRound[round.roundId] ?? null;
+    return {
+      label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+      position: cumulativePoints,
+      color: "var(--color-chart-points)",
+      tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · ${cumulativePoints ?? "--"} total points`,
+    };
+  });
   const ratingByRound: PositionChartPoint[] = orderedRoundResults.map((round) => ({
     label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
     position: round.rating,
@@ -351,7 +343,7 @@ export default function RiderDetailsPage() {
       : Math.max(0, Math.min(100, ((120 - data.averagePosition) * 100) / 119));
 
   const chartSeries = (points: PositionChartPoint[], color: string) => [
-    { id: riderId, name: data.fullName, color, href: riderHref, points },
+    { id: riderId, name: data.fullName, color, href: riderHref, points, averagePosition: overview.chartStatistics.resultsAveragePosition },
   ];
   const displayedPressurePerformance = pressurePerformance?.pressurePerformance == null
     ? null

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -12,6 +12,7 @@ import { ChartTooltip } from "../overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
 import { metricAxisConfiguration } from "./chart-data";
 import styles from "./metric-scatter-chart.module.css";
+import chartStyles from "./charts.module.css";
 
 export type MetricScatterPoint = {
   id: string;
@@ -98,6 +99,23 @@ export function MetricScatterChart({
                 data={points}
                 isAnimationActive
                 animationDuration={300}
+                activeShape={(properties) => {
+                  const item = properties as { cx?: number; cy?: number; payload?: MetricScatterPoint };
+                  const color = item.payload?.color ?? "var(--color-brand-primary)";
+                  return (
+                    <circle
+                      cx={item.cx}
+                      cy={item.cy}
+                      r={4}
+                      fill={color}
+                      fillOpacity={0.4}
+                      stroke={color}
+                      strokeWidth={1}
+                      className={chartStyles.activeScatterPoint}
+                      style={{ "--active-point-color": color } as CSSProperties}
+                    />
+                  );
+                }}
                 shape={(properties) => {
                   const item = properties as { cx?: number; cy?: number; payload?: MetricScatterPoint };
                   const color = item.payload?.color ?? "var(--color-brand-primary)";

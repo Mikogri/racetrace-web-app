@@ -1,10 +1,9 @@
+import { serializeFilterValues as csv } from '../../../utils/metrics-api-query'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { apiClient } from '../../../lib/api-client'
 import { entityIdSchema, nullableNumberSchema, nullableStringSchema } from '../../../lib/validation'
-import { ApiError } from '../../../types/api'
 import type { MetricsFilters } from '../../../types/domain'
-import { formatCategoryLabel, normalizeCategoryValue } from '../../../utils/categories'
 import { compareQueryKeys } from './compare-query-keys'
 
 const sectorGapSchema = z.object({
@@ -17,6 +16,8 @@ const sectorGapSchema = z.object({
 })
 
 const compareRiderSchema = z.object({
+  resultsAveragePosition: nullableNumberSchema,
+  sectorGapSummary: z.array(z.object({ sectorIndex: z.number().int(), averageGap: nullableNumberSchema, samplesCount: z.number().int() })).optional().default([]),
   riderId: entityIdSchema,
   uciId: nullableStringSchema,
   firstName: nullableStringSchema,
@@ -135,54 +136,6 @@ const compareResponseSchema = z.object({
 export type CompareData = z.infer<typeof compareResponseSchema>
 export type CompareRider = z.infer<typeof compareRiderSchema>
 
-const csv = (values: string[]) => values.length > 0 ? values.join(',') : undefined
-
-function sameCategory(left: string, right: string) {
-  return normalizeCategoryValue(left)?.toLocaleLowerCase() ===
-    normalizeCategoryValue(right)?.toLocaleLowerCase()
-}
-
-function validateComparison(
-  data: CompareData,
-  requestedRiderIds: string[],
-  requestedCategory: string,
-) {
-  const uniqueRequestedIds = [...new Set(requestedRiderIds)]
-  const returnedIds = new Set(data.riders.map((rider) => rider.riderId))
-  if (
-    uniqueRequestedIds.length !== 2 ||
-    data.riders.length !== 2 ||
-    uniqueRequestedIds.some((id) => !returnedIds.has(id))
-  ) {
-    throw new ApiError('A comparison requires exactly two different riders.', {
-      code: 'validation',
-    })
-  }
-
-  const ridersWithoutCategoryData = data.riders.filter((rider) => {
-    const categoryDeclaredByRider = rider.categories.some((category) =>
-      sameCategory(category, requestedCategory),
-    )
-    const categoryConfirmedBySession = data.sessions.some(
-      (session) =>
-        session.category !== null &&
-        sameCategory(session.category, requestedCategory) &&
-        session.results.some((result) => result.riderId === rider.riderId),
-    )
-    return !categoryDeclaredByRider && !categoryConfirmedBySession
-  })
-  const containsUnexpectedCategory = data.sessions.some(
-    (session) => session.category !== null && !sameCategory(session.category, requestedCategory),
-  )
-  if (ridersWithoutCategoryData.length > 0 || containsUnexpectedCategory) {
-    throw new ApiError(
-      `Both riders must have data in ${formatCategoryLabel(requestedCategory)} for the selected range.`,
-      { code: 'validation' },
-    )
-  }
-
-  return data
-}
 
 export function useCompare(riderIds: string[], filters: MetricsFilters) {
   const selectedRiderIds = [...new Set(riderIds)].slice(0, 2)
@@ -201,7 +154,7 @@ export function useCompare(riderIds: string[], filters: MetricsFilters) {
           category: selectedCategory,
         },
       })
-      return validateComparison(data, selectedRiderIds, selectedCategory)
+      return data
     },
     enabled: selectedRiderIds.length === 2,
     placeholderData: keepPreviousData,

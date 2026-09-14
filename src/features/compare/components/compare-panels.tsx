@@ -224,18 +224,6 @@ export function CompareConsistencyChart({ data }: { data: CompareData }) {
   );
 }
 
-function averageSectorGap(rider: CompareRider, sectorIndex: number) {
-  const sectors = rider.averageSectorGapsToBestSelected.filter(
-    (sector) => !sector.isFinishSector && sector.sectorIndex === sectorIndex,
-  );
-  const samples = sectors.reduce((sum, sector) => sum + sector.samplesCount, 0);
-  if (samples === 0) return null;
-  return sectors.reduce(
-    (sum, sector) => sum + sector.averageGap * sector.samplesCount,
-    0,
-  ) / samples;
-}
-
 export function CompareSectorTable({ data }: { data: CompareData }) {
   const sectorIndexes = [...new Set(
     data.riders.flatMap((rider) =>
@@ -261,7 +249,7 @@ export function CompareSectorTable({ data }: { data: CompareData }) {
             <DataTableRow key={rider.riderId}>
               <td><RiderName rider={rider} /></td>
               {sectorIndexes.map((sector) => {
-                const gap = averageSectorGap(rider, sector);
+                const gap = rider.sectorGapSummary.find((entry) => entry.sectorIndex === sector)?.averageGap ?? null;
                 return (
                   <td key={sector}>
                     <span className={`${styles.sector} ${gap !== null && gap <= 0 ? styles.sectorBest : styles.sectorLoss}`}>
@@ -332,6 +320,7 @@ function comparisonResultsSeries(
     name: riderName(rider),
     color: riderColors[riderIndex],
     href: riderPathForLocation(pathname, rider.riderId),
+    averagePosition: rider.resultsAveragePosition,
     points: sessions.map((session) => {
       const result = session.results.find((item) => item.riderId === rider.riderId);
       const sessionLabel = session.sessionType?.toLowerCase().includes("final")

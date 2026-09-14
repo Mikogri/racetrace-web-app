@@ -1,3 +1,4 @@
+import { metricsApiQuery } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -215,12 +216,14 @@ const riderOverviewSchema = z.preprocess((value) => {
   sessionResults: riderSessionResultsSchema,
   pressurePerformance: pressurePerformanceSchema,
   teamHistory: riderTeamHistorySchema,
+  chartStatistics: z.object({
+    resultsAveragePosition: nullableNumberSchema,
+    cumulativePointsByRound: z.record(z.string(), z.number()),
+    preFinalAverageByTrack: z.record(z.string(), z.number().nullable()),
+  }).optional().default({ resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {} }),
 }));
 
 export type RiderOverview = z.infer<typeof riderOverviewSchema>;
-
-const csv = (values: string[]) =>
-  values.length > 0 ? values.join(",") : undefined;
 
 export function useRiderOverview(riderId: string, filters: MetricsFilters) {
   return useQuery({
@@ -231,13 +234,7 @@ export function useRiderOverview(riderId: string, filters: MetricsFilters) {
         riderOverviewSchema,
         {
           signal,
-          query: {
-            season: csv(filters.seasons),
-            trackId: csv(filters.tracks),
-            conditionId: csv(filters.conditions),
-            competitionClassId: csv(filters.classes),
-            category: filters.categories[0],
-          },
+          query: metricsApiQuery(filters),
         },
       ),
     placeholderData: keepPreviousData,

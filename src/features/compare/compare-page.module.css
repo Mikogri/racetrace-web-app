@@ -1,4 +1,6 @@
-.page { gap: var(--space-24); }
+.page {
+  gap: var(--space-24);
+}
 
 .filtersSection {
   position: relative;
@@ -14,7 +16,7 @@
 }
 
 .pageUpdating .filtersSection ~ * {
-  opacity: 0.6;
+  opacity: var(--component-data-updating-opacity);
 }
 
 .ridersSection {
@@ -57,7 +59,8 @@
 }
 
 .data:not(.skeleton) {
-  animation: compare-data-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* Release opacity after entry so subsequent refresh transitions can dim the charts. */
+  animation: compare-data-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 @keyframes compare-data-enter {

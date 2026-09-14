@@ -41,36 +41,12 @@ const accessors = {
 >;
 
 export default function RiderTracksPage() {
-  const { overview, sessionResults, isUpdating, hasDataError, retryData } =
+  const { overview, isUpdating, hasDataError, retryData } =
     useOutletContext<RiderOutletContext>();
-  const rows = useMemo(() => {
-    const positionsByTrack = new Map<string, number[]>();
-    sessionResults
-      .filter(
-        (result) =>
-          !result.isFinal &&
-          result.isClassified &&
-          result.position !== null &&
-          result.trackId !== null,
-      )
-      .forEach((result) =>
-        positionsByTrack.set(result.trackId as string, [
-          ...(positionsByTrack.get(result.trackId as string) ?? []),
-          result.position as number,
-        ]),
-      );
-    return overview.trackStatistics.map((row): TrackRow => {
-      const positions = positionsByTrack.get(row.trackId) ?? [];
-      return {
-        ...row,
-        averagePreFinalPosition:
-          positions.length > 0
-            ? positions.reduce((sum, position) => sum + position, 0) /
-              positions.length
-            : row.averageQualifyingPosition,
-      };
-    });
-  }, [overview.trackStatistics, sessionResults]);
+  const rows = useMemo(() => overview.trackStatistics.map((row): TrackRow => ({
+    ...row,
+    averagePreFinalPosition: overview.chartStatistics.preFinalAverageByTrack[row.trackId] ?? null,
+  })), [overview.trackStatistics, overview.chartStatistics]);
   const table = useClientTable<TrackRow, TrackSort>(
     rows,
     accessors,

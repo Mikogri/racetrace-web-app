@@ -96,6 +96,7 @@ export type RiderOutletContext = {
 
 function emptyRiderOverview(riderId: string): RiderOverview {
   return {
+    chartStatistics: { resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {} },
     statistics: {
       riderId,
       uciId: null,
