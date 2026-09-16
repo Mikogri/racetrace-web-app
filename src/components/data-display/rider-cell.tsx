@@ -9,11 +9,13 @@ export function RiderCell({
   compact = false,
   linked = true,
   cycling = false,
+  showTeam = true,
 }: {
   rider: RiderSummaryType;
   compact?: boolean;
   linked?: boolean;
   cycling?: boolean;
+  showTeam?: boolean;
 }) {
   const displayName = normalizeDisplayName(rider.name);
   const displayTeam = rider.team ? normalizeDisplayName(rider.team) : "--";
@@ -44,9 +46,9 @@ export function RiderCell({
             </span>
           ) : null}
         </span>
-        <span className={styles.metadata}>
+        {showTeam ? <span className={styles.metadata}>
           {cycling ? <CyclingText value={displayTeam} /> : displayTeam}
-        </span>
+        </span> : null}
       </span>
     </span>
   );

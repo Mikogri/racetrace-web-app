@@ -30,6 +30,10 @@
   color: var(--color-text-primary);
 }
 
+.details .header:hover:not(:disabled):not([aria-expanded='true']) {
+  background-color: transparent;
+}
+
 .chevron {
   width: var(--space-12);
   height: var(--space-12);

@@ -12,6 +12,7 @@ const ResultsPage = lazy(() => import('../features/results/results-page'))
 const LivePage = lazy(() => import('../features/live/live-page'))
 const LiveResultsPage = lazy(() => import('../features/live/live-results-page'))
 const ComparePage = lazy(() => import('../features/compare/compare-page'))
+const FantasyPage = lazy(() => import('../features/fantasy/fantasy-page'))
 const AboutPage = lazy(() => import('../features/project-info/about-page'))
 const PrivacyPolicyPage = lazy(() => import('../features/project-info/privacy-policy-page'))
 const RoundDetailsPage = lazy(() => import('../features/rounds/round-details-page'))
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
         errorElement: routeErrorElement,
       },
       { path: 'compare', element: lazyElement(ComparePage), errorElement: routeErrorElement },
+      { path: 'fantasy', element: lazyElement(FantasyPage), errorElement: routeErrorElement },
       { path: 'about', element: lazyElement(AboutPage), errorElement: routeErrorElement },
       {
         path: 'privacy-policy',
@@ -83,6 +85,7 @@ export const router = createBrowserRouter([
       riderRoute('results/riders/:riderId'),
       riderRoute('live/riders/:riderId'),
       riderRoute('compare/riders/:riderId'),
+      riderRoute('fantasy/riders/:riderId'),
       riderRoute('about/riders/:riderId'),
       { path: 'sessions/:sessionId/results', element: <LegacySessionResultsRedirect /> },
       { path: 'standings', element: <Navigate to={routes.ranking} replace /> },

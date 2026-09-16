@@ -14,6 +14,7 @@ export function sectionForPath(pathname: string) {
     return routes.results;
   if (pathname.startsWith(routes.live)) return routes.live;
   if (pathname.startsWith(routes.compare)) return routes.compare;
+  if (pathname.startsWith(routes.fantasy)) return routes.fantasy;
   if (pathname.startsWith(routes.about)) return routes.about;
   return null;
 }

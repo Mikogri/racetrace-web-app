@@ -6,6 +6,7 @@ export const routes = {
   liveRound: (roundId: string, season?: number) =>
     `/live?roundId=${encodeURIComponent(roundId)}${season ? `&season=${season}` : ""}`,
   compare: '/compare',
+  fantasy: '/fantasy',
   about: '/about',
   privacyPolicy: '/privacy-policy',
   liveResults: (sessionKey: string, context?: string, roundId?: string, season?: number) => {
@@ -28,5 +29,6 @@ export const navigationItems = [
   { label: 'Ranking', to: routes.ranking },
   { label: 'Live', to: routes.live },
   { label: 'Compare', to: routes.compare },
+  { label: 'Fantasy', to: routes.fantasy },
   { label: 'About', to: routes.about },
 ] as const

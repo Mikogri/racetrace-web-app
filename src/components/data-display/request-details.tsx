@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { DetailsDisclosure } from "./details-disclosure";
 import { getApiResponseMeta } from "../../lib/api-response-meta";
 import styles from "./request-details.module.css";
 
@@ -72,7 +72,6 @@ function formatDuration(durationMs: number) {
 }
 
 export function RequestDetails({ data }: { data: unknown }) {
-  const [expanded, setExpanded] = useState(true);
   const metadata = getApiResponseMeta(data);
   if (!metadata) return null;
 
@@ -80,25 +79,7 @@ export function RequestDetails({ data }: { data: unknown }) {
   const totalResults = getTotalItems(data, counts.results);
 
   return (
-    <div className={styles.details}>
-      <button
-        className={styles.header}
-        type="button"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((current) => !current)}
-      >
-        <span>
-          Request details - {formatDuration(metadata.durationMs)}
-        </span>
-        <svg className={styles.chevron} viewBox="0 0 12 12" aria-hidden="true">
-          <path d="m3 4.5 3 3 3-3" />
-        </svg>
-      </button>
-      <div
-        className={`${styles.content} ${expanded ? styles.contentExpanded : ""}`}
-      >
-        <div className={styles.contentInner}>
-          <div className={styles.divider} />
+    <DetailsDisclosure title={`Request details - ${formatDuration(metadata.durationMs)}`} defaultExpanded>
           <div className={styles.data}>
             <span>
               {formatBytes(metadata.transferredBytes ?? metadata.responseBytes)} Response
@@ -109,8 +90,6 @@ export function RequestDetails({ data }: { data: unknown }) {
             </span>
             <span>{formatInteger(counts.objects)} Objects</span>
           </div>
-        </div>
-      </div>
-    </div>
+    </DetailsDisclosure>
   );
 }
