@@ -6,17 +6,7 @@
 }
 
 .dialog > header {
-  box-sizing: border-box;
   height: 51px;
-  min-height: 0;
-  padding: 16px 20px;
-}
-
-.dialog > header h2 {
-  font-family: var(--font-family-body);
-  font-size: 16px;
-  line-height: 19px;
-  font-weight: var(--font-weight-regular);
 }
 
 .search {
@@ -183,15 +173,11 @@
 }
 
 .dialog > footer {
-  box-sizing: border-box;
   height: 62px;
-  gap: var(--space-20);
-  padding: 16px 20px;
 }
 
 .dialog > footer button {
   height: 30px;
-  font-family: var(--font-family-body);
 }
 
 .dialog > footer button:last-child {

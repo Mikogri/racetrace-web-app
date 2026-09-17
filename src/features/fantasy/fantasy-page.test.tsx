@@ -41,6 +41,14 @@ describe('Fantasy page', () => {
     expect(state.refetch).toHaveBeenCalledOnce()
   })
 
+  it('shows an illustrated refresh warning while preserving the last loaded riders', () => {
+    state.data = overview([rider()]); state.error = true
+    render(view())
+    const warning = screen.getByText('Refresh failed. Showing the last successfully loaded data.').closest('[role="status"]')!
+    expect(warning.querySelector('img')).toHaveAttribute('alt', '')
+    expect(screen.getByText('Sample Rider')).toBeInTheDocument()
+  })
+
   it('defaults to men and projected points, sorts by price and changes category independently', async () => {
     state.data = overview([rider({ name: 'Fast Rider', price: 100000 }), rider({ name: 'Expensive Rider', pinkbikeExternalId: '2', expectedFantasyPoints: 100, price: 350000 }), rider({ name: 'Woman Rider', pinkbikeExternalId: '3', gender: 'female' })])
     render(view())
@@ -62,16 +70,11 @@ describe('Fantasy page', () => {
     expect(screen.queryByText('Loading')).not.toBeInTheDocument()
   })
 
-  it('keeps the recommended team first and collapses API data notices without discarding them', async () => {
+  it('removes Data Notices and keeps the guide available', async () => {
     state.data = { ...overview(), warnings: ['Start list not confirmed.', 'Historical prices unavailable.'] }
     render(view())
-    const summary = screen.getByRole('button', { name: 'Data Notices (2)' })
+    expect(screen.queryByRole('button', { name: /Data Notices/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'Best team for next round' }).compareDocumentPosition(summary)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
-    await userEvent.click(summary)
-    expect(screen.getByRole('dialog', { name: 'Data Notices' })).toBeVisible()
-    expect(screen.getByText('Historical prices unavailable.')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     await userEvent.click(screen.getByRole('button', { name: 'How It Works' }))
     expect(screen.getByRole('dialog', { name: 'How It Works' })).toHaveTextContent('200 points at $250,000')
   })
@@ -94,7 +97,7 @@ describe('Fantasy page', () => {
     expect(screen.queryByText('Male')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Rules' })).toBeInTheDocument()
-    expect(screen.getByText('Check Data Notices for missing prices or predictions.')).toBeInTheDocument()
+    expect(screen.getByText('Prices or predictions are not available yet.')).toBeInTheDocument()
   })
 
   it('shows no upcoming round and no data without fabricated placeholders', () => {
@@ -102,6 +105,32 @@ describe('Fantasy page', () => {
     render(view())
     expect(screen.getByText('No upcoming round')).toBeInTheDocument()
     expect(screen.getByText('No data available')).toBeInTheDocument()
+  })
+
+  it('shows numbered recommendation panels with status badges and women last', () => {
+    const woman = rider({ name: 'Woman Rider', gender: 'female', pinkbikeExternalId: '2', isRecommended: true })
+    const man = rider({ name: 'Man Rider', isRecommended: true })
+    state.data = { ...overview([man]), recommendation: { riders: [woman, man], totalPrice: 400000, remainingBudget: 1100000, expectedFantasyPoints: 500 } }
+    render(view())
+    const panels = within(screen.getByRole('region', { name: 'Best team for next round' })).getAllByRole('article')
+    expect(panels).toHaveLength(2)
+    expect(panels[0]).toHaveAccessibleName('Team rider 1: Man Rider')
+    expect(within(panels[0]).getByLabelText('Team rider 1')).toHaveTextContent('1')
+    expect(within(panels[0]).getByText('Recommended')).toHaveAttribute('data-status', 'recommended')
+    expect(panels[1]).toHaveAccessibleName('Team rider 2: Woman Rider')
+  })
+
+  it('uses semantic colors for table recommendation, injury and warning badges', () => {
+    state.data = overview([
+      rider({ name: 'Recommended Rider', isRecommended: true }),
+      rider({ pinkbikeExternalId: '2', name: 'Injured Rider', injuryFlag: true }),
+      rider({ pinkbikeExternalId: '3', name: 'Warning Rider', warnings: ['Missing prediction'] }),
+    ])
+    render(view())
+    const table = within(screen.getByRole('table', { name: 'Fantasy rider projections' }))
+    expect(table.getByText('Recommended')).toHaveAttribute('data-status', 'recommended')
+    expect(table.getByText('Reported injury')).toHaveAttribute('data-status', 'injury')
+    expect(table.getByText('Check status')).toHaveAttribute('data-status', 'warning')
   })
 
   it('displays missing projections as missing, and leaves unmapped riders unlinked', () => {

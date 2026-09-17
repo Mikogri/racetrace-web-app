@@ -41,6 +41,15 @@
   --color-status-success: var(--palette-olive-300);
   --color-status-success-background: rgb(196 255 118 / 30%);
   --color-status-info: var(--palette-blue-500);
+  --color-status-success-label-text: #EFFFD9;
+  --color-status-success-label-background: #43552B;
+  --color-status-error-label-text: #FFD2D2;
+  --color-status-error-label-background: #521F1F;
+  --color-status-warning-label-text: #EAE5D2;
+  --color-status-warning-label-background: #504B36;
+  --color-status-injury-label-text: #FFE0DE;
+  --color-status-injury-label-background: #632B2B;
+  --color-status-neutral-label-text: #C8C8C8;
 
   --color-result-winner-text: var(--palette-gold-500);
   --color-result-winner-accent: #ffa600;

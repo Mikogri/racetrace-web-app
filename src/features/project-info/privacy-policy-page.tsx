@@ -1,4 +1,4 @@
-import { EmptyState } from '../../components/feedback/states'
+import { TableFeedbackState } from '../../components/feedback/states'
 import { PageContainer, PageHeader, Section } from '../../components/layout/page-container'
 
 export default function PrivacyPolicyPage() {
@@ -6,13 +6,14 @@ export default function PrivacyPolicyPage() {
     <PageContainer>
       <PageHeader
         title="Privacy Policy"
-        eyebrow="Project information"
-        description="The final privacy policy content has not yet been supplied by the project owner."
+        eyebrow="Privacy // Data // Transparency"
+        description="Information about how RaceTrace handles personal data and respects your privacy."
       />
       <Section>
-        <EmptyState
-          title="Policy Content Pending"
-          description="This page is intentionally left without invented legal text until the approved policy is provided."
+        <TableFeedbackState
+          type="empty"
+          label="No content available"
+          description="There's no content here yet."
         />
       </Section>
     </PageContainer>

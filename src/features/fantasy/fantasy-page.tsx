@@ -14,18 +14,25 @@ import { useFantasyCurrent, useFantasyRules, type FantasyRider } from './api/get
 import { fantasyDate, fantasyMoney, fantasyNumber, fantasyValue, sortFantasyRiders, type FantasySort } from './fantasy-format'
 import { FantasyRulesDialog } from './fantasy-rules-dialog'
 import styles from './fantasy-page.module.css'
+import failedIcon from '../../assets/icons/failed.png'
 
-function FantasyIdentity({ rider }: { rider: FantasyRider }) {
+function FantasyIdentity({ rider, teamNumber }: { rider: FantasyRider; teamNumber?: number }) {
   const warnings = [...(rider.injuryFlag ? ['Reported injury'] : []), ...rider.warnings]
-  const status = rider.injuryFlag ? 'Reported injury' : rider.isRecommended ? 'Recommended' : warnings.length ? 'Check status' : '--'
-  return <div className={styles.identity}>
+  const recommended = rider.isRecommended
+  const checkStatus = warnings.length > 0
+  const status = rider.injuryFlag ? 'Reported injury' : recommended ? 'Recommended' : checkStatus ? 'Check status' : 'Available'
+  const statusTone = rider.injuryFlag ? 'injury' : recommended ? 'recommended' : checkStatus ? 'warning' : 'neutral'
+  const badge = <span className={styles.identityStatus} data-status={statusTone} tabIndex={warnings.length ? 0 : undefined}>{status}</span>
+  return <div className={styles.riderIdentity}>
+    {teamNumber !== undefined ? <span className={styles.teamNumber} aria-label={`Team rider ${teamNumber}`}>{teamNumber}</span> : null}
+    <div className={styles.identity}>
     <RiderCell compact showTeam={false} linked={rider.riderId !== null} rider={{
       id: rider.riderId ?? rider.pinkbikeExternalId,
       name: rider.name, country: rider.countryCode, category: null, profileImageUrl: null,
       team: null,
     }} />
-    {warnings.length ? <AppTooltip content={warnings.join(' · ')}><span className={styles.identityStatus} tabIndex={0}>{status}</span></AppTooltip>
-      : <span className={styles.identityStatus}>{status}</span>}
+    {warnings.length ? <AppTooltip content={warnings.join(' · ')}>{badge}</AppTooltip> : badge}
+    </div>
   </div>
 }
 
@@ -41,7 +48,7 @@ function Projection({ rider }: { rider: FantasyRider }) {
 export default function FantasyPage() {
   const query = useFantasyCurrent()
   const rulesQuery = useFantasyRules()
-  const [activeDialog, setActiveDialog] = useState<'rules' | 'notices' | 'guide' | null>(null)
+  const [activeDialog, setActiveDialog] = useState<'rules' | 'guide' | null>(null)
   const [gender, setGender] = useState<'male' | 'female'>('male')
   const [sort, setSort] = useState<FantasySort>('expectedFantasyPoints')
   const [direction, setDirection] = useState<SortDirection>('desc')
@@ -66,7 +73,7 @@ export default function FantasyPage() {
       onRetry={() => void query.refetch()} /></Section> : <div className={styles.contentStage} aria-busy={refreshing}>
       {refreshing ? <div className={styles.updateProgress} role="progressbar" aria-label="Updating fantasy data"><span /></div> : null}
       <div className={`${styles.content} ${refreshing ? styles.updating : ''}`}>
-        {query.isError ? <p className={styles.warning} role="status">Refresh failed. Showing the last successfully loaded data.</p> : null}
+        {query.isError ? <p className={styles.warning} role="status"><img src={failedIcon} alt="" aria-hidden="true" /><span>Refresh failed. Showing the last successfully loaded data.</span></p> : null}
         <Section aria-label="Best team for next round">
           <Panel padding="none" className={styles.panel}>
             <header className={styles.panelHeader}>
@@ -81,8 +88,8 @@ export default function FantasyPage() {
               </div>
             </header>
             {team ? <>
-              <div className={styles.teamGrid}>{[...team.riders].sort((a, b) => Number(a.gender === 'female') - Number(b.gender === 'female')).map(rider => <article className={styles.teamRider} key={rider.pinkbikeExternalId}>
-                <FantasyIdentity rider={rider} />
+              <div className={styles.teamPanels}>{[...team.riders].sort((a, b) => Number(a.gender === 'female') - Number(b.gender === 'female')).map((rider, index) => <article className={styles.teamRider} key={rider.pinkbikeExternalId} aria-label={`Team rider ${index + 1}: ${rider.name}`}>
+                <FantasyIdentity rider={rider} teamNumber={index + 1} />
                 <dl className={styles.teamMetrics}>
                   <div><dt>Price</dt><dd>{fantasyMoney(rider.price)}</dd></div>
                   <div><dt>Category</dt><dd>{rider.gender === 'male' ? 'Men Elite' : rider.gender === 'female' ? 'Women Elite' : '--'}</dd></div>
@@ -90,7 +97,7 @@ export default function FantasyPage() {
                 </dl>
               </article>)}</div>
             </> : <TableFeedbackState type="empty" label={data.round ? 'No eligible team available' : 'No upcoming round'}
-              description={data.round ? 'Check Data Notices for missing prices or predictions.' : 'Waiting for the next round.'} />}
+              description={data.round ? 'Prices or predictions are not available yet.' : 'Waiting for the next round.'} />}
           </Panel>
         </Section>
         <Section aria-label="Fantasy riders">
@@ -99,7 +106,6 @@ export default function FantasyPage() {
           <SegmentedControl label="Fantasy category" value={gender} options={[{ value: 'male', label: 'Men Elite', tooltip: 'Men Elite' }, { value: 'female', label: 'Women Elite', tooltip: 'Women Elite' }]}
             onChange={next => { setGender(next); setPage(1) }} />
           <Button className={styles.rulesButton} onClick={() => setActiveDialog('rules')}>Rules</Button>
-          <Button className={styles.rulesButton} onClick={() => setActiveDialog('notices')}>Data Notices{data.warnings.length ? ` (${data.warnings.length})` : ''}</Button>
           <Button className={styles.rulesButton} onClick={() => setActiveDialog('guide')}>How It Works</Button>
           </div>
           <Panel padding="none" className={styles.panel}>
@@ -127,18 +133,15 @@ export default function FantasyPage() {
       </div>
     </div>}
     {activeDialog === 'rules' ? <FantasyRulesDialog open onClose={() => setActiveDialog(null)} /> : null}
-    {activeDialog === 'notices' || activeDialog === 'guide' ? <Dialog open title={activeDialog === 'notices' ? 'Data Notices' : 'How It Works'} onClose={() => setActiveDialog(null)}>
+    {activeDialog === 'guide' ? <Dialog open title="How It Works" onClose={() => setActiveDialog(null)}>
       <div className={styles.rulesBody}>
-        {activeDialog === 'notices' ? data?.warnings.length
-          ? <ul className={`${styles.notices} ${styles.note}`}>{data.warnings.map((warning, index) => <li key={`${index}-${warning}`}>{warning}</li>)}</ul>
-          : <p className={styles.note}>No data notices for the current snapshot.</p>
-          : <dl className={styles.guide}>
+        <dl className={styles.guide}>
             <div><dt>Best Team</dt><dd>The combination of four men and two women with the highest total projected points within the budget. Riders with reported injuries or missing prices or predictions are excluded.</dd></div>
             <div><dt>Projected Points</dt><dd>Expected Fantasy points in the next round: final placement points plus the Q1 bonus. These are probability-weighted estimates, not guaranteed results or season totals.</dd></div>
             <div><dt>Value</dt><dd>Projected points per $100,000 of rider price. For example, 200 points at $250,000 gives a Value of 80.0. A higher Value means more expected points for the price; Best Team optimizes total points, not Value alone.</dd></div>
             <div><dt>Price Pool &amp; Team Slots</dt><dd>Price Pool is the budget for the entire six-rider team. Team Slots is the number of riders required from the selected category.</dd></div>
             <div><dt>Data &amp; Availability</dt><dd>Prices and injury reports come from the latest successful Pinkbike import. Without a confirmed entry list, selection uses the Pinkbike catalogue; participation is not guaranteed. A dash means data is unavailable.</dd></div>
-          </dl>}
+          </dl>
       </div>
       <ModalFooter><Button onClick={() => setActiveDialog(null)}>Close</Button></ModalFooter>
     </Dialog> : null}

@@ -47,15 +47,29 @@
 .header {
   justify-content: space-between;
   border-bottom: var(--component-border-width) solid var(--color-border-default);
+  box-sizing: border-box;
+  min-height: 51px;
+  padding: 16px 20px;
+}
+
+.header h2 {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: var(--font-weight-regular);
 }
 
 .footer {
   justify-content: flex-end;
   border-top: var(--component-border-width) solid var(--color-border-default);
+  box-sizing: border-box;
+  min-height: 62px;
+  padding: 16px 20px;
 }
 
 .footer > * {
   flex: 1 1 0;
+  font-family: var(--font-family-body);
 }
 
 .header .closeButton {
