@@ -58,8 +58,26 @@
   flex: 1 1 0;
 }
 
+.header .closeButton {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+}
+
+.header .closeButton:hover {
+  background: transparent;
+}
+
 .closeIcon {
-  width: var(--component-icon-size-sm);
-  height: var(--component-icon-size-sm);
-  opacity: 0.6;
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  transition: opacity var(--component-transition-control);
+}
+
+.closeButton:hover .closeIcon,
+.closeButton:focus-visible .closeIcon {
+  opacity: 1;
 }

@@ -19,26 +19,6 @@
   font-weight: var(--font-weight-regular);
 }
 
-.dialog > header button {
-  width: 12px;
-  height: 12px;
-  padding: 0;
-  background: transparent !important;
-  border: 0;
-}
-
-.dialog > header button img {
-  width: 12px;
-  height: 12px;
-  opacity: 0.5;
-  transition: opacity var(--component-transition-control);
-}
-
-.dialog > header button:hover img,
-.dialog > header button:focus-visible img {
-  opacity: 1;
-}
-
 .search {
   box-sizing: border-box;
   height: 67px;

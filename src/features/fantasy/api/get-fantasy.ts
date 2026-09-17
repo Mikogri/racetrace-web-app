@@ -69,6 +69,7 @@ export function useFantasyCurrent() {
     queryKey: ['fantasy', 'current'],
     queryFn: ({ signal }) => apiClient.get('/api/v1/fantasy/current', fantasyCurrentSchema, { signal }),
     staleTime: 60_000,
+    refetchInterval: 60_000,
   })
 }
 

@@ -72,7 +72,7 @@ export function ModalHeader({
       <Typography as="h2" variant="panelTitle" id={titleId}>
         {title}
       </Typography>
-      <IconButton label="Close dialog" size="small" onClick={onClose}>
+      <IconButton className={styles.closeButton} label="Close dialog" size="small" onClick={onClose}>
         <img className={styles.closeIcon} src={closeIcon} alt="" />
       </IconButton>
     </header>

@@ -94,7 +94,7 @@ describe('Fantasy page', () => {
     expect(screen.queryByText('Male')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Rules' })).toBeInTheDocument()
-    expect(screen.getByText('Waiting for verified team data.')).toBeInTheDocument()
+    expect(screen.getByText('Check Data Notices for missing prices or predictions.')).toBeInTheDocument()
   })
 
   it('shows no upcoming round and no data without fabricated placeholders', () => {

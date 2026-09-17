@@ -90,7 +90,7 @@ export default function FantasyPage() {
                 </dl>
               </article>)}</div>
             </> : <TableFeedbackState type="empty" label={data.round ? 'No eligible team available' : 'No upcoming round'}
-              description={data.round ? 'Waiting for verified team data.' : 'Waiting for the next round.'} />}
+              description={data.round ? 'Check Data Notices for missing prices or predictions.' : 'Waiting for the next round.'} />}
           </Panel>
         </Section>
         <Section aria-label="Fantasy riders">
