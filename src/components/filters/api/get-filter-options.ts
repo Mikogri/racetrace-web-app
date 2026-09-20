@@ -6,6 +6,7 @@ import type { FilterOption } from "../../../types/domain";
 import type { ContextFilterOptions } from "../context-filters";
 import { filterOptionQueryKeys } from "./filter-option-query-keys";
 import { useKnownCategories } from "../../../utils/categories";
+import { filterQueryPolicy, seasonsQueryOptions } from "./get-seasons";
 
 const listEnvelope = <T extends z.ZodType>(itemSchema: T) =>
   z
@@ -15,10 +16,6 @@ const listEnvelope = <T extends z.ZodType>(itemSchema: T) =>
     })
     .passthrough()
     .transform((value) => value.items ?? value.data ?? []);
-
-const seasonsSchema = z.object({
-  items: z.array(z.number().int().min(1990).max(2100)),
-});
 
 const trackSchema = z
   .object({
@@ -66,14 +63,7 @@ export function useContextFilterOptions() {
   const knownCategories = useKnownCategories();
   const [seasons, tracks, conditions, classes] = useQueries({
     queries: [
-      {
-        queryKey: filterOptionQueryKeys.seasons(),
-        queryFn: ({ signal }) =>
-          apiClient.get("/api/v1/rounds/seasons", seasonsSchema, { signal }),
-        staleTime: 0,
-        refetchOnMount: "always" as const,
-        refetchOnWindowFocus: true,
-      },
+      seasonsQueryOptions(),
       {
         queryKey: filterOptionQueryKeys.tracks(),
         queryFn: ({ signal }) =>
@@ -81,9 +71,7 @@ export function useContextFilterOptions() {
             signal,
             query: { pageSize: 150, sortBy: "name", sortDirection: "asc" },
           }),
-        staleTime: 0,
-        refetchOnMount: "always" as const,
-        refetchOnWindowFocus: true,
+        ...filterQueryPolicy,
       },
       {
         queryKey: filterOptionQueryKeys.conditions(),
@@ -96,9 +84,7 @@ export function useContextFilterOptions() {
               query: { pageSize: 100, sortBy: "name", sortDirection: "asc" },
             },
           ),
-        staleTime: 0,
-        refetchOnMount: "always" as const,
-        refetchOnWindowFocus: true,
+        ...filterQueryPolicy,
       },
       {
         queryKey: filterOptionQueryKeys.competitionClasses(),
@@ -108,9 +94,7 @@ export function useContextFilterOptions() {
             listEnvelope(classOptionSchema),
             { signal },
           ),
-        staleTime: 0,
-        refetchOnMount: "always" as const,
-        refetchOnWindowFocus: true,
+        ...filterQueryPolicy,
       },
     ],
   });

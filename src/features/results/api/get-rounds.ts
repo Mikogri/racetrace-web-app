@@ -7,10 +7,6 @@ import { resultsQueryKeys } from './results-query-keys'
 
 const RESULTS_PAGE_SIZE = 100
 
-const seasonsResponseSchema = z.object({
-  items: z.array(z.number().int().min(1990).max(2100)),
-})
-
 export const roundListItemSchema = z.object({
   roundId: entityIdSchema,
   roundNumber: z.number().int().nullish().transform((value) => value ?? null),
@@ -100,17 +96,5 @@ export function useRounds(params: { season: number; page: number }) {
         pageSize: RESULTS_PAGE_SIZE,
       },
     }),
-  })
-}
-
-export function useRoundSeasons() {
-  return useQuery({
-    queryKey: resultsQueryKeys.seasons(),
-    queryFn: ({ signal }) => USE_SIMULATED_API_DATA
-      ? Promise.resolve({ items: [new Date().getUTCFullYear()] })
-      : apiClient.get('/api/v1/rounds/seasons', seasonsResponseSchema, { signal }),
-    staleTime: 0,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
   })
 }

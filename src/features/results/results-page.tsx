@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useContextFilterOptions } from "../../components/filters/api/get-filter-options";
+import { useSeasons } from "../../components/filters/api/get-seasons";
+import { useKnownCategories } from "../../utils/categories";
 import {
   ErrorState,
   TableFeedbackState,
@@ -16,7 +17,7 @@ import { formatCompetitionClassAbbreviation } from "../../utils/competition-clas
 import { LiveStatusBadge } from "../live/components/live-status-badge";
 import demoRoundImage from "../../assets/hero.png";
 import roundPlaceholder from "../../assets/round-placeholder.png";
-import { useRounds, useRoundSeasons, type RoundListItem } from "./api/get-rounds";
+import { useRounds, type RoundListItem } from "./api/get-rounds";
 import styles from "./results-page.module.css";
 
 function competitionClassAbbreviation(round: RoundListItem) {
@@ -71,8 +72,8 @@ export default function ResultsPage() {
   const [isFirstRequest, setIsFirstRequest] = useState(true);
   const [preserveErrorDuringUpdate, setPreserveErrorDuringUpdate] =
     useState(false);
-  const { options } = useContextFilterOptions();
-  const seasonsQuery = useRoundSeasons();
+  const categories = useKnownCategories();
+  const seasonsQuery = useSeasons();
   const requestedSeason = Number(searchParams.get("season"));
   const season =
     Number.isInteger(requestedSeason) && requestedSeason >= 1990
@@ -84,7 +85,7 @@ export default function ResultsPage() {
     ? roundsQuery.data.totalItems
     : undefined;
   const categoryCount = roundsQuery.data?.items.length
-    ? options.categories.length || undefined
+    ? categories.length || undefined
     : undefined;
   const isInitialLoading = roundsQuery.isPending && isFirstRequest;
   const isUpdating = roundsQuery.isFetching && !isInitialLoading;
