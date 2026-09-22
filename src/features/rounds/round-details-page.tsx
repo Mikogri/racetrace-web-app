@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRequiredRouteParam } from "../../app/routes/use-required-route-param";
 import { RouteLoadingPage } from "../../app/routes/route-states";
 import type { SortDirection } from "../../components/data-display/data-table";
 import { normalizeDisplayName } from "../../utils/display-name";
+import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import {
   ErrorState,
   LoadingState,
@@ -36,47 +37,6 @@ import {
   useRoundSessions,
 } from "./api/get-round";
 import styles from "./round-details-page.module.css";
-
-function sessionLabel(value: string) {
-  const normalized = value.toLowerCase().replaceAll("-", "_");
-  const labels: Record<string, string> = {
-    q: "Quali",
-    quali: "Quali",
-    qualifying: "Quali",
-    qualification: "Quali",
-    qualifying_1: "Quali 1",
-    qualifying_2: "Quali 2",
-    sf: "Semi Final",
-    semi_final: "Semi Final",
-    f: "Final",
-    final: "Final",
-    seeding: "Seeding",
-  };
-  return (
-    labels[normalized] ??
-    value
-      .replaceAll("_", " ")
-      .replace(/\b\w/g, (letter) => letter.toUpperCase())
-  );
-}
-
-function sessionFullLabel(value: string) {
-  const normalized = value.toLowerCase().replaceAll("-", "_");
-  const labels: Record<string, string> = {
-    q: "Qualifying",
-    quali: "Qualifying",
-    qualifying: "Qualifying",
-    qualification: "Qualifying",
-    qualifying_1: "Qualifying 1",
-    qualifying_2: "Qualifying 2",
-    sf: "Semi Final",
-    semi_final: "Semi Final",
-    f: "Final",
-    final: "Final",
-    seeding: "Seeding",
-  };
-  return labels[normalized] ?? sessionLabel(value);
-}
 
 function Podium({ data }: { data: SessionResults | undefined }) {
   const podium = [2, 1, 3].map((position) =>
@@ -134,6 +94,7 @@ function Podium({ data }: { data: SessionResults | undefined }) {
 }
 
 export default function RoundDetailsPage() {
+  useDomainMetadata();
   const roundId = useRequiredRouteParam("roundId");
   const [searchParams, setSearchParams] = useSearchParams();
   const roundQuery = useRoundDetails(roundId);
@@ -146,29 +107,22 @@ export default function RoundDetailsPage() {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<ResultSort>("finalTime");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const categories = useMemo(
-    () =>
-      sortCategoryValues(
-        (sessionsQuery.data?.items ?? [])
-          .map((item) => item.category)
-          .filter((item): item is string => Boolean(item)),
-      ),
-    [sessionsQuery.data],
+  const categories = sortCategoryValues(
+    (sessionsQuery.data?.items ?? [])
+      .map((item) => item.category)
+      .filter((item): item is string => Boolean(item)),
   );
   const selectedCategory = categories.includes(category)
     ? category
     : (categories.find((item) => item === "elite_men") ?? categories[0] ?? "");
-  const sessionTypes = useMemo(
-    () => [
+  const sessionTypes = [
       ...new Set(
         (sessionsQuery.data?.items ?? [])
           .filter((item) => item.category === selectedCategory)
           .map((item) => item.sessionType)
           .filter((item): item is string => Boolean(item)),
       ),
-    ],
-    [selectedCategory, sessionsQuery.data],
-  );
+  ];
   const selectedSessionType = sessionTypes.includes(sessionType)
     ? sessionType
     : (sessionTypes.find((item) => item === "final") ?? sessionTypes[0] ?? "");
@@ -263,8 +217,8 @@ export default function RoundDetailsPage() {
                 label="Session"
                 options={sessionTypes.map((value) => ({
                   value,
-                  label: sessionLabel(value),
-                  tooltip: sessionFullLabel(value),
+                  label: formatSessionLabel(value, "shortName"),
+                  tooltip: formatSessionLabel(value),
                 }))}
                 value={selectedSessionType}
                 onChange={(value) => {

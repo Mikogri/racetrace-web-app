@@ -22,6 +22,7 @@ import { RatingValue } from "../../components/data-display/rating-value";
 import { riderBasePath } from "../../components/navigation/rider-navigation-state";
 import { ChartTooltip, TooltipRows } from "../../components/overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
+import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import type { RiderSessionResult } from "./api/get-rider-sessions";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
@@ -215,6 +216,7 @@ function Metric({
 }
 
 export default function RiderDetailsPage() {
+  useDomainMetadata();
   const location = useLocation();
   const { riderId, overview, sessionResults, pressurePerformance } =
     useOutletContext<RiderOutletContext>();
@@ -229,18 +231,19 @@ export default function RiderDetailsPage() {
     color: string,
   ): PositionChartPoint & { order: string } => {
     const round = roundById.get(result.roundId);
+    const abbreviation = formatSessionLabel(result.sessionType, "abbreviation");
     const roundLabel =
       (result.roundNumber ?? round?.roundNumber)
         ? `R${result.roundNumber ?? round?.roundNumber}`
         : "R--";
     return {
-      label: `${roundLabel} ${result.abbreviation}`,
+      label: `${roundLabel} ${abbreviation}`,
       tooltipKey: `${result.season ?? round?.season ?? "----"}-${result.roundId}-${result.sessionId}`,
-      tooltipLabel: `${result.season ?? round?.season ?? "----"} · ${roundLabel} · ${result.abbreviation}`,
+      tooltipLabel: `${result.season ?? round?.season ?? "----"} · ${roundLabel} · ${abbreviation}`,
       position: result.isClassified ? result.position : null,
       color,
       status: result.isClassified ? null : result.status,
-      tooltip: `${result.venueName ?? round?.venueName ?? round?.trackName ?? "Unknown venue"} · ${result.abbreviation} · ${result.isClassified ? `P${result.position}` : result.status}`,
+      tooltip: `${result.venueName ?? round?.venueName ?? round?.trackName ?? "Unknown venue"} · ${abbreviation} · ${result.isClassified ? `P${result.position}` : result.status}`,
       order: `${result.date ?? round?.roundStartDate ?? ""}-${String(result.sessionOrder).padStart(2, "0")}-${result.sessionId}`,
     };
   };

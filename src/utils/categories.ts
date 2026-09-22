@@ -11,9 +11,8 @@ export type KnownCategory = {
 
 const STORAGE_KEY = "racetrace:known-categories:v1";
 
-// This array is the source of truth for the permanent display order.
-// Add future fixed categories exactly where they should appear in selectors.
-// Categories discovered only at runtime are appended after these entries.
+// Compatibility defaults until the API supplies authoritative labels and order.
+// Categories discovered only at runtime remain available after these entries.
 const baseCategories: KnownCategory[] = [
   {
     value: "elite_men",
@@ -61,6 +60,8 @@ const knownAliases: Record<string, string> = {
 };
 
 const listeners = new Set<() => void>();
+let metadataAliases: Record<string, string> = {};
+let authoritativeCodes = new Set<string>();
 let categories = loadCategories();
 
 function compact(value: string) {
@@ -68,7 +69,7 @@ function compact(value: string) {
 }
 
 function canonicalValue(value: string) {
-  return knownAliases[compact(value)] ?? value.trim();
+  return metadataAliases[compact(value)] ?? knownAliases[compact(value)] ?? value.trim();
 }
 
 export function normalizeCategoryValue(value: string | null | undefined) {
@@ -165,7 +166,7 @@ function saveAndNotify(next: KnownCategory[]) {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(categories.slice(baseCategories.length)),
+        JSON.stringify(categories.filter((category) => !baseCategories.some((base) => base.value === category.value))),
       );
     } catch {
       // The in-memory registry still works when browser storage is unavailable.
@@ -182,10 +183,13 @@ function registerCategory(
   const trimmed = value.trim();
   if (!trimmed) return;
   const canonical = canonicalValue(trimmed);
+  if (authoritativeCodes.has(canonical)) return;
+  const existing = categories.find((item) => item.value === canonical);
+  if (existing && !label && gender === undefined) return;
   const base = baseCategories.find((item) => item.value === canonical);
   const resolvedLabel = base?.label ?? (label?.trim() || titleCase(trimmed));
   const next: KnownCategory = {
-    value: base?.value ?? trimmed,
+    value: canonical,
     label: resolvedLabel,
     abbreviation: base?.abbreviation ?? abbreviationFor(resolvedLabel),
     gender: base?.gender ?? normalizeGender(gender, resolvedLabel, trimmed),
@@ -193,6 +197,30 @@ function registerCategory(
   const merged = mergeCategories(categories, [next]);
   if (JSON.stringify(merged) !== JSON.stringify(categories))
     saveAndNotify(merged);
+}
+
+export function registerCategoryMetadata(items: Array<{
+  code: string;
+  name: string;
+  shortName: string;
+  displayOrder: number;
+  aliases: string[];
+  gender: CategoryGender;
+}>) {
+  metadataAliases = Object.fromEntries(items.flatMap((item) =>
+    [item.code, ...item.aliases].map((alias) => [compact(alias), item.code]),
+  ));
+  authoritativeCodes = new Set(items.map((item) => item.code));
+  const authoritative = [...items]
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .map((item): KnownCategory => ({
+      value: item.code,
+      label: item.name,
+      abbreviation: item.shortName,
+      gender: item.gender,
+    }));
+  const remaining = categories.filter((item) => !authoritativeCodes.has(canonicalValue(item.value)));
+  saveAndNotify([...authoritative, ...remaining]);
 }
 
 function inspectCategoryValue(value: unknown) {

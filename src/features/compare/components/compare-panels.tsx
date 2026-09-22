@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { formatSessionLabel, useDomainMetadata } from "../../../utils/domain-metadata";
 import { useLocation } from "react-router-dom";
 import {
   Bar,
@@ -325,7 +326,7 @@ function comparisonResultsSeries(
       const result = session.results.find((item) => item.riderId === rider.riderId);
       const sessionLabel = session.sessionType?.toLowerCase().includes("final")
         ? "FIN"
-        : (session.sessionType?.replaceAll("_", " ").toUpperCase() ?? "SESSION");
+        : session.sessionType ? formatSessionLabel(session.sessionType).toUpperCase() : "SESSION";
       return {
         label: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"}`,
         tooltipLabel: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"} · ${session.venueName ?? session.trackName ?? "Unknown venue"} · ${sessionLabel}`,
@@ -410,6 +411,7 @@ export function CompareHistoryCharts({ data }: { data: CompareData }) {
 }
 
 export function ComparePositionChart({ data }: { data: CompareData }) {
+  useDomainMetadata();
   const { pathname } = useLocation();
   return (
     <PositionChart

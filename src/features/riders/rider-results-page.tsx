@@ -12,6 +12,7 @@ import { getRiderNavigationState } from "../../components/navigation/rider-navig
 import { routes } from "../../config/routes";
 import { useClientTable } from "../../hooks/use-client-table";
 import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
+import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import type { RiderSessionResult } from "./api/get-rider-sessions";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
@@ -64,10 +65,10 @@ function formatSessionResult(result: RiderSessionResult | undefined) {
 
 function fallbackPreFinal(row: OverviewRow): SessionEntry[] {
   return [
-    ["Q", row.qualifyingPosition],
-    ["Q1", row.qualifying1Position],
-    ["Q2", row.qualifying2Position],
-    ["SF", row.semiFinalPosition],
+    [formatSessionLabel("qualifying", "abbreviation"), row.qualifyingPosition],
+    [formatSessionLabel("qualifying_1", "abbreviation"), row.qualifying1Position],
+    [formatSessionLabel("qualifying_2", "abbreviation"), row.qualifying2Position],
+    [formatSessionLabel("semi_final", "abbreviation"), row.semiFinalPosition],
   ]
     .filter((entry): entry is [string, number] => entry[1] !== null)
     .map(([label, position]) => ({ label, value: String(position) }));
@@ -85,7 +86,7 @@ function preFinalEntries(row: ResultRow): SessionEntry[] {
     );
   if (sessions.length === 0) return fallbackPreFinal(row);
   return sessions.map((session) => ({
-    label: session.abbreviation,
+    label: formatSessionLabel(session.sessionType, "abbreviation"),
     value: formatSessionResult(session),
   }));
 }
@@ -146,6 +147,7 @@ function SessionSequence({ entries, cycling = false }: { entries: SessionEntry[]
 }
 
 export default function RiderResultsPage() {
+  useDomainMetadata();
   const { overview, sessionResults, isUpdating, hasDataError, retryData } =
     useOutletContext<RiderOutletContext>();
   const location = useLocation();

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { applyDomainMetadata } from "../../../utils/domain-metadata";
 import {
   filterRiderSessions,
   getRiderSessionGender,
@@ -90,4 +91,16 @@ describe("rider session results", () => {
       expect(getRiderSessionGender(result)).toBe(expected);
     },
   );
+
+  it("uses new session display metadata without changing classification or chronological order", () => {
+    applyDomainMetadata({
+      categories: [], roundStatuses: [], sessionStatuses: [],
+      sessionTypes: [{ code: "new_heat", name: "New Heat", shortName: "Heat", abbreviation: "NH", groupName: "New Heats", displayOrder: -1, aliases: ["NH"] }],
+    });
+    const [result] = riderSessionsSchema.parse({ results: [{
+      ...rawResult,
+      sessions: { ...rawResult.sessions, session_type: "new_heat" },
+    }] });
+    expect(result).toMatchObject({ abbreviation: "NH", kind: "other", sessionOrder: 50, isFinal: false, isClassified: true, isStart: true });
+  });
 });

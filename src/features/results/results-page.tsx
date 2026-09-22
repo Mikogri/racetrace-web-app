@@ -14,6 +14,7 @@ import {
 import { routes } from "../../config/routes";
 import { formatDateRange } from "../../utils/formatters";
 import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
+import { formatDomainLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import { LiveStatusBadge } from "../live/components/live-status-badge";
 import demoRoundImage from "../../assets/hero.png";
 import roundPlaceholder from "../../assets/round-placeholder.png";
@@ -68,6 +69,7 @@ function RoundImagePlaceholder() {
 }
 
 export default function ResultsPage() {
+  useDomainMetadata();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFirstRequest, setIsFirstRequest] = useState(true);
   const [preserveErrorDuringUpdate, setPreserveErrorDuringUpdate] =
@@ -277,15 +279,15 @@ export default function ResultsPage() {
                         <div className={styles.cardDivider} />
                         <div className={styles.cardFooter}>
                           {isLiveRound(round.status) ? (
-                            <LiveStatusBadge status={round.status} />
+                            <LiveStatusBadge status={round.status} domain="roundStatuses" />
                           ) : (
                             <span
                               className={`${styles.roundStatus} ${round.status === "upcoming" || round.status === "scheduled" ? styles.upcomingStatus : ""}`}
                             >
                               //{" "}
-                              {round.status === "scheduled"
+                              {formatDomainLabel("roundStatuses", round.status, round.status === "scheduled"
                                 ? "upcoming"
-                                : round.status}
+                                : round.status).toLowerCase()}
                             </span>
                           )}
                           <span

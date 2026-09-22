@@ -7,7 +7,8 @@ import {
   Section,
 } from "../../components/layout/page-container";
 import { routes } from "../../config/routes";
-import { formatCategoryLabel, normalizeCategoryValue } from "../../utils/categories";
+import { formatCategoryLabel, getKnownCategories, normalizeCategoryValue } from "../../utils/categories";
+import { formatLiveSessionLabel, formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import {
   useChronoRaceSessionResults,
   useChronoRaceCatalog,
@@ -17,27 +18,13 @@ import {
 import { LiveStatusBadge } from "./components/live-status-badge";
 import styles from "./live-page.module.css";
 
-function sessionGroupLabel(sessionType: string | null) {
-  if (!sessionType) return "Sessions";
-  return sessionType
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
-    .replace(/^Final$/, "Finals");
-}
-
-function sessionCardLabel(name: string) {
-  if (!/qual(?:i|ification|ifying)/i.test(name)) return name;
-  const sequence = name.match(/(?:^|\D)([12])(?:\D|$)/)?.[1];
-  return sequence ? `Quali ${sequence}` : "Quali";
-}
-
 function groupSessions(items: LiveSession[]) {
   const groups = new Map<string, LiveSession[]>();
   for (const session of items) {
     const key = session.sessionType ?? session.name;
     groups.set(key, [...(groups.get(key) ?? []), session]);
   }
-  const categoryOrder = ["elite_men", "elite_women", "junior_men", "junior_women"];
+  const categoryOrder = getKnownCategories().map((category) => category.value);
   const stageOrder = (key: string, sessions: LiveSession[]) => {
     const label = `${key} ${sessions.map((session) => session.name).join(" ")}`.toLowerCase();
     if (/semi[\s_-]?final|pre[\s_-]?final/.test(label)) return 1;
@@ -58,7 +45,7 @@ function groupSessions(items: LiveSession[]) {
   return [...groups.entries()]
     .map(([key, sessions], index) => ({
       key,
-      label: sessionGroupLabel(key),
+      label: formatSessionLabel(key, "groupName"),
       sessions,
       stageRank: stageOrder(key, sessions),
       categoryRank: categoryRank(sessions),
@@ -72,6 +59,7 @@ function groupSessions(items: LiveSession[]) {
 }
 
 function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterIndex: number }) {
+  useDomainMetadata();
   const timingQuery = useChronoRaceSessionResults(session);
   const riderCount = timingQuery.data?.results.totalItems ?? session.riderCount;
   const status = timingQuery.data?.status ?? session.status;
@@ -90,7 +78,7 @@ function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterI
       <div className={styles.cardCopy}>
         <div className={styles.cardHeader}>
           <strong>{formatCategoryLabel(session.category)}</strong>
-          <span>{sessionCardLabel(session.name)}</span>
+          <span>{formatLiveSessionLabel(session, "shortName")}</span>
         </div>
         <div className={styles.cardMeta}>
           <LiveStatusBadge status={status} />
@@ -107,6 +95,7 @@ function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterI
 }
 
 export default function LivePage() {
+  useDomainMetadata();
   const [searchParams] = useSearchParams();
   const seasonParam = searchParams.get("season");
   const requestedSeason = seasonParam === null ? Number.NaN : Number(seasonParam);
@@ -118,7 +107,7 @@ export default function LivePage() {
   const detectedRoundId = liveRoundQuery.data?.roundId ?? null;
   const catalogQuery = useChronoRaceCatalog(liveRoundQuery.data);
   const sessions = useMemo(() => catalogQuery.data ?? [], [catalogQuery.data]);
-  const groups = useMemo(() => groupSessions(sessions), [sessions]);
+  const groups = groupSessions(sessions);
   const sessionEnterIndexes = useMemo(
     () => new Map(sessions.map((session, index) => [session.id, index])),
     [sessions],

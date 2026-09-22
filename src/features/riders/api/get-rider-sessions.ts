@@ -8,6 +8,7 @@ import {
 } from "../../../lib/validation";
 import type { MetricsFilters } from "../../../types/domain";
 import { normalizeCategoryValue } from "../../../utils/categories";
+import { formatSessionLabel } from "../../../utils/domain-metadata";
 import { riderQueryKeys } from "./rider-query-keys";
 
 export type RiderSessionKind =
@@ -146,7 +147,7 @@ const resultRawSchema = z
       category: publicCategoryCode(category?.code),
       kind,
       sessionType: session.session_type ?? session.name ?? "Other",
-      abbreviation: sessionAbbreviation(kind),
+      abbreviation: formatSessionLabel(session.session_type ?? session.name ?? "Other", "abbreviation"),
       sessionOrder: sessionOrder(kind),
       isFinal: kind === "final",
       position,
@@ -214,18 +215,6 @@ export function normalizeSessionKind(
     return "semi_final";
   if (["F", "FINAL", "FINALS", "FINALRUN"].includes(normalized)) return "final";
   return "other";
-}
-
-function sessionAbbreviation(kind: RiderSessionKind) {
-  return {
-    seeding: "S",
-    qualifying: "Q",
-    qualifying_1: "Q1",
-    qualifying_2: "Q2",
-    semi_final: "SF",
-    final: "F",
-    other: "O",
-  }[kind];
 }
 
 function sessionOrder(kind: RiderSessionKind) {

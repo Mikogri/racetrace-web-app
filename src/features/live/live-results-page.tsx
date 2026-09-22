@@ -12,6 +12,7 @@ import { BackButton } from "../../components/navigation/back-button";
 import { SummaryBanner } from "../../components/ui/panel";
 import { routes } from "../../config/routes";
 import { formatCategoryLabel } from "../../utils/categories";
+import { formatLiveSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import { formatCountryName } from "../../utils/countries";
 import {
   SessionResultsTable,
@@ -27,6 +28,7 @@ import { LiveCourseChart } from "./components/live-course-chart";
 import styles from "./live-results-page.module.css";
 
 export default function LiveResultsPage() {
+  useDomainMetadata();
   const sessionId = useRequiredRouteParam("sessionId");
   const [searchParams] = useSearchParams();
   const requestedSeason = Number(searchParams.get("season"));
@@ -110,7 +112,7 @@ export default function LiveResultsPage() {
         {session && results ? (
           <div className={styles.loadedContent}>
             <SummaryBanner>
-              {`${formatCategoryLabel(session.category)} · ${session.name} · ${resultsQuery.data?.summary.finished ?? "--"} Finished · ${resultsQuery.data?.summary.onTrack ?? "--"} On track · ${resultsQuery.data?.summary.toStart ?? "--"} To start`}
+              {`${formatCategoryLabel(session.category)} · ${formatLiveSessionLabel(session)} · ${resultsQuery.data?.summary.finished ?? "--"} Finished · ${resultsQuery.data?.summary.onTrack ?? "--"} On track · ${resultsQuery.data?.summary.toStart ?? "--"} To start`}
             </SummaryBanner>
 
             <LiveCourseChart
