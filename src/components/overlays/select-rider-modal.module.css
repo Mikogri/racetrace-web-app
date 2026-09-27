@@ -1,17 +1,13 @@
 .dialog {
   width: min(100%, 500px);
-  height: 380px;
+  height: 430px;
   background: var(--color-surface-page);
   border-radius: var(--radius-panel);
 }
 
-.dialog > header {
-  height: 51px;
-}
-
 .search {
+  flex-shrink: 0;
   box-sizing: border-box;
-  height: 67px;
   padding: 16px 20px;
   border-bottom: var(--component-border-width) solid var(--color-border-default);
 }
@@ -42,7 +38,8 @@
 
 .results {
   position: relative;
-  height: 200px;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -144,7 +141,7 @@
 }
 
 .riderText span {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   font-size: 10px;
   line-height: 15px;
   font-weight: var(--font-weight-medium);
@@ -170,10 +167,6 @@
 @keyframes modal-progress {
   from { transform: translateX(-110%); }
   to { transform: translateX(320%); }
-}
-
-.dialog > footer {
-  height: 62px;
 }
 
 .dialog > footer button {

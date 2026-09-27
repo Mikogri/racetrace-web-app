@@ -133,7 +133,7 @@ export default function FantasyPage() {
       </div>
     </div>}
     {activeDialog === 'rules' ? <FantasyRulesDialog open onClose={() => setActiveDialog(null)} /> : null}
-    {activeDialog === 'guide' ? <Dialog open title="How It Works" onClose={() => setActiveDialog(null)}>
+    {activeDialog === 'guide' ? <Dialog className={styles.rulesDialog} open title="How It Works" onClose={() => setActiveDialog(null)}>
       <div className={styles.rulesBody}>
         <dl className={styles.guide}>
             <div><dt>Best Team</dt><dd>The combination of four men and two women with the highest total projected points within the budget. Riders with reported injuries or missing prices or predictions are excluded.</dd></div>

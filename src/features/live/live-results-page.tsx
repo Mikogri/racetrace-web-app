@@ -9,7 +9,8 @@ import {
   Section,
 } from "../../components/layout/page-container";
 import { BackButton } from "../../components/navigation/back-button";
-import { SummaryBanner } from "../../components/ui/panel";
+import { Panel, SummaryBanner } from "../../components/ui/panel";
+import { SegmentedControl } from "../../components/navigation/segmented-control";
 import { routes } from "../../config/routes";
 import { formatCategoryLabel } from "../../utils/categories";
 import { formatLiveSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
@@ -37,6 +38,7 @@ export default function LiveResultsPage() {
     : new Date().getUTCFullYear();
   const roundId = searchParams.get("roundId");
   const [sortBy, setSortBy] = useState<ResultSort>("finalTime");
+  const [timeView, setTimeView] = useState<"sectors" | "splits">("sectors");
   const [sortDirection, setSortDirection] =
     useState<SortDirection>("desc");
   const roundQuery = useLiveRound({ season, roundId });
@@ -49,6 +51,7 @@ export default function LiveResultsPage() {
     [results],
   );
   const riderIdsQuery = useResolvedLiveRiderIds(uciIds);
+  const hasTeams = results?.items.some((item) => !item.isPerfectRun && Boolean(item.teamName?.trim()));
   const displayResults = useMemo(
     () => results ? {
       ...results,
@@ -57,10 +60,10 @@ export default function LiveResultsPage() {
         riderId: item.uciId ? (riderIdsQuery.data?.get(item.uciId) ?? null) : null,
         countryCode: null,
         teamId: null,
-        teamName: formatCountryName(item.countryCode),
+        teamName: hasTeams ? item.teamName?.trim() || null : formatCountryName(item.countryCode),
       })),
     } : undefined,
-    [results, riderIdsQuery.data],
+    [results, riderIdsQuery.data, hasTeams],
   );
   const updateSort = (nextSort: ResultSort) => {
     setSortDirection((current) =>
@@ -127,6 +130,14 @@ export default function LiveResultsPage() {
                   description="There is no data available for this session."
               />
             ) : (
+              <Panel padding="none" className={styles.leaderboard}>
+                <header className={styles.leaderboardHeader}>
+                  <div className={styles.leaderboardCopy}>
+                    <h2>Leaderboard</h2>
+                    <p>Rider positions and performance overview</p>
+                  </div>
+                  <SegmentedControl label="Timing view" value={timeView} onChange={setTimeView} options={[{ value: "sectors", label: "Sectors" }, { value: "splits", label: "Splits" }]} />
+                </header>
               <SessionResultsTable
                 data={displayResults ?? results}
                 category={session.category}
@@ -135,7 +146,10 @@ export default function LiveResultsPage() {
                 onSort={updateSort}
                 loading={false}
                 liveGrouping
+                timeView={timeView}
+                embedded
               />
+              </Panel>
             )}
           </div>
         ) : null}

@@ -38,7 +38,8 @@
 .note { margin: 0; }
 .note a { text-decoration: underline; text-underline-offset: var(--space-3); }
 .tooltipDetails { display: grid; gap: var(--space-5); }
-.rulesBody { display: grid; gap: var(--space-20); padding: var(--space-20); overflow-y: auto; max-height: 65svh; font-family: var(--font-family-body); }
+.rulesDialog { max-height: 80svh; }
+.rulesBody { display: grid; min-height: 0; gap: var(--space-20); padding: var(--space-20); overflow-y: auto; font-family: var(--font-family-body); }
 .rulesTable { min-width: 0; }
 .smallTitle { font-family: var(--font-family-data); font-size: var(--font-size-body); font-weight: var(--font-weight-medium); }
 .updateProgress { position: absolute; inset: 0 0 auto; height: var(--component-border-width); z-index: 3; overflow: hidden; }

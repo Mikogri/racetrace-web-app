@@ -10,6 +10,8 @@
 }
 
 .dialog {
+  display: flex;
+  flex-direction: column;
   width: min(100%, var(--layout-modal-width));
   max-height: calc(100svh - var(--spacing-page-section-gap));
   overflow: hidden;
@@ -38,6 +40,7 @@
 
 .header,
 .footer {
+  flex-shrink: 0;
   display: flex;
   gap: var(--spacing-modal-gap);
   align-items: center;

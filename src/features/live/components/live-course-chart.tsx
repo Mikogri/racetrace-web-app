@@ -92,7 +92,12 @@ export function LiveCourseChart({ riders, riderIds }: {
                   if (!active || !payload?.length) return null;
                   const values = payload
                     .filter((entry) => typeof entry.value === "number")
-                    .map((entry) => `${entry.name}: ${formatLiveGap(Number(entry.value))}`);
+                    .map((entry) => (
+                      <span className={styles.tooltipRider} key={String(entry.dataKey)}>
+                        <i aria-hidden="true" style={{ backgroundColor: entry.color }} />
+                        <span>{entry.name}: {formatLiveGap(Number(entry.value))}</span>
+                      </span>
+                    ));
                   return values.length > 0 ? (
                     <ChartTooltip
                       active={active}

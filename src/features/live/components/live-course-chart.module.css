@@ -98,7 +98,14 @@
   white-space: nowrap;
 }
 
-.legendItem i {
+.tooltipRider {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+.legendItem i,
+.tooltipRider i {
   flex: 0 0 var(--space-5);
   width: var(--space-5);
   height: var(--space-5);

@@ -116,11 +116,22 @@ function TimeWithGap({
   );
 }
 
+function LiveRunClock({ startedAt, gap }: { startedAt: number | undefined; gap: number | null }) {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    if (startedAt === undefined) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 100);
+    return () => window.clearInterval(timer);
+  }, [startedAt]);
+  return <span className={gap === null || Math.abs(gap) < 0.0005 ? undefined : gap < 0 ? styles.gapAdvantage : styles.gapLoss}>{startedAt === undefined ? "--" : formatRaceTime(Math.max(0, (now - startedAt) / 1000))}</span>;
+}
+
 function RunTime({
   time,
   gap,
   status,
   startTime,
+  liveStartedAt,
   loading,
   winner,
   winnerLabel,
@@ -129,13 +140,14 @@ function RunTime({
   gap: number | null;
   status: string | null;
   startTime?: string | null | undefined;
+  liveStartedAt?: number | undefined;
   loading: boolean;
   winner: boolean;
   winnerLabel: string;
 }) {
   const normalizedStatus = status?.trim().toUpperCase();
   if (normalizedStatus && ["ON TRACK", "LIVE", "RUNNING"].includes(normalizedStatus)) {
-    return <LoadingText value="--" loading={loading} />;
+    return <LiveRunClock startedAt={liveStartedAt} gap={gap} />;
   }
   if (normalizedStatus && ["UPCOMING", "SCHEDULED", "TO START"].includes(normalizedStatus)) {
     return <LoadingText value={startTime ?? "--"} loading={loading} />;
@@ -168,6 +180,7 @@ export function SessionResultsTable({
   loading = false,
   embedded = false,
   liveGrouping = false,
+  timeView,
 }: {
   data: SessionResults;
   category: string | null;
@@ -177,7 +190,29 @@ export function SessionResultsTable({
   loading?: boolean;
   embedded?: boolean;
   liveGrouping?: boolean;
+  timeView?: "sectors" | "splits";
 }) {
+  const sourceItems = data.items;
+  if (liveGrouping && timeView === "splits" && data.session.timeView === "sectors") {
+    const items = sourceItems.map((row) => {
+      let total = 0;
+      let previousIndex = 0;
+      return { ...row, times: row.times.map((timing) => {
+        total = timing.time === null || timing.index !== previousIndex + 1 ? NaN : total + timing.time;
+        previousIndex = timing.index;
+        return { ...timing, time: Number.isFinite(total) ? total : null };
+      }) };
+    });
+    for (const row of items) for (const timing of row.times) {
+      const values = items.filter((item) => !item.isPerfectRun).flatMap((item) => {
+        const value = item.times.find((entry) => entry.index === timing.index)?.time;
+        return value == null ? [] : [value];
+      });
+      timing.position = timing.time === null ? null : 1 + values.filter((value) => value < timing.time!).length;
+      timing.gapToBest = timing.time === null || !values.length ? null : timing.time - Math.min(...values);
+    }
+    data = { ...data, items };
+  }
   const [initialReveal, setInitialReveal] = useState(true);
 
   useEffect(() => {
@@ -202,13 +237,13 @@ export function SessionResultsTable({
     return "upcoming";
   };
   const orderedRows = [...data.items].sort((left, right) => {
-    const perfectOrder = Number(right.isPerfectRun) - Number(left.isPerfectRun);
-    if (perfectOrder !== 0) return perfectOrder;
     if (liveGrouping) {
-      const ranks = { completed: 0, "on-track": 1, upcoming: 2 } as const;
+      const ranks = { "on-track": 0, completed: 1, upcoming: 2 } as const;
       const groupOrder = ranks[liveGroup(left)] - ranks[liveGroup(right)];
       if (groupOrder !== 0) return groupOrder;
     }
+    const perfectOrder = Number(right.isPerfectRun) - Number(left.isPerfectRun);
+    if (perfectOrder !== 0) return perfectOrder;
     if (splitSortIndex === null || loading) return 0;
     const leftPosition =
       left.times.find((time) => time.index === splitSortIndex)?.position ??
@@ -219,6 +254,7 @@ export function SessionResultsTable({
     if (leftPosition === rightPosition) return 0;
     return (leftPosition - rightPosition) * (sortDirection === "desc" ? 1 : -1);
   });
+  const hasOnTrack = liveGrouping && data.items.some((row) => liveGroup(row) === "on-track");
   const sessionLeader = data.items.find((row) => {
     const status = row.status?.trim().toUpperCase();
     return (
@@ -275,7 +311,16 @@ export function SessionResultsTable({
           const times = new Map(row.times.map((time) => [time.index, time]));
           const group = liveGroup(row);
           const previousGroup = rowIndex > 0 ? liveGroup(orderedRows[rowIndex - 1]) : null;
-          const showSeparator = liveGrouping && group !== "completed" && group !== previousGroup;
+          const showSeparator = liveGrouping && group !== previousGroup && (group === "upcoming" || hasOnTrack);
+          const sourceRow = sourceItems.find((item) => item.resultId === row.resultId && item.fullName === row.fullName);
+          const sourceLeader = sourceItems.find((item) => item === sessionLeader || (!item.isPerfectRun && item.finalGapToBest === 0 && item.finalTime !== null));
+          const latestSplitGap = sourceRow?.times.length && sourceLeader
+            ? sourceRow.times.reduce<number | null>((gap, timing) => {
+                const leaderTiming = sourceLeader.times.find((item) => item.index === timing.index)?.time;
+                if (gap === null || timing.time === null || leaderTiming == null) return null;
+                return gap + timing.time - leaderTiming;
+              }, 0)
+            : null;
           const rowKey = row.isPerfectRun
             ? "perfect-run"
             : (row.resultId ?? `${row.fullName}-${row.position ?? "unclassified"}`);
@@ -284,7 +329,7 @@ export function SessionResultsTable({
             {showSeparator ? (
               <tr className={styles.liveSeparatorRow}>
                 <td colSpan={sectorIndexes.length + 3}>
-                  <span>{group === "on-track" ? "ON TRACK" : "UPCOMING"}</span>
+                  <span>{group === "on-track" ? "ON TRACK" : group === "completed" ? "RESULTS" : "UPCOMING"}</span>
                 </td>
               </tr>
             ) : null}
@@ -358,9 +403,10 @@ export function SessionResultsTable({
               <td>
                 <RunTime
                   time={row.finalTime}
-                  gap={row.finalGapToBest}
+                  gap={liveGrouping && group === "on-track" ? latestSplitGap : row.finalGapToBest}
                   status={row.status}
                   startTime={row.startTime}
+                  liveStartedAt={row.liveStartedAt}
                   loading={loading}
                   winner={isSessionWinner}
                   winnerLabel={liveGrouping ? "Leader" : "Winner"}

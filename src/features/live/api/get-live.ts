@@ -152,6 +152,7 @@ export const sessionResultSchema = z
     teamName: nullableStringSchema,
     status: nullableStringSchema,
     startTime: nullableStringSchema.optional(),
+    liveStartedAt: z.number().optional(),
     topSpeed: nullableNumberSchema,
     averageSpeed: nullableNumberSchema,
     finalTime: nullableNumberSchema,
@@ -174,6 +175,7 @@ export const sessionResultSchema = z
     teamName: value.teamName,
     status: value.status,
     startTime: value.startTime,
+    ...(value.liveStartedAt !== undefined ? { liveStartedAt: value.liveStartedAt } : {}),
     topSpeed: value.topSpeed,
     averageSpeed: value.averageSpeed,
     finalTime: value.finalTime,
@@ -698,6 +700,7 @@ type DirectResult = {
   teamName: string | null;
   status: string | null;
   startTime?: string | null;
+  liveStartedAt?: number;
   isOnTrack: boolean;
   finalTime: number | null;
   times: DirectTiming[];
@@ -986,6 +989,9 @@ export function normalizeChronoRacePayload(
         status,
         startTime: stringValue(result.StartTime) ?? stringValue(rider.StartTime),
         isOnTrack,
+        ...(isOnTrack && chronoMilliseconds(result.RaceTime) !== null
+          ? { liveStartedAt: Date.now() - chronoMilliseconds(result.RaceTime)! * 1000 }
+          : {}),
         finalTime,
         times,
       },
@@ -1038,6 +1044,7 @@ export function normalizeChronoRacePayload(
       teamName: result.teamName,
       status: result.status,
       startTime: result.startTime,
+      ...(result.liveStartedAt !== undefined ? { liveStartedAt: result.liveStartedAt } : {}),
       topSpeed: null,
       averageSpeed: null,
       finalTime: result.finalTime,

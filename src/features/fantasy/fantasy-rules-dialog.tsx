@@ -10,7 +10,7 @@ import styles from './fantasy-page.module.css'
 export function FantasyRulesDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const query = useFantasyRules()
   const rules = query.data
-  return <Dialog open={open} title={rules ? `Fantasy Rules · ${rules.season}` : 'Fantasy Rules'} onClose={onClose}>
+  return <Dialog className={styles.rulesDialog} open={open} title={rules ? `Fantasy Rules · ${rules.season}` : 'Fantasy Rules'} onClose={onClose}>
     <div className={styles.rulesBody}>
       {!rules ? <TableFeedbackState type={query.isFetching ? 'loading' : 'error'} onRetry={() => void query.refetch()} /> : <>
         <SummaryBanner>{`${fantasyMoney(rules.budget)} Budget · ${rules.teamSize} Riders · ${rules.men} Men · ${rules.women} Women`}</SummaryBanner>
