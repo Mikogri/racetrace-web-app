@@ -28,9 +28,9 @@ it.each([true, false])('preserves the selected session when changing category (s
   await waitFor(() => expect(vi.mocked(apiClient.get).mock.calls.some(([path, , options]) => path.endsWith('/results') && options?.query?.category === 'elite_women' && options.query.sessionType === 'qualifying_1')).toBe(true));
   await user.click(screen.getByRole('button', { name: 'Open Women' }));
   await user.click(screen.getByRole('button', { name: 'Analytics' }));
-  expect(screen.queryByRole('button', { name: 'Open Women' })).not.toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: 'Open Men' })).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Elite Women' })).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByRole('button', { name: 'Open Women' })).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByRole('button', { name: 'Open Men' })).toBeInTheDocument();
+  await waitFor(() => expect(vi.mocked(apiClient.get).mock.calls.some(([path, , options]) => path.endsWith('/round-profile') && options?.query?.category === 'open_women')).toBe(true));
   await user.click(screen.getByRole('button', { name: 'Results' }));
   expect(screen.getByRole('button', { name: 'Open Women' })).toHaveAttribute('aria-pressed', 'true');
   view.unmount();

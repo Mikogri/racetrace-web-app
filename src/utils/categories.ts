@@ -68,7 +68,7 @@ function compact(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-// Synthetic Elite + Junior views belong only to the round Results tab.
+// Synthetic Elite + Junior views belong only to round details.
 export function isCombinedRoundCategory(value: string) {
   return ["openmen", "openwomen"].includes(compact(value));
 }
