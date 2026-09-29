@@ -24,6 +24,7 @@ import { formatGap, formatRaceTime } from "../../utils/formatters";
 import { routes } from "../../config/routes";
 import {
   formatCategoryLabel,
+  formatCategoryAbbreviation,
   sortCategoryValues,
 } from "../../utils/categories";
 import type { SessionResults } from "../live/api/get-live";
@@ -37,6 +38,7 @@ import {
   useRoundSessions,
 } from "./api/get-round";
 import styles from "./round-details-page.module.css";
+import { RoundAnalysis } from "./components/round-analysis";
 
 function Podium({ data }: { data: SessionResults | undefined }) {
   const podium = [2, 1, 3].map((position) =>
@@ -97,6 +99,7 @@ export default function RoundDetailsPage() {
   useDomainMetadata();
   const roundId = useRequiredRouteParam("roundId");
   const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") === "analyze" ? "analyze" : "results";
   const roundQuery = useRoundDetails(roundId);
   const sessionsQuery = useRoundSessions(roundId);
   const [category, setCategory] = useState(
@@ -112,15 +115,21 @@ export default function RoundDetailsPage() {
       .map((item) => item.category)
       .filter((item): item is string => Boolean(item)),
   );
+  if (categories.some((value) => value === "elite_men" || value === "junior_men")) categories.push("open_men");
+  if (categories.some((value) => value === "elite_women" || value === "junior_women")) categories.push("open_women");
   const selectedCategory = categories.includes(category)
     ? category
     : (categories.find((item) => item === "elite_men") ?? categories[0] ?? "");
   const sessionTypes = [
+      "all",
       ...new Set(
-        (sessionsQuery.data?.items ?? [])
-          .filter((item) => item.category === selectedCategory)
+        [...(sessionsQuery.data?.items ?? [])
+          .filter((item) => selectedCategory === "open_men"
+            ? item.category === "elite_men" || item.category === "junior_men"
+            : selectedCategory === "open_women" ? item.category === "elite_women" || item.category === "junior_women"
+            : item.category === selectedCategory)
           .map((item) => item.sessionType)
-          .filter((item): item is string => Boolean(item)),
+          .filter((item): item is string => Boolean(item)), ...(sessionType && sessionType !== "all" ? [sessionType] : [])],
       ),
   ];
   const selectedSessionType = sessionTypes.includes(sessionType)
@@ -135,7 +144,7 @@ export default function RoundDetailsPage() {
     timeView,
     sortBy,
     sortDirection,
-  });
+  }, tab === "results");
   const podiumQuery = useRoundResults({
     roundId,
     category: selectedCategory,
@@ -144,7 +153,7 @@ export default function RoundDetailsPage() {
     timeView,
     sortBy: "finalTime",
     sortDirection: "desc",
-  });
+  }, tab === "results");
   const loadingPage = roundQuery.isPending || sessionsQuery.isPending;
   const pageError = roundQuery.error ?? sessionsQuery.error;
   const round = roundQuery.data;
@@ -161,7 +170,7 @@ export default function RoundDetailsPage() {
   if (loadingPage) return <RouteLoadingPage />;
 
   return (
-    <PageContainer>
+    <PageContainer className={tab === "analyze" ? styles.analyticsPage : undefined}>
       <div className={styles.pageHeaderStack}>
         <BackButton fallback={routes.results} />
         <PageHeader
@@ -192,10 +201,23 @@ export default function RoundDetailsPage() {
           <>
             <div className={styles.filterRow}>
               <SegmentedControl
+                label="Round view"
+                value={tab}
+                options={[{ value: "results", label: "Results" }, { value: "analyze", label: "Analytics" }]}
+                onChange={(value) => setSearchParams((current) => {
+                  const next = new URLSearchParams(current);
+                  if (value === "results") next.delete("tab");
+                  else next.set("tab", value);
+                  return next;
+                }, { replace: true, preventScrollReset: true })}
+              />
+              <span className={styles.filterDot} aria-hidden="true" />
+              <SegmentedControl
                 label="Category"
                 options={categories.map((value) => ({
                   value,
-                  label: formatCategoryLabel(value),
+                  label: value === "open_men" ? "OM" : value === "open_women" ? "OW" : formatCategoryAbbreviation(value),
+                  tooltip: formatCategoryLabel(value),
                 }))}
                 value={selectedCategory}
                 onChange={(value) => {
@@ -208,19 +230,20 @@ export default function RoundDetailsPage() {
                     },
                     { replace: true },
                   );
-                  setSessionType("");
+                  setSessionType(selectedSessionType);
                   setPage(1);
                 }}
               />
               <span className={styles.filterDot} aria-hidden="true" />
               <SegmentedControl
                 label="Session"
+                disabled={tab === "analyze"}
                 options={sessionTypes.map((value) => ({
                   value,
-                  label: formatSessionLabel(value, "shortName"),
-                  tooltip: formatSessionLabel(value),
+                  label: value === "all" ? "All" : formatSessionLabel(value, "shortName"),
+                  tooltip: value === "all" ? "Best completed run per rider across all sessions" : formatSessionLabel(value),
                 }))}
-                value={selectedSessionType}
+                value={tab === "analyze" ? "all" : selectedSessionType}
                 onChange={(value) => {
                   setSessionType(value);
                   setPage(1);
@@ -228,6 +251,7 @@ export default function RoundDetailsPage() {
               />
             </div>
 
+            {tab === "analyze" ? <RoundAnalysis roundId={roundId} season={round.season!} category={selectedCategory} onCategoryChange={setCategory} /> : <>
             <SummaryBanner loading={resultsQuery.isFetching}>
               {`${formatCategoryLabel(selectedCategory)} · ${results?.session.completedRidersCount ?? "--"} Finishes · ${results ? (timeView === "splits" ? results.session.splitCount : results.session.sectorCount) : "--"} ${timeView === "splits" ? "Splits" : "Sectors"} · ${round.conditionName ?? "Condition unknown"}`}
             </SummaryBanner>
@@ -289,6 +313,7 @@ export default function RoundDetailsPage() {
                 onPageChange={setPage}
               />
             ) : null}
+            </>}
           </>
         )
       ) : null}

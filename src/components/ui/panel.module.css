@@ -26,6 +26,26 @@
   color: var(--color-brand-primary);
 }
 
+.headerWithInfo { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.headerWithInfo > p { grid-column: 1 / -1; }
+.info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: 500 11px/1 var(--font-family-data);
+  cursor: default;
+  opacity: 0.3;
+  transition: opacity var(--component-transition-standard);
+}
+.info:hover { opacity: 0.55; background: transparent; cursor: default; }
+.info img { display: block; }
+
 .headerDescription {
   font-family: var(--font-family-mono-variable);
   font-weight: 450;

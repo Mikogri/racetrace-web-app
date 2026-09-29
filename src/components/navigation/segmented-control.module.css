@@ -18,9 +18,11 @@
   transition: color var(--component-transition-control), background-color var(--component-transition-control);
 }
 
-.option:hover {
+.option:hover:not(:disabled) {
   background: var(--color-interaction-subtle-hover-background);
 }
+
+.option:disabled { cursor: default; opacity: 0.5; }
 
 .option[aria-pressed='true'] {
   color: var(--color-text-primary);

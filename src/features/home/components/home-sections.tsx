@@ -26,13 +26,14 @@ import {
 import { PerformanceValue } from "../../../components/data-display/performance-value";
 import { RatingValue } from "../../../components/data-display/rating-value";
 import { RiderCell } from "../../../components/data-display/rider-cell";
+import riderCellStyles from "../../../components/data-display/rider-cell.module.css";
 import { TableFeedbackState } from "../../../components/feedback/states";
 import { RiderLink } from "../../../components/navigation/rider-navigation";
 import {
   AppTooltip,
   ChartTooltip,
 } from "../../../components/overlays/tooltip";
-import { Panel } from "../../../components/ui/panel";
+import { Panel, PanelHeader } from "../../../components/ui/panel";
 import { routes } from "../../../config/routes";
 import riderRed from "../../../assets/riders/rider-red.png";
 import type { RiderSummary } from "../../../types/domain";
@@ -453,6 +454,8 @@ type SpeedResult = {
 
 export function SpeedVsRunTimeSection({
   summary,
+  round: selectedRound,
+  embedded = false,
   results,
   loading,
   updating,
@@ -460,6 +463,8 @@ export function SpeedVsRunTimeSection({
   onCategoryChange,
 }: {
   summary?: HomeSummary;
+  round?: RoundProfile["round"];
+  embedded?: boolean;
   results: SpeedResult[];
   loading: boolean;
   updating: boolean;
@@ -467,7 +472,7 @@ export function SpeedVsRunTimeSection({
   onCategoryChange: (value: string) => void;
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const round = summary?.lastCompletedRound;
+  const round = selectedRound ?? summary?.lastCompletedRound;
   const points = results
     .flatMap((result) =>
       !result.isPerfectRun &&
@@ -506,8 +511,8 @@ export function SpeedVsRunTimeSection({
   const speedPadding = Math.max((maximumSpeed - minimumSpeed) * 0.12, 1);
 
   return (
-    <div className={styles.sectionBlock}>
-      <SectionHeader
+    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
+      {embedded ? <PanelHeader title="// Top Speed vs Run Time" info="Final run time compared with top speed. Faster runs appear further to the right." /> : <SectionHeader
         title="Top Speed vs Run Time"
         meta={[
           classCode(round),
@@ -515,14 +520,14 @@ export function SpeedVsRunTimeSection({
           `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`,
         ]}
         description="Final run time compared with each rider's top speed"
-      />
+      />}
       <Panel padding="none" className={`${styles.homePanel} ${styles.speedPanel}`}>
         <div className={styles.speedChartHeader}>
           <div>
             <strong>Final Performance</strong>
             <span>Shorter run times are shown further to the right</span>
           </div>
-          <CategorySelector value={category} onChange={onCategoryChange} />
+          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
         </div>
         {loading ? (
           <div className={styles.speedChartSkeleton} aria-label="Loading final performance chart">
@@ -638,9 +643,24 @@ export function SpeedVsRunTimeSection({
           </div>
         )}
       </Panel>
-      <SectionAction to={round ? routes.round(round.roundId) : routes.results}>
+      {!embedded && <SectionAction to={round ? routes.round(round.roundId) : routes.results}>
         See Round Details
-      </SectionAction>
+      </SectionAction>}
+    </div>
+  );
+}
+
+function AnalyticsBarChartSkeleton({ rows, label }: { rows: number; label: string }) {
+  return (
+    <div className={styles.analyticsChart} role="status" aria-label={label}>
+      <div className={styles.analyticsSkeletonRows} aria-hidden="true">
+        {Array.from({ length: rows }, (_, index) => (
+          <div className={styles.analyticsSkeletonRow} key={index}>
+            <span />
+            <span style={{ width: `${40 + (index % 3) * 20}%` }} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -708,6 +728,8 @@ function AnalyticsBarChart({
 }
 
 type RoundAnalyticsProps = {
+  embedded?: boolean;
+  children?: ReactNode;
   profile?: RoundProfile;
   loading: boolean;
   error: boolean;
@@ -716,6 +738,8 @@ type RoundAnalyticsProps = {
 };
 
 export function TrackFingerprintSection({
+  embedded = false,
+  children,
   profile,
   loading,
   error,
@@ -725,19 +749,19 @@ export function TrackFingerprintSection({
   const fingerprint = profile?.trackFingerprint.sectors ?? [];
   const round = profile?.round;
   return (
-    <div className={styles.sectionBlock}>
-      <SectionHeader
+    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
+      {embedded ? <PanelHeader title="// Track Fingerprint" info="How strongly each sector separated the field in the final." /> : <SectionHeader
         title="Track Fingerprint"
         meta={[classCode(round), `Round ${round?.roundNumber ?? "--"}`, `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`]}
-        description="How strongly each sector separated the field in the latest final"
-      />
+        description="How strongly each sector separated the field in the final"
+      />}
       <Panel padding="none" className={`${styles.homePanel} ${styles.analyticsPanel}`}>
         <div className={styles.speedChartHeader}>
           <div><strong>Sector Impact</strong><span>Relative influence on the final result</span></div>
-          <CategorySelector value={category} onChange={onCategoryChange} />
+          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
         </div>
         {loading ? (
-          <div className={styles.analyticsSkeleton}><Scaffold /><Scaffold /><Scaffold /></div>
+          <AnalyticsBarChartSkeleton rows={fingerprint.length || 5} label="Loading Track Fingerprint" />
         ) : error || fingerprint.length === 0 ? (
           <TableFeedbackState type={error ? "error" : "empty"} />
         ) : (
@@ -749,12 +773,14 @@ export function TrackFingerprintSection({
           }))} />
         )}
       </Panel>
-      <SectionAction to={round ? routes.round(round.roundId) : routes.results}>Explore Round Analysis</SectionAction>
+      {children}
+      {!embedded && <SectionAction to={round ? `${routes.round(round.roundId)}?tab=analyze` : routes.results}>Explore Round Analysis</SectionAction>}
     </div>
   );
 }
 
 export function FieldSpreadSection({
+  embedded = false,
   profile,
   loading,
   error,
@@ -764,31 +790,31 @@ export function FieldSpreadSection({
   const spread = profile?.fieldSpread;
   const round = profile?.round;
   return (
-    <div className={styles.sectionBlock}>
-      <SectionHeader
+    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
+      {embedded ? <PanelHeader title="// Field Spread" info="Time differences between consecutive thresholds: podium P3, then approximately 16.7%, 33.3% and 66.7% of classified finishers. Duplicate and podium-level thresholds are omitted." /> : <SectionHeader
         title="Field Spread"
         meta={[classCode(round), `Round ${round?.roundNumber ?? "--"}`, `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`]}
-        description="How the time gap grew from the winner through the latest final"
-      />
+        description="Time differences between consecutive position thresholds in the final"
+      />}
       <Panel padding="none" className={`${styles.homePanel} ${styles.analyticsPanel}`}>
         <div className={styles.speedChartHeader}>
-          <div><strong>Race Gaps</strong><span>Gap from the winner through the classified field</span></div>
-          <CategorySelector value={category} onChange={onCategoryChange} />
+          <div><strong>Race Gaps</strong><span>Each bar shows the gap from the previous position threshold</span></div>
+          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
         </div>
         {loading ? (
-          <div className={styles.analyticsSkeleton}><Scaffold /><Scaffold /><Scaffold /></div>
+          <AnalyticsBarChartSkeleton rows={4} label="Loading Field Spread" />
         ) : error || !spread || spread.points.length === 0 ? (
           <TableFeedbackState type={error ? "error" : "empty"} />
         ) : (
-          <AnalyticsBarChart points={spread.points.map((point) => ({
+          <AnalyticsBarChart points={spread.points.filter((point) => point.incrementalSpread != null && point.incrementalSpreadPercent != null).map((point) => ({
             label: `P${point.position}`,
-            value: Math.min(100, point.gapPercent * 12),
-            detail: `+${point.gapToLeader.toFixed(3)} s · ${formatOneDecimal(point.gapPercent)}%`,
+            value: Math.min(100, point.incrementalSpreadPercent! * 12),
+            detail: `${point.previousPosition === 1 ? "Winner" : `P${point.previousPosition}`} → P${point.position}: ${point.incrementalSpread!.toFixed(3)} s`,
             color: "var(--color-chart-pre-final)",
           }))} />
         )}
       </Panel>
-      <SectionAction to={round ? routes.round(round.roundId) : routes.results}>Explore Round Analysis</SectionAction>
+      {!embedded && <SectionAction to={round ? `${routes.round(round.roundId)}?tab=analyze` : routes.results}>Explore Round Analysis</SectionAction>}
     </div>
   );
 }
@@ -1096,9 +1122,8 @@ export function TopRatedSection({
               </div>
             ) : (
               items.slice(0, 5).map((item, index) => (
-                <RiderLink
+                <div
                   className={styles.topRatedListItem}
-                  riderId={item.riderId}
                   key={item.riderId}
                 >
                   <span
@@ -1107,11 +1132,15 @@ export function TopRatedSection({
                     {item.position}
                   </span>
                   <span className={styles.topRatedListIdentity}>
-                    <strong>{item.fullName}</strong>
-                    <small>{item.teamName ?? "--"}</small>
+                    <strong>
+                      <RiderLink riderId={item.riderId} className={riderCellStyles.name}>
+                        {normalizeDisplayName(item.fullName)}
+                      </RiderLink>
+                    </strong>
+                    <small>{item.teamName ? normalizeDisplayName(item.teamName) : "--"}</small>
                   </span>
                   <RatingValue value={item.rating} />
-                </RiderLink>
+                </div>
               ))
             )}
           </div>

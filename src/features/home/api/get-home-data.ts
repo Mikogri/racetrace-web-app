@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
 import {
@@ -9,6 +9,7 @@ import {
 import type { MetricsFilters } from "../../../types/domain";
 import { useRanking } from "../../ranking/api/get-ranking";
 import { homeQueryKeys } from "./home-query-keys";
+import { roundRaceAnalyticsSchema } from "../../rounds/api/round-race-analytics-schema";
 
 const riderIdentitySchema = z.object({
   position: z.number().int(),
@@ -60,7 +61,18 @@ const roundProfileResultSchema = riderIdentitySchema.extend({
   topSpeed: nullableNumberSchema,
 });
 
+const spreadPointSchema = z.object({
+  position: z.number().int(),
+  raceTime: z.number(),
+  gapToLeader: z.number(),
+  gapPercent: z.number(),
+  previousPosition: z.number().int(),
+  incrementalSpread: nullableNumberSchema,
+  incrementalSpreadPercent: nullableNumberSchema,
+});
+
 const roundProfileSchema = z.object({
+  analytics: roundRaceAnalyticsSchema.nullish().transform((value) => value ?? null),
   season: z.number().int(),
   category: z.string(),
   round: homeRoundSchema.nullable(),
@@ -70,14 +82,11 @@ const roundProfileSchema = z.object({
     fieldSize: z.number().int(),
     classification: z.string(),
     p10GapPercent: nullableNumberSchema,
-    points: z.array(z.object({
-      position: z.number().int(),
-      raceTime: z.number(),
-      gapToLeader: z.number(),
-      gapPercent: z.number(),
-    })),
+    points: z.array(spreadPointSchema),
   }),
   trackFingerprint: z.object({
+    positionSpread: z.array(spreadPointSchema).default([]),
+    positionSpreadFullPosition: z.number().int().optional(),
     mostDecisiveSector: z.number().int().nullable(),
     sectors: z.array(z.object({
       sectorIndex: z.number().int(),
@@ -141,14 +150,15 @@ export function useSeasonOverview(season: number) {
   });
 }
 
-export function useRoundProfile(season: number, category: string) {
+export function useRoundProfile(season: number, category: string, roundId?: string) {
   return useQuery({
-    queryKey: homeQueryKeys.roundProfile(season, category),
+    queryKey: homeQueryKeys.roundProfile(season, category, roundId),
     queryFn: ({ signal }) => apiClient.get(
       "/api/v1/analytics/round-profile",
       roundProfileSchema,
-      { signal, query: { season, category } },
+      { signal, query: { season, category, roundId } },
     ),
+    ...(roundId ? { placeholderData: keepPreviousData } : {}),
   });
 }
 

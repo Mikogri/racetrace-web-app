@@ -128,7 +128,7 @@ export function useRoundResults(params: {
   timeView: "sectors" | "splits";
   sortBy: "finalTime" | `time:${number}`;
   sortDirection: "asc" | "desc";
-}) {
+}, enabled = true) {
   return useQuery({
     queryKey: roundQueryKeys.results(params.roundId, params),
     queryFn: ({ signal }) =>
@@ -149,6 +149,7 @@ export function useRoundResults(params: {
         },
       ),
     enabled:
+      enabled &&
       params.roundId.length > 0 &&
       params.category.length > 0 &&
       params.sessionType.length > 0,

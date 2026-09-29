@@ -12,11 +12,13 @@ export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
+  disabled = false,
 }: {
   label: string
   options: Array<SegmentedOption<T>>
   value: T
   onChange: (value: T) => void
+  disabled?: boolean
 }) {
   return (
     <div className={styles.control} role="group" aria-label={label}>
@@ -25,6 +27,7 @@ export function SegmentedControl<T extends string>({
           <button
             key={option.value}
             type="button"
+            disabled={disabled}
             className={styles.option}
             aria-pressed={value === option.value}
             aria-label={option.tooltip ?? option.label}

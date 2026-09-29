@@ -2,6 +2,8 @@ import { Children, Fragment, type HTMLAttributes, type ReactNode } from 'react'
 import { joinClassNames } from '../../utils/join-class-names'
 import { Typography } from './typography'
 import styles from './panel.module.css'
+import { AppTooltip } from '../overlays/tooltip'
+import infoIcon from '../../assets/info-hexagon.svg'
 
 type PanelProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode
@@ -16,16 +18,17 @@ export function Panel({ children, padding = 'default', className, ...props }: Pa
   )
 }
 
-export function PanelHeader({ title, description }: { title: string; description?: string }) {
+export function PanelHeader({ title, description, info }: { title: string; description?: string; info?: string }) {
   const hasMarker = title.trimStart().startsWith('//')
   const visibleTitle = hasMarker ? title.trimStart().slice(2).trimStart() : title
   return (
-    <div className={styles.header}>
+    <div className={joinClassNames(styles.header, info && styles.headerWithInfo)}>
       <Typography as="h2" variant="panelTitle">
         {hasMarker ? <span className={styles.titleMarker}>//</span> : null}
         {hasMarker ? ' ' : null}
         {visibleTitle}
       </Typography>
+      {info && <AppTooltip content={info}><button type="button" className={styles.info} aria-label={`About ${visibleTitle}`}><img src={infoIcon} alt="" width={16} height={16} /></button></AppTooltip>}
       {description ? <Typography variant="caption" className={styles.headerDescription}>{description}</Typography> : null}
     </div>
   )

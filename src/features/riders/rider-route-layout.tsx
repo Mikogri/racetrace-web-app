@@ -27,6 +27,7 @@ import {
 } from "./api/get-rider-team-history";
 import styles from "./rider-route-layout.module.css";
 
+
 const countries: Record<string, { name: string; flag: string }> = {
   AND: { name: "Andorra", flag: "🇦🇩" },
   AUS: { name: "Australia", flag: "🇦🇺" },

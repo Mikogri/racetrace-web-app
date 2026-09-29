@@ -10,6 +10,7 @@ import { RiderCell } from "../../../components/data-display/rider-cell";
 import { CyclingText } from "../../../components/data-display/cycling-text";
 import type { RiderSummary } from "../../../types/domain";
 import { formatGap, formatRaceTime } from "../../../utils/formatters";
+import { formatSessionLabel } from "../../../utils/domain-metadata";
 import type { SessionResults } from "../../live/api/get-live";
 import styles from "./session-results-table.module.css";
 
@@ -172,7 +173,7 @@ function RunTime({
 }
 
 export function SessionResultsTable({
-  data,
+  data: sourceData,
   category,
   sortBy,
   sortDirection,
@@ -192,12 +193,14 @@ export function SessionResultsTable({
   liveGrouping?: boolean;
   timeView?: "sectors" | "splits";
 }) {
+  let data = sourceData;
   const sourceItems = data.items;
+  const showSession = !liveGrouping && (data.session.sessionType?.toLowerCase() === "all" || sourceItems.some((row) => row.sessionType));
   if (liveGrouping && timeView === "splits" && data.session.timeView === "sectors") {
     const items = sourceItems.map((row) => {
       let total = 0;
       let previousIndex = 0;
-      return { ...row, times: row.times.map((timing) => {
+      return { ...row, times: row.times.filter((timing) => timing.index <= data.session.splitCount).map((timing) => {
         total = timing.time === null || timing.index !== previousIndex + 1 ? NaN : total + timing.time;
         previousIndex = timing.index;
         return { ...timing, time: Number.isFinite(total) ? total : null };
@@ -278,6 +281,7 @@ export function SessionResultsTable({
           <th scope="col" data-column="rider">
             Rider
           </th>
+          {showSession && <th scope="col">Session</th>}
           {sectorIndexes.map((index) => (
             <SortableTableHeader
               key={index}
@@ -328,7 +332,7 @@ export function SessionResultsTable({
             <Fragment key={rowKey}>
             {showSeparator ? (
               <tr className={styles.liveSeparatorRow}>
-                <td colSpan={sectorIndexes.length + 3}>
+                <td colSpan={sectorIndexes.length + 3 + Number(showSession)}>
                   <span>{group === "on-track" ? "ON TRACK" : group === "completed" ? "RESULTS" : "UPCOMING"}</span>
                 </td>
               </tr>
@@ -366,14 +370,17 @@ export function SessionResultsTable({
                     </small>
                   </div>
                 ) : (
+                  <div>
                   <RiderCell
                     rider={rider}
                     compact
                     cycling={loading}
                     linked={row.riderId !== null}
                   />
+                  </div>
                 )}
               </td>
+              {showSession && <td><LoadingText value={row.sessionType ? formatSessionLabel(row.sessionType, "shortName") : "--"} loading={loading} /></td>}
               {sectorIndexes.map((index) => {
                 const timing = times.get(index);
                 const leaderTime = leaderTimes.get(index);

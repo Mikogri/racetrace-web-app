@@ -152,6 +152,7 @@ export const sessionResultSchema = z
     teamName: nullableStringSchema,
     status: nullableStringSchema,
     startTime: nullableStringSchema.optional(),
+    sessionType: nullableStringSchema.optional(),
     liveStartedAt: z.number().optional(),
     topSpeed: nullableNumberSchema,
     averageSpeed: nullableNumberSchema,
@@ -175,6 +176,7 @@ export const sessionResultSchema = z
     teamName: value.teamName,
     status: value.status,
     startTime: value.startTime,
+    ...(value.sessionType ? { sessionType: value.sessionType } : {}),
     ...(value.liveStartedAt !== undefined ? { liveStartedAt: value.liveStartedAt } : {}),
     topSpeed: value.topSpeed,
     averageSpeed: value.averageSpeed,
@@ -955,7 +957,10 @@ export function normalizeChronoRacePayload(
       displayCase(stringValue(rider.Name)) ?? `Rider ${raceNumber}`;
     const fullName = [firstName, lastName].filter(Boolean).join(" ") || fallbackName;
     const isOnTrack = onTrackRaceNumbers.has(raceNumber);
-    const finalTime = isOnTrack ? null : chronoMilliseconds(result.RaceTime);
+    const status = isOnTrack ? "On Track" : stringValue(result.Status);
+    const hasInvalidFinish = ["DNF", "DNS", "DSQ"].includes(status?.trim().toUpperCase() ?? "");
+    // For non-finishers RaceTime can be a partial clock, not a finish time.
+    const finalTime = isOnTrack || hasInvalidFinish ? null : chronoMilliseconds(result.RaceTime);
     const rawTimes = Array.isArray(result.Times) ? result.Times : [];
     const cumulativeTimes = rawTimes.flatMap((rawTime, index) => {
       const timing = asRecord(rawTime);
@@ -975,7 +980,6 @@ export function normalizeChronoRacePayload(
       times.push({ index, name: `Sector ${index}`, time: finalTime - previous });
     }
     const rawPosition = numberValue(result.Position);
-    const status = isOnTrack ? "On Track" : stringValue(result.Status);
     return [
       {
         key: raceNumber,
@@ -1107,7 +1111,7 @@ export function normalizeChronoRacePayload(
       condition: null,
       completedRidersCount: validResults.length,
       startedRidersCount: directResults.length,
-      splitCount: timingIndexes.length,
+      splitCount: 4,
       sectorCount: timingIndexes.length,
       timeView: "sectors",
     },

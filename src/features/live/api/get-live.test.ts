@@ -31,6 +31,24 @@ const session = {
 } as LiveSession;
 
 describe("ChronoRace live result normalization", () => {
+  it.each(["DNF", "DNS", "DSQ"])("does not invent a finishing sector for %s", (status) => {
+    const table = normalizeChronoRacePayload({
+      Riders: {
+        "1": { GivenName: "Joel", FamilyName: "Sutherland" },
+        "2": { GivenName: "Ian", FamilyName: "Gil Gonzalez" },
+      },
+      Results: [
+        { RaceNr: 1, Status: status, RaceTime: 78390, Times: [{ RaceTime: 45185 }] },
+        { RaceNr: 2, Status: status, RaceTime: 11139, Times: [] },
+      ],
+    }, session);
+    const riders = table.items.filter((item) => !item.isPerfectRun);
+    expect(riders[0].times).toHaveLength(1);
+    expect(riders[0].times[0].time).toBe(45.185);
+    expect(riders[1].times).toHaveLength(0);
+    expect(riders.every((item) => item.finalTime === null)).toBe(true);
+    expect(table.items.find((item) => item.isPerfectRun)?.times).toHaveLength(1);
+  });
   it("accepts every active round status emitted by the API", () => {
     expect(isLiveRoundStatus("live")).toBe(true);
     expect(isLiveRoundStatus("ACTIVE")).toBe(true);

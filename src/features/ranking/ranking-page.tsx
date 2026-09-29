@@ -50,14 +50,13 @@ const rankingSorts: RankingSort[] = [
   "finalsCount",
 ];
 
-function rankingFilterSignature(filters: MetricsFilters, search: string) {
+function rankingFilterSignature(filters: MetricsFilters) {
   return JSON.stringify({
     seasons: filters.seasons,
     tracks: filters.tracks,
     conditions: filters.conditions,
     classes: filters.classes,
     categories: filters.categories,
-    search,
   });
 }
 
@@ -131,13 +130,11 @@ export default function RankingPage() {
       : defaultDirection;
   const filterSignature = rankingFilterSignature(
     appliedFilters,
-    debouncedSearch,
   );
   const hasNarrowingFilters =
     appliedFilters.tracks.length > 0 ||
     appliedFilters.conditions.length > 0 ||
-    appliedFilters.classes.length > 0 ||
-    debouncedSearch.trim().length > 0;
+    appliedFilters.classes.length > 0;
   const lastSettledFilters = useRef<{
     filters: MetricsFilters;
     search: string;
@@ -241,12 +238,6 @@ export default function RankingPage() {
   };
 
   const updateSearch = (value: string) => {
-    setComparisonFilters(
-      lastSettledFilters.current ?? {
-        filters: appliedFilters,
-        search: debouncedSearch,
-      },
-    );
     updateParam("search", value);
   };
 

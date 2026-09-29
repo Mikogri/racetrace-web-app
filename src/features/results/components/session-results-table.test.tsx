@@ -117,6 +117,13 @@ const data: SessionResults = {
 };
 
 describe("SessionResultsTable", () => {
+  it("shows the source session in its own column for All", () => {
+    const combined = { ...data, session: { ...data.session, sessionType: "all" },
+      items: [{ ...data.items[0], sessionType: "qualifying_1" }] };
+    render(<MemoryRouter><SessionResultsTable data={combined} category="elite_men" sortBy="finalTime" sortDirection="desc" onSort={vi.fn()} /></MemoryRouter>);
+    expect(screen.getByRole("columnheader", { name: "Session" })).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "Quali 1" })).toBeInTheDocument();
+  });
   it("keeps rider metadata visible when the rider cannot be resolved locally", () => {
     const unresolvedRiderData: SessionResults = {
       ...data,

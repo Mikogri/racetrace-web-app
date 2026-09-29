@@ -7,6 +7,28 @@
   min-width: 0;
 }
 
+.embeddedAnalytics {
+  padding: var(--spacing-details-padding);
+  border: 0;
+  border-radius: 0;
+}
+
+
+.embeddedAnalytics > div:first-child p { text-transform: none; }
+.embeddedAnalytics .homePanel { border: 0; border-radius: 0; }
+.embeddedAnalytics .speedChartHeader { display: none; }
+.embeddedAnalytics .speedChart,
+.embeddedAnalytics .speedChartSkeleton,
+.embeddedAnalytics .analyticsChart { height: 275px; padding: 0; }
+.embeddedAnalytics .analyticsPanel { min-height: 0; }
+.embeddedAnalytics > div:first-child { width: 100%; }
+.embeddedAnalytics .analyticsSkeletonRows { border: 0; border-radius: 0; }
+.embeddedAnalytics .speedChartSkeleton > span {
+  border: 0;
+  border-radius: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 46px, var(--color-border-default) 46px 48px);
+}
+
 .sectionHeader {
   display: flex;
   flex-direction: column;
@@ -348,12 +370,46 @@
 }
 
 .fingerprintBars,
-.spreadRows,
-.analyticsSkeleton {
+.spreadRows {
   display: flex;
   flex-direction: column;
   gap: var(--space-15);
   padding-top: var(--space-20);
+}
+
+.analyticsSkeletonRows {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  padding: var(--space-8) var(--space-18) var(--space-8) 0;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  animation: scaffold-pulse 900ms ease-in-out infinite alternate;
+}
+
+.analyticsSkeletonRow {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+}
+
+.analyticsSkeletonRow > span {
+  height: 14px;
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+}
+
+.analyticsSkeletonRow > span:first-child {
+  width: 20px;
+  height: 8px;
+  justify-self: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .analyticsSkeletonRows {
+    animation: none;
+  }
 }
 
 .fingerprintRow,
@@ -1009,17 +1065,18 @@
 
 .topRatedListIdentity strong {
   color: var(--color-text-primary);
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-body);
   font-size: var(--font-size-control);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-light);
   line-height: 15px;
 }
 
 .topRatedListIdentity small {
   color: var(--color-text-secondary);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-body);
   font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
+  text-transform: none;
   line-height: 13px;
 }
 
