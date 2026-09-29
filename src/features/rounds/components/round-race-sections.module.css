@@ -47,7 +47,7 @@
 .summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-12); }
 .summary strong, .outliers strong { color: var(--color-text-primary); font-weight: 500; }
 .score { display: flex; gap: var(--space-12); align-items: baseline; }
-.score strong { color: var(--color-text-primary); font-size: 32px; font-weight: 500; }
+.score strong { color: var(--color-text-primary); font-size: 24px; font-weight: 500; }
 .metrics { display: grid; margin: 0; }
 .metrics > div { display: flex; justify-content: space-between; gap: var(--space-12); padding-block: var(--space-12); border-bottom: 1px solid var(--color-border-default); }
 .metrics dd { color: var(--color-text-primary); margin: 0; }

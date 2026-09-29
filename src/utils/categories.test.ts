@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import * as registry from "./categories";
 import {
   categoryMatchesGender,
@@ -8,6 +8,22 @@ import {
 } from "./categories";
 
 describe("category registry", () => {
+  it("does not discover combined round categories as global categories", () => {
+    observeCategoriesInApiPayload({ categories: ["open_men", "open_women", "Open_U17"] });
+    expect(getKnownCategories().map(item => item.value)).not.toContain("open_men");
+    expect(getKnownCategories().map(item => item.value)).not.toContain("open_women");
+    expect(getKnownCategories().map(item => item.value)).toContain("Open_U17");
+  });
+
+  it("ignores combined round categories previously saved in browser storage", async () => {
+    const key = "racetrace:known-categories:v1";
+    const previous = localStorage.getItem(key);
+    localStorage.setItem(key, JSON.stringify([{ value: "open_men", label: "Open Men", abbreviation: "OM", gender: "male" }]));
+    vi.resetModules();
+    const fresh = await import("./categories");
+    expect(fresh.getKnownCategories().map(item => item.value)).not.toContain("open_men");
+    if (previous === null) localStorage.removeItem(key); else localStorage.setItem(key, previous);
+  });
   it("always starts with the four standard downhill categories", () => {
     expect(
       getKnownCategories()

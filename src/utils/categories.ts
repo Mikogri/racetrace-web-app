@@ -68,6 +68,11 @@ function compact(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+// Synthetic Elite + Junior views belong only to the round Results tab.
+export function isCombinedRoundCategory(value: string) {
+  return ["openmen", "openwomen"].includes(compact(value));
+}
+
 function canonicalValue(value: string) {
   return metadataAliases[compact(value)] ?? knownAliases[compact(value)] ?? value.trim();
 }
@@ -148,6 +153,7 @@ function loadCategories(): KnownCategory[] {
 function mergeCategories(initial: KnownCategory[], incoming: KnownCategory[]) {
   const result = [...initial];
   for (const item of incoming) {
+    if (isCombinedRoundCategory(item.value)) continue;
     const index = result.findIndex(
       (current) =>
         canonicalValue(current.value) === canonicalValue(item.value) ||
@@ -161,7 +167,7 @@ function mergeCategories(initial: KnownCategory[], incoming: KnownCategory[]) {
 }
 
 function saveAndNotify(next: KnownCategory[]) {
-  categories = next;
+  categories = next.filter(item => !isCombinedRoundCategory(item.value));
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(
@@ -183,6 +189,7 @@ function registerCategory(
   const trimmed = value.trim();
   if (!trimmed) return;
   const canonical = canonicalValue(trimmed);
+  if (isCombinedRoundCategory(canonical)) return;
   if (authoritativeCodes.has(canonical)) return;
   const existing = categories.find((item) => item.value === canonical);
   if (existing && !label && gender === undefined) return;

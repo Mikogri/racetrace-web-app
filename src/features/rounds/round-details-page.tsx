@@ -26,6 +26,7 @@ import {
   formatCategoryLabel,
   formatCategoryAbbreviation,
   sortCategoryValues,
+  isCombinedRoundCategory,
 } from "../../utils/categories";
 import type { SessionResults } from "../live/api/get-live";
 import {
@@ -113,12 +114,17 @@ export default function RoundDetailsPage() {
   const categories = sortCategoryValues(
     (sessionsQuery.data?.items ?? [])
       .map((item) => item.category)
-      .filter((item): item is string => Boolean(item)),
+      .filter((item): item is string => Boolean(item) && !isCombinedRoundCategory(item!)),
   );
-  if (categories.some((value) => value === "elite_men" || value === "junior_men")) categories.push("open_men");
-  if (categories.some((value) => value === "elite_women" || value === "junior_women")) categories.push("open_women");
-  const selectedCategory = categories.includes(category)
-    ? category
+  if (tab === "results") {
+    if (categories.some((value) => value === "elite_men" || value === "junior_men")) categories.push("open_men");
+    if (categories.some((value) => value === "elite_women" || value === "junior_women")) categories.push("open_women");
+  }
+  const requestedCategory = tab === "analyze" && isCombinedRoundCategory(category)
+    ? (category === "open_women" ? ["elite_women", "junior_women"] : ["elite_men", "junior_men"]).find(value => categories.includes(value)) ?? ""
+    : category;
+  const selectedCategory = categories.includes(requestedCategory)
+    ? requestedCategory
     : (categories.find((item) => item === "elite_men") ?? categories[0] ?? "");
   const sessionTypes = [
       "all",

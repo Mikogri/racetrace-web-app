@@ -11,6 +11,9 @@ vi.mock('../../lib/api-client', () => ({ apiClient: { get: vi.fn() } }));
 it.each([true, false])('preserves the selected session when changing category (session available: %s)', async (available) => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   vi.mocked(apiClient.get).mockImplementation(async (path) => {
+    if (path.endsWith('/round-profile')) return { season: 2026, category: 'elite_men', round: null, sessionId: null, results: [], analytics: null,
+      fieldSpread: { fieldSize: 0, classification: 'unavailable', p10GapPercent: null, points: [] },
+      trackFingerprint: { positionSpread: [], mostDecisiveSector: null, sectors: [] } };
     if (path.endsWith('/sessions')) return { items: ['elite_men', 'elite_women'].flatMap(category =>
       (category === 'elite_women' && !available ? ['final'] : ['final', 'qualifying_1']).map(sessionType => ({ sessionId: `${category}-${sessionType}`, roundId: '1', category, sessionType, sessionDate: null, riderIds: [] }))),
       page: 1, pageSize: 100, totalItems: 4, totalPages: 1 };
@@ -23,6 +26,13 @@ it.each([true, false])('preserves the selected session when changing category (s
   await user.click(screen.getByRole('button', { name: 'Elite Women' }));
   expect(within(screen.getByRole('group', { name: 'Session' })).getByRole('button', { name: 'Qualifying 1' })).toHaveAttribute('aria-pressed', 'true');
   await waitFor(() => expect(vi.mocked(apiClient.get).mock.calls.some(([path, , options]) => path.endsWith('/results') && options?.query?.category === 'elite_women' && options.query.sessionType === 'qualifying_1')).toBe(true));
+  await user.click(screen.getByRole('button', { name: 'Open Women' }));
+  await user.click(screen.getByRole('button', { name: 'Analytics' }));
+  expect(screen.queryByRole('button', { name: 'Open Women' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Open Men' })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Elite Women' })).toHaveAttribute('aria-pressed', 'true');
+  await user.click(screen.getByRole('button', { name: 'Results' }));
+  expect(screen.getByRole('button', { name: 'Open Women' })).toHaveAttribute('aria-pressed', 'true');
   view.unmount();
   client.clear();
 });
