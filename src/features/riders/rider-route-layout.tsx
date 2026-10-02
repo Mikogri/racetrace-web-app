@@ -16,6 +16,7 @@ import {
   categoryMatchesGender,
   formatCategoryLabel,
   getKnownCategories,
+  juniorCategoryForAge,
 } from "../../utils/categories";
 import { riderImageFromId } from "../../utils/rider-image";
 import { useRiderOverview, type RiderOverview } from "./api/get-rider-overview";
@@ -180,6 +181,7 @@ export default function RiderRouteLayout() {
     ),
   );
   const previousTabIndex = useRef(activeTabIndex);
+  const initializedCategoryRider = useRef<string | null>(null);
   const tabDirection =
     activeTabIndex >= previousTabIndex.current ? "forward" : "backward";
   const { filters, setFilters } = useMetricsFilters();
@@ -223,6 +225,15 @@ export default function RiderRouteLayout() {
     [filterOptions.options, riderGender],
   );
   useEffect(() => {
+    if (!statistics || overviewQuery.isPlaceholderData) return;
+    if (initializedCategoryRider.current !== riderId) {
+      initializedCategoryRider.current = riderId;
+      const juniorCategory = juniorCategoryForAge(statistics.age, riderGender);
+      if (juniorCategory && (filters.categories.length !== 1 || filters.categories[0] !== juniorCategory)) {
+        setFilters({ ...filters, categories: [juniorCategory] });
+        return;
+      }
+    }
     if (!riderGender || filters.categories.length === 0) return;
     const available = new Set(
       riderFilterOptions.categories.map((category) => category.value),
@@ -235,7 +246,7 @@ export default function RiderRouteLayout() {
           : [],
       });
     }
-  }, [filters, riderFilterOptions.categories, riderGender, setFilters]);
+  }, [filters, riderFilterOptions.categories, riderGender, setFilters, statistics, overviewQuery.isPlaceholderData, riderId]);
 
   useEffect(() => {
     previousTabIndex.current = activeTabIndex;

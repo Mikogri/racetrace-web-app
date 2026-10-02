@@ -8,6 +8,13 @@ import {
 } from "./categories";
 
 describe("category registry", () => {
+  it("defaults minors to the matching junior category without guessing unknown ages or gender", () => {
+    expect(registry.juniorCategoryForAge(18, "male")).toBe("junior_men");
+    expect(registry.juniorCategoryForAge(17, "female")).toBe("junior_women");
+    expect(registry.juniorCategoryForAge(19, "male")).toBeNull();
+    expect(registry.juniorCategoryForAge(null, "male")).toBeNull();
+    expect(registry.juniorCategoryForAge(18, null)).toBeNull();
+  });
   it("does not discover combined round categories as global categories", () => {
     observeCategoriesInApiPayload({ categories: ["open_men", "open_women", "Open_U17"] });
     expect(getKnownCategories().map(item => item.value)).not.toContain("open_men");

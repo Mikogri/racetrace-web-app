@@ -252,11 +252,11 @@ export default function RoundDetailsPage() {
               />
             </div>
 
-            {tab === "analyze" ? <RoundAnalysis roundId={roundId} season={round.season!} category={selectedCategory} onCategoryChange={setCategory} /> : <>
-            <SummaryBanner loading={resultsQuery.isFetching}>
+            {tab === "results" && <SummaryBanner loading={resultsQuery.isFetching}>
               {`${formatCategoryLabel(selectedCategory)} · ${results?.session.completedRidersCount ?? "--"} Finishes · ${results ? (timeView === "splits" ? results.session.splitCount : results.session.sectorCount) : "--"} ${timeView === "splits" ? "Splits" : "Sectors"} · ${round.conditionName ?? "Condition unknown"}`}
-            </SummaryBanner>
+            </SummaryBanner>}
 
+            {tab === "analyze" ? <RoundAnalysis roundId={roundId} season={round.season!} category={selectedCategory} onCategoryChange={setCategory} conditionName={round.conditionName} /> : <>
             <Podium data={podiumQuery.data} />
 
             <section

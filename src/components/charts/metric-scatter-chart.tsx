@@ -31,6 +31,7 @@ export function MetricScatterChart({
   showAxisLabels = true,
   legend = [],
   emptyMode = "message",
+  height = 275,
 }: {
   title: string;
   xLabel: string;
@@ -39,6 +40,7 @@ export function MetricScatterChart({
   showAxisLabels?: boolean;
   legend?: Array<{ label: string; color: string }>;
   emptyMode?: "message" | "chart";
+  height?: number;
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
   const xAxis = metricAxisConfiguration(points.map((point) => point.x));
@@ -46,18 +48,20 @@ export function MetricScatterChart({
   return (
     <div className={styles.panel}>
       <h2><span>//</span> {title}</h2>
-      <div ref={chartRef} className={styles.chart}>
+      <div ref={chartRef} className={styles.chart} style={{ height }}>
         {points.length === 0 && emptyMode === "message" ? (
           <div className={styles.empty}>No comparable data</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 12, right: 18, bottom: 12, left: 0 }} accessibilityLayer={false}>
+            <ScatterChart margin={{ top: 10, right: 18, bottom: 0, left: 0 }} accessibilityLayer={false}>
               <CartesianGrid className={styles.grid} />
               <XAxis
                 type="number"
                 dataKey="x"
                 domain={xAxis.domain}
                 ticks={xAxis.ticks}
+                height={40}
+                tickMargin={12}
                 tickLine={false}
                 axisLine={false}
                 tick={{ className: styles.tick }}
@@ -70,6 +74,7 @@ export function MetricScatterChart({
                 dataKey="y"
                 domain={yAxis.domain}
                 ticks={yAxis.ticks}
+                tickMargin={8}
                 tickLine={false}
                 axisLine={false}
                 width={36}

@@ -2,7 +2,8 @@ import { useId, useRef } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ErrorState, TableFeedbackState } from "../../../components/feedback/states";
 import { ChartTooltip } from "../../../components/overlays/tooltip";
-import { Panel, PanelHeader } from "../../../components/ui/panel";
+import { Panel, PanelHeader, SummaryBanner } from "../../../components/ui/panel";
+import { formatCategoryLabel } from "../../../utils/categories";
 import tableStyles from "../../../components/data-display/data-table.module.css";
 import { useRoundProfile, type RoundProfile } from "../../home/api/get-home-data";
 import { FieldSpreadSection, SpeedVsRunTimeSection, TrackFingerprintSection } from "../../home/components/home-sections";
@@ -44,15 +45,18 @@ function FieldProgression({ points, fullPosition, loading }: { points: RoundProf
   </Panel>;
 }
 
-export function RoundAnalysis({ roundId, season, category, onCategoryChange }: {
-  roundId: string; season: number; category: string; onCategoryChange: (value: string) => void;
+export function RoundAnalysis({ roundId, season, category, onCategoryChange, conditionName }: {
+  roundId: string; season: number; category: string; onCategoryChange: (value: string) => void; conditionName?: string | null;
 }) {
   const query = useRoundProfile(season, category, roundId);
   const profile = query.data;
   const updating = query.isFetching && !query.isPending;
-  if (query.isError && !profile) return <ErrorState message={query.error.message} onRetry={() => void query.refetch()} />;
   const shared = { ...(profile ? { profile } : {}), loading: query.isPending, error: query.isError, category, onCategoryChange, embedded: true };
-  return <div className={styles.wrapper} aria-busy={query.isFetching}>
+  return <>
+    <SummaryBanner loading={query.isFetching}>
+      {`${formatCategoryLabel(category)} · ${profile?.fieldSpread.fieldSize ?? "--"} Finishes · ${profile?.trackFingerprint.sectors.length ?? "--"} Sectors · ${conditionName ?? "Condition unknown"}`}
+    </SummaryBanner>
+    {query.isError && !profile ? <ErrorState message={query.error.message} onRetry={() => void query.refetch()} /> : <div className={styles.wrapper} aria-busy={query.isFetching}>
     {updating && <div className={tableStyles.tableProgress} role="progressbar" aria-label="Updating round analysis"><span /></div>}
     <div className={`${styles.content} ${updating ? styles.updating : ""}`}>
       <div className={sectionStyles.sections}>
@@ -64,5 +68,6 @@ export function RoundAnalysis({ roundId, season, category, onCategoryChange }: {
       </div>
       <RoundRaceSections data={profile?.analytics ?? null} loading={query.isPending} />
     </div>
-  </div>;
+  </div>}
+  </>;
 }

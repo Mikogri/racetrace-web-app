@@ -971,12 +971,12 @@ export function normalizeChronoRacePayload(
     const times: DirectTiming[] = cumulativeTimes.flatMap((timing) => {
       const sectorTime = timing.time - previous;
       previous = timing.time;
-      return sectorTime >= 0
+      return sectorTime > 0
         ? [{ index: timing.index, name: `Sector ${timing.index}`, time: sectorTime }]
         : [];
     });
     if (!isOnTrack && finalTime !== null && finalTime > previous) {
-      const index = times.length + 1;
+      const index = (cumulativeTimes.at(-1)?.index ?? 0) + 1;
       times.push({ index, name: `Sector ${index}`, time: finalTime - previous });
     }
     const rawPosition = numberValue(result.Position);

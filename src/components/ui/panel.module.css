@@ -29,6 +29,7 @@
 .headerWithInfo { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
 .headerWithInfo > p { grid-column: 1 / -1; }
 .info {
+  --color-interaction-subtle-hover-background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;

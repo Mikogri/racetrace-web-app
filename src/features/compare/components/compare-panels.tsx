@@ -208,6 +208,7 @@ export function CompareConsistencyChart({ data }: { data: CompareData }) {
   return (
     <MetricScatterChart
       title="Pace / Consistency"
+      height={349}
       xLabel="Pace"
       yLabel="Consistency"
       showAxisLabels={false}

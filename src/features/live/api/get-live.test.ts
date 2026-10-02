@@ -31,6 +31,13 @@ const session = {
 } as LiveSession;
 
 describe("ChronoRace live result normalization", () => {
+  it("omits a zero-length sector caused by a duplicated finish measurement", () => {
+    const table = normalizeChronoRacePayload({
+      Results: [{ RaceNr: 1, Status: "Finished", RaceTime: 158317,
+        Times: [47104, 93241, 158317, 158317].map((RaceTime) => ({ RaceTime })) }],
+    }, session);
+    expect(table.items.find((item) => !item.isPerfectRun)?.times.map((time) => time.index)).toEqual([1, 2, 3]);
+  });
   it.each(["DNF", "DNS", "DSQ"])("does not invent a finishing sector for %s", (status) => {
     const table = normalizeChronoRacePayload({
       Riders: {

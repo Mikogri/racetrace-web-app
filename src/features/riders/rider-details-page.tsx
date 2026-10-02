@@ -71,9 +71,9 @@ function PressureDeltaChart({
   return (
     <div ref={chartRef} className={styles.pressureDeltaChart}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 12, right: 8, bottom: 4, left: 0 }} accessibilityLayer={false}>
+        <BarChart data={data} margin={{ top: 10, right: 8, bottom: 0, left: 0 }} accessibilityLayer={false}>
           <CartesianGrid className={styles.pressureChartGrid} />
-          <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={10} tick={{ className: styles.pressureChartTick }} />
+          <XAxis dataKey="label" height={40} tickLine={false} axisLine={false} tickMargin={12} tick={{ className: styles.pressureChartTick }} />
           <YAxis tickLine={false} axisLine={false} tickMargin={8} width={38} tick={{ className: styles.pressureChartTick }} />
           <ReferenceLine y={0} className={styles.pressureZeroLine} />
           <Tooltip

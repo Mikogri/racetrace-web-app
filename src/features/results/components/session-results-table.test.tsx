@@ -117,6 +117,12 @@ const data: SessionResults = {
 };
 
 describe("SessionResultsTable", () => {
+  it("keeps five live sector columns even when only one sector is available", () => {
+    render(<MemoryRouter><SessionResultsTable data={data} category="elite_men" sortBy="finalTime" sortDirection="desc" onSort={vi.fn()} liveGrouping timeView="sectors" /></MemoryRouter>);
+    for (const index of [1, 2, 3, 4, 5]) {
+      expect(screen.getByRole("columnheader", { name: new RegExp(`S${index}`) })).toBeInTheDocument();
+    }
+  });
   it("shows the source session in its own column for All", () => {
     const combined = { ...data, session: { ...data.session, sessionType: "all" },
       items: [{ ...data.items[0], sessionType: "qualifying_1" }] };

@@ -1,5 +1,6 @@
 .page {
   gap: var(--space-24);
+  padding-bottom: 0;
 }
 
 .filtersSection {
@@ -144,8 +145,6 @@
   padding: var(--space-40);
   border-top: var(--component-border-width) solid var(--color-border-default);
 }
-
-.dataRow:last-child { padding-bottom: 0; }
 
 .twoColumns {
   position: relative;

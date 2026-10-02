@@ -2,6 +2,12 @@ import { useSyncExternalStore } from "react";
 
 export type CategoryGender = "male" | "female" | "open";
 
+export function juniorCategoryForAge(age: number | null | undefined, gender: string | null | undefined) {
+  if (age == null || !Number.isFinite(age) || age <= 0 || age > 18) return null;
+  const normalized = normalizeGender(gender);
+  return normalized === "male" ? "junior_men" : normalized === "female" ? "junior_women" : null;
+}
+
 export type KnownCategory = {
   value: string;
   label: string;

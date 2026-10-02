@@ -223,7 +223,7 @@ export function SessionResultsTable({
     return () => window.clearTimeout(timeout);
   }, []);
 
-  const sectorIndexes = [
+  const sectorIndexes = liveGrouping && timeView !== "splits" ? [1, 2, 3, 4, 5] : [
     ...new Set(
       data.items.flatMap((row) => row.times.map((time) => time.index)),
     ),

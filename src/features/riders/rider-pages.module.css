@@ -154,8 +154,8 @@
 
 .pressureDeltaChart {
   width: 100%;
-  min-height: 220px;
-  flex: 1;
+  height: 275px;
+  flex: 0 0 auto;
 }
 
 .pressureChartGrid {
