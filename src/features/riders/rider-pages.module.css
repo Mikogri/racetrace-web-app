@@ -219,7 +219,7 @@
 .resultsPage {
   gap: 14px;
   margin-top: 0;
-  padding-top: var(--space-24);
+  padding-block: var(--space-24);
 }
 
 .riderResultsScroll {

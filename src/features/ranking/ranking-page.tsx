@@ -35,7 +35,7 @@ import {
 import styles from "./ranking-page.module.css";
 
 // Toggle request diagnostics without removing the underlying implementation.
-const SHOW_RANKING_REQUEST_DETAILS = true;
+const SHOW_RANKING_REQUEST_DETAILS = false;
 
 const rankingSorts: RankingSort[] = [
   "position",
