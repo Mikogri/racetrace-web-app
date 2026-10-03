@@ -34,9 +34,8 @@ import {
 } from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
 
-// Keep the diagnostics implementation available without exposing it in the UI.
-// Change to true to restore Request Details on the Ranking page.
-const SHOW_RANKING_REQUEST_DETAILS = false;
+// Toggle request diagnostics without removing the underlying implementation.
+const SHOW_RANKING_REQUEST_DETAILS = true;
 
 const rankingSorts: RankingSort[] = [
   "position",

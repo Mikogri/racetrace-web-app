@@ -750,8 +750,8 @@ function timingEntries(value: unknown) {
       const timing = asRecord(rawTiming);
       const time = chronoMilliseconds(timing?.RaceTime);
       const position = numberValue(timing?.Position);
-      return timing && time !== null && position !== null && position > 0
-        ? [{ split: index + 1, time, position: Math.trunc(position) }]
+      return timing && time !== null
+        ? [{ split: index + 1, time, position: position !== null && position > 0 ? Math.trunc(position) : null }]
         : [];
     },
   );
@@ -853,7 +853,6 @@ export function liveTimingPresentation(payload: unknown): {
     const lastPosition = isCurrentlyOnTrack
       ? (timings.at(-1)?.position ?? null)
       : (finishPosition ?? timings.at(-1)?.position ?? null);
-    if (lastPosition === null) return [];
     const lastTiming = timings.at(-1);
     const officialFinishGap = finishGap(officialResult);
     const gap = rawFinish !== null && officialFinishGap !== null
@@ -910,13 +909,26 @@ export function normalizeChronoRacePayload(
 
   const riders = asRecord(root.Riders) ?? {};
   const ridersByRaceNumber = chronoRiderMap(root);
+  const onTrackResults = activeChronoOnTrack(root);
   const onTrackRaceNumbers = new Set(
-    activeChronoOnTrack(root).flatMap((result) => {
+    onTrackResults.flatMap((result) => {
       const raceNumber = identifierValue(result?.RaceNr) ?? identifierValue(result?.Key);
       return raceNumber ? [raceNumber] : [];
     }),
   );
-  const sourceResults = Array.isArray(root.Results) ? root.Results : [];
+  const resultsByRaceNumber = new Map<string, Record<string, unknown>>();
+  for (const raw of [...(Array.isArray(root.Results) ? root.Results : []), ...onTrackResults]) {
+    const result = asRecord(raw);
+    if (!result) continue;
+    const key = identifierValue(result.RaceNr) ?? identifierValue(result.Key);
+    if (key) resultsByRaceNumber.set(key, { ...resultsByRaceNumber.get(key), ...result });
+  }
+  const sourceResults = [...resultsByRaceNumber.values()];
+  const splitTimes = sourceResults.map((result) =>
+    (Array.isArray(result.Times) ? result.Times : []).slice(0, 4).map((raw) =>
+      chronoMilliseconds(asRecord(raw)?.RaceTime),
+    ),
+  );
   const resultRaceNumbers = new Set(sourceResults.flatMap((raw) => {
     const result = asRecord(raw);
     const raceNumber = identifierValue(result?.RaceNr) ?? identifierValue(result?.Key);
@@ -980,10 +992,19 @@ export function normalizeChronoRacePayload(
       times.push({ index, name: `Sector ${index}`, time: finalTime - previous });
     }
     const rawPosition = numberValue(result.Position);
+    const latestSplit = cumulativeTimes.filter((timing) => timing.index <= 4).at(-1);
+    const position = isOnTrack
+      ? latestSplit
+        ? 1 + splitTimes.filter((splits) => {
+            const time = splits[latestSplit.index - 1];
+            return time != null && time < latestSplit.time;
+          }).length
+        : null
+      : rawPosition && rawPosition > 0 ? Math.trunc(rawPosition) : null;
     return [
       {
         key: raceNumber,
-        position: rawPosition && rawPosition > 0 ? Math.trunc(rawPosition) : null,
+        position,
         uciId: identifierValue(rider.UciRiderId),
         firstName,
         lastName,

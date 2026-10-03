@@ -31,6 +31,52 @@ const session = {
 } as LiveSession;
 
 describe("ChronoRace live result normalization", () => {
+  it("uses the same checkpoint, shares tied ranks and replaces stale on-track results", () => {
+    const table = normalizeChronoRacePayload({
+      NextToStart: [{ RaceNr: 5 }],
+      Results: [
+        { RaceNr: 1, Position: 1, RaceTime: 100000, Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }] },
+        { RaceNr: 2, Times: [{ RaceTime: 20000 }] },
+      ],
+      OnTrack: [
+        { RaceNr: 2, Times: [{ RaceTime: 31000 }, { RaceTime: 60000 }] },
+        { RaceNr: 3, Times: [{ RaceTime: 30000 }] },
+      ],
+    }, session);
+    const riders = table.items.filter((row) => !row.isPerfectRun);
+    expect(riders).toHaveLength(3);
+    expect(riders.find((row) => row.resultId?.endsWith("-2"))?.position).toBe(1);
+    expect(riders.find((row) => row.resultId?.endsWith("-3"))?.position).toBe(1);
+    expect(riders.find((row) => row.resultId?.endsWith("-1"))?.position).toBe(1);
+  });
+  it("ranks on-track riders against everyone at their latest cumulative split", () => {
+    const table = normalizeChronoRacePayload({
+      NextToStart: [{ RaceNr: 5 }],
+      Results: [{ RaceNr: 1, Position: 1, Status: "Finished", RaceTime: 100000,
+        Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }] }],
+      OnTrack: [
+        { RaceNr: 2, Status: "InRace", Times: [{ RaceTime: 29000 }, { RaceTime: 65000 }] },
+        { RaceNr: 3, Status: "InRace", Times: [{ RaceTime: 32000 }, { RaceTime: 64000 }] },
+        { RaceNr: 4, Status: "InRace", Times: [] },
+      ],
+    }, session);
+    expect(table.items.find((row) => row.resultId?.endsWith("-2"))?.position).toBe(3);
+    expect(table.items.find((row) => row.resultId?.endsWith("-3"))?.position).toBe(2);
+    expect(table.items.find((row) => row.resultId?.endsWith("-4"))?.position).toBeNull();
+  });
+  it("keeps every on-track rider even before their first split or split position", () => {
+    const presentation = liveTimingPresentation({
+      NextToStart: [{ RaceNr: 4 }],
+      Results: [{ RaceNr: 1, Position: 1, RaceTime: 100000, Times: [{ RaceTime: 40000, Position: 1 }] }],
+      OnTrack: [
+        { RaceNr: 2, Status: "InRace", Times: [] },
+        { RaceNr: 3, Status: "InRace", Times: [{ RaceTime: 42000, Position: 0 }] },
+      ],
+    });
+    expect(presentation.riders.map((rider) => rider.key)).toEqual(["1", "2", "3"]);
+    expect(presentation.riders[1]).toMatchObject({ position: null, gap: null, points: [] });
+    expect(presentation.riders[2].points).toEqual([{ split: 1, gap: 2 }]);
+  });
   it("omits a zero-length sector caused by a duplicated finish measurement", () => {
     const table = normalizeChronoRacePayload({
       Results: [{ RaceNr: 1, Status: "Finished", RaceTime: 158317,

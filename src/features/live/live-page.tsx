@@ -7,7 +7,7 @@ import {
   Section,
 } from "../../components/layout/page-container";
 import { routes } from "../../config/routes";
-import { formatCategoryLabel, getKnownCategories, normalizeCategoryValue } from "../../utils/categories";
+import { formatCategoryLabel } from "../../utils/categories";
 import { formatLiveSessionLabel, formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import {
   useChronoRaceSessionResults,
@@ -20,42 +20,37 @@ import styles from "./live-page.module.css";
 
 function groupSessions(items: LiveSession[]) {
   const groups = new Map<string, LiveSession[]>();
+  const previousByCategory = new Map<string | null, string>();
+  const earlierStages = new Map<string, Set<string>>();
+  const laterStageCounts = new Map<string, number>();
   for (const session of items) {
     const key = session.sessionType ?? session.name;
     groups.set(key, [...(groups.get(key) ?? []), session]);
+    const previous = previousByCategory.get(session.category);
+    // Catalog stages are chronological within each category. Display later stages first.
+    if (previous !== undefined && previous !== key) {
+      const earlier = earlierStages.get(key) ?? new Set<string>();
+      if (!earlier.has(previous)) {
+        earlier.add(previous);
+        laterStageCounts.set(previous, (laterStageCounts.get(previous) ?? 0) + 1);
+      }
+      earlierStages.set(key, earlier);
+    }
+    previousByCategory.set(session.category, key);
   }
-  const categoryOrder = getKnownCategories().map((category) => category.value);
-  const stageOrder = (key: string, sessions: LiveSession[]) => {
-    const label = `${key} ${sessions.map((session) => session.name).join(" ")}`.toLowerCase();
-    if (/semi[\s_-]?final|pre[\s_-]?final/.test(label)) return 1;
-    if (/\bfinals?\b/.test(label)) return 0;
-    if (/qual(?:i|ification|ifying)/.test(label)) return 2;
-    if (/seeding/.test(label)) return 3;
-    return 4;
-  };
-  const categoryRank = (sessions: LiveSession[]) => {
-    const ranks = sessions.map((session) => {
-      const normalized = normalizeCategoryValue(session.category);
-      const index = normalized ? categoryOrder.indexOf(normalized) : -1;
-      return index < 0 ? categoryOrder.length : index;
-    });
-    return Math.min(...ranks);
-  };
-
-  return [...groups.entries()]
-    .map(([key, sessions], index) => ({
-      key,
-      label: formatSessionLabel(key, "groupName"),
-      sessions,
-      stageRank: stageOrder(key, sessions),
-      categoryRank: categoryRank(sessions),
-      index,
-    }))
-    .sort((left, right) =>
-      left.stageRank - right.stageRank ||
-      left.categoryRank - right.categoryRank ||
-      left.index - right.index,
-    );
+  const pending = new Set(groups.keys());
+  const ordered: string[] = [];
+  while (pending.size > 0) {
+    const key = [...pending].find((stage) => !laterStageCounts.get(stage));
+    // Conflicting provider sequences: retain remaining catalog order, without losing groups.
+    if (key === undefined) { ordered.push(...pending); break; }
+    pending.delete(key);
+    ordered.push(key);
+    for (const earlier of earlierStages.get(key) ?? []) {
+      laterStageCounts.set(earlier, laterStageCounts.get(earlier)! - 1);
+    }
+  }
+  return ordered.map((key) => ({ key, label: formatSessionLabel(key, "groupName"), sessions: groups.get(key)! }));
 }
 
 function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterIndex: number }) {

@@ -120,7 +120,7 @@ export function LiveCourseChart({ riders, riderIds }: {
                     stroke={color}
                     strokeWidth={1}
                     {...(!rider.isLeader ? { strokeDasharray: "4 5" } : {})}
-                    dot={false}
+                    dot={rider.points.length === 1 ? { r: 3, fill: color, stroke: color } : false}
                     activeDot={false}
                     connectNulls={false}
                     isAnimationActive
