@@ -5,7 +5,7 @@ import { CyclingText } from "../../components/data-display/cycling-text";
 import { PerformanceValue } from "../../components/data-display/performance-value";
 import { RatingValue } from "../../components/data-display/rating-value";
 import { formatOneDecimal } from "../../utils/formatters";
-import { TableFeedbackState } from "../../components/feedback/states";
+import { RiderTableContent } from "./components/rider-table-content";
 import { Pagination } from "../../components/navigation/pagination";
 import { AppTooltip } from "../../components/overlays/tooltip";
 import { useClientTable } from "../../hooks/use-client-table";
@@ -54,21 +54,8 @@ export default function RiderTracksPage() {
     "desc",
     15,
   );
-  if (hasDataError)
-    return (
-      <div className={`${styles.content} ${styles.resultsPage}`}>
-        <TableFeedbackState type="error" onRetry={retryData} animate={false} />
-      </div>
-    );
-  if (rows.length === 0)
-    return (
-      <div className={`${styles.content} ${styles.resultsPage}`}>
-        <TableFeedbackState type="empty" animate={false} />
-      </div>
-    );
-
   return (
-    <div className={`${styles.content} ${styles.resultsPage}`}>
+    <RiderTableContent hasDataError={hasDataError} isEmpty={rows.length === 0} onRetry={retryData}>
       <div className={styles.riderResultsScroll} tabIndex={0}>
         <table
           className={`${styles.riderResultsTable} ${styles.riderTracksTable}`}
@@ -189,6 +176,6 @@ export default function RiderTracksPage() {
         pageSize={table.pageSize}
         onPageChange={table.setPage}
       />
-    </div>
+    </RiderTableContent>
   );
 }

@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode, TableHTMLAttributes } from "react";
 import { joinClassNames } from "../../utils/join-class-names";
 import styles from "./data-table.module.css";
+import { UpdateProgress } from "../feedback/update-progress";
 
 export function DataTable({
   className,
@@ -22,13 +23,10 @@ export function DataTable({
       tabIndex={0}
     >
       {loading ? (
-        <div
+        <UpdateProgress
           className={styles.tableProgress}
-          role="progressbar"
-          aria-label="Loading new table data"
-        >
-          <span />
-        </div>
+          label="Loading new table data"
+        />
       ) : null}
       <table className={joinClassNames(styles.table, className)} {...props}>
         {children}

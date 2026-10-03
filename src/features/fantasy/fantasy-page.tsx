@@ -3,6 +3,7 @@ import { DataTable, DataTableHeader, DataTableRow, SortableTableHeader, type Sor
 import { RiderCell } from '../../components/data-display/rider-cell'
 import { Dialog, ModalFooter } from '../../components/overlays/dialog'
 import { TableFeedbackState } from '../../components/feedback/states'
+import { UpdateProgress } from '../../components/feedback/update-progress'
 import { PageContainer, PageHeader, Section } from '../../components/layout/page-container'
 import { SegmentedControl } from '../../components/navigation/segmented-control'
 import { Pagination } from '../../components/navigation/pagination'
@@ -71,7 +72,7 @@ export default function FantasyPage() {
       description="Find a legal team for the next round using current rider prices and RaceTrace predictions. Projected points are estimates, not guaranteed results." />
     {!data ? <Section><TableFeedbackState type={query.isFetching ? 'loading' : query.isError ? 'error' : 'empty'}
       onRetry={() => void query.refetch()} /></Section> : <div className={styles.contentStage} aria-busy={refreshing}>
-      {refreshing ? <div className={styles.updateProgress} role="progressbar" aria-label="Updating fantasy data"><span /></div> : null}
+      {refreshing ? <UpdateProgress className={styles.updateProgress} label="Updating fantasy data" /> : null}
       <div className={`${styles.content} ${refreshing ? styles.updating : ''}`}>
         {query.isError ? <p className={styles.warning} role="status"><img src={failedIcon} alt="" aria-hidden="true" /><span>Refresh failed. Showing the last successfully loaded data.</span></p> : null}
         <Section aria-label="Best team for next round">

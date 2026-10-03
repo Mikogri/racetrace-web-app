@@ -33,6 +33,7 @@ import {
   type RankingSort,
 } from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
+import { UpdateProgress } from "../../components/feedback/update-progress";
 
 // Toggle request diagnostics without removing the underlying implementation.
 const SHOW_RANKING_REQUEST_DETAILS = false;
@@ -325,13 +326,10 @@ export default function RankingPage() {
                 </p>
               </header>
               {feedbackUpdating && !displayRankingError ? (
-                <div
+                <UpdateProgress
                   className={styles.feedbackProgress}
-                  role="progressbar"
-                  aria-label="Loading ranking data"
-                >
-                  <span />
-                </div>
+                  label="Loading ranking data"
+                />
               ) : null}
               {rankingData && rankingData.items.length === 0 ? (
                 <TableFeedbackState type="empty" />

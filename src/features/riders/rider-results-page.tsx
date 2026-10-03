@@ -5,7 +5,7 @@ import { AnimatedNumber } from "../../components/data-display/animated-number";
 import { CyclingText } from "../../components/data-display/cycling-text";
 import { PerformanceValue } from "../../components/data-display/performance-value";
 import { RatingValue } from "../../components/data-display/rating-value";
-import { TableFeedbackState } from "../../components/feedback/states";
+import { RiderTableContent } from "./components/rider-table-content";
 import { Pagination } from "../../components/navigation/pagination";
 import { AppTooltip } from "../../components/overlays/tooltip";
 import { getRiderNavigationState } from "../../components/navigation/rider-navigation-state";
@@ -189,21 +189,8 @@ export default function RiderResultsPage() {
     });
   };
 
-  if (hasDataError)
-    return (
-      <div className={`${styles.content} ${styles.resultsPage}`}>
-        <TableFeedbackState type="error" onRetry={retryData} animate={false} />
-      </div>
-    );
-  if (rows.length === 0)
-    return (
-      <div className={`${styles.content} ${styles.resultsPage}`}>
-        <TableFeedbackState type="empty" animate={false} />
-      </div>
-    );
-
   return (
-    <div className={`${styles.content} ${styles.resultsPage}`}>
+    <RiderTableContent hasDataError={hasDataError} isEmpty={rows.length === 0} onRetry={retryData}>
       <div className={styles.riderResultsScroll} tabIndex={0}>
         <table className={styles.riderResultsTable}>
           <thead>
@@ -335,6 +322,6 @@ export default function RiderResultsPage() {
         pageSize={table.pageSize}
         onPageChange={table.setPage}
       />
-    </div>
+    </RiderTableContent>
   );
 }

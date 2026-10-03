@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { UpdateProgress } from "../../components/feedback/update-progress";
 import type { PressurePerformance } from "./api/get-pressure-performance";
 import { RouteLoadingPage } from "../../app/routes/route-states";
 import { useRequiredRouteParam } from "../../app/routes/use-required-route-param";
@@ -336,13 +337,10 @@ export default function RiderRouteLayout() {
         className={`${styles.contentArea} ${isUpdating ? styles.contentAreaUpdating : ""}`}
       >
         {isUpdating ? (
-          <div
+          <UpdateProgress
             className={styles.updateProgress}
-            role="progressbar"
-            aria-label="Loading rider data"
-          >
-            <span />
-          </div>
+            label="Loading rider data"
+          />
         ) : null}
         <div
           className={`${styles.tabContent} ${tabDirection === "forward" ? styles.tabContentForward : styles.tabContentBackward}`}
