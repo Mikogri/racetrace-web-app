@@ -406,6 +406,39 @@
   text-align: left;
 }
 
+/* Results uses available space; Tracks retains its independent column layout. */
+.riderResultsFit {
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.riderResultsFit .riderResultsTable {
+  min-width: 0;
+}
+
+.riderResultsFit .riderResultsTable th,
+.riderResultsFit .riderResultsTable td {
+  width: auto;
+  min-width: 0;
+  padding-inline: min(var(--space-15), 1.25cqw);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.riderResultsFit .sessionSequence {
+  flex-wrap: wrap;
+  white-space: normal;
+}
+
+.riderResultsFit .sessionEntry,
+.riderResultsFit th button > span {
+  min-width: 0;
+}
+
+.riderResultsFit th button {
+  flex-wrap: wrap;
+}
+
 .resultPrimaryText {
   display: block;
   color: var(--color-text-primary);

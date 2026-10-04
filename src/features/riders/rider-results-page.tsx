@@ -191,7 +191,7 @@ export default function RiderResultsPage() {
 
   return (
     <RiderTableContent hasDataError={hasDataError} isEmpty={rows.length === 0} onRetry={retryData}>
-      <div className={styles.riderResultsScroll} tabIndex={0}>
+      <div className={styles.riderResultsFit}>
         <table className={styles.riderResultsTable}>
           <thead>
             <tr>
