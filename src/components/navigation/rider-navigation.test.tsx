@@ -6,6 +6,7 @@ import { RiderCell } from '../data-display/rider-cell'
 import { BackButton } from './back-button'
 import { Tabs } from './tabs'
 import { TopNavigation } from './top-navigation'
+import { RiderLink } from './rider-navigation'
 
 function LocationState() {
   const location = useLocation()
@@ -13,6 +14,26 @@ function LocationState() {
 }
 
 describe('rider navigation', () => {
+  it('passes only metrics filters from ranking to rider details', () => {
+    render(<MemoryRouter initialEntries={['/ranking?categories=junior_women&seasons=2025,2026&tracks=3,7&conditions=wet&classes=wc,wch&search=Anna&sort=points&page=3']}>
+      <RiderLink riderId="7">Anna</RiderLink>
+    </MemoryRouter>)
+    const url = new URL(screen.getByRole('link').getAttribute('href')!, 'https://example.test')
+    expect(url.pathname).toBe('/ranking/riders/7')
+    expect(Object.fromEntries(url.searchParams)).toEqual({ categories: 'junior_women', seasons: '2025,2026', tracks: '3,7', conditions: 'wet', classes: 'wc,wch' })
+  })
+
+  it('passes the default ranking season and category explicitly', () => {
+    render(<MemoryRouter initialEntries={['/ranking']}><RiderLink riderId="7">Anna</RiderLink></MemoryRouter>)
+    const url = new URL(screen.getByRole('link').getAttribute('href')!, 'https://example.test')
+    expect(Object.fromEntries(url.searchParams)).toEqual({ seasons: String(new Date().getUTCFullYear()), categories: 'elite_men' })
+  })
+
+  it.each(['/results/13', '/home', '/compare', '/live/13', '/ranking/riders/8'])('does not pass filters from %s', (path) => {
+    render(<MemoryRouter initialEntries={[`${path}?categories=elite_women&seasons=2025&tracks=3&conditions=wet&classes=wc`]}><RiderLink riderId="7">Anna</RiderLink></MemoryRouter>)
+    expect(screen.getByRole('link').getAttribute('href')).not.toContain('?')
+  })
+
   it('stores the source page and shows country beside the name with only team below', async () => {
     const user = userEvent.setup()
     render(

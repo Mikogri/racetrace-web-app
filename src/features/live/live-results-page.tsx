@@ -26,7 +26,11 @@ import {
   useResolvedLiveRiderIds,
 } from "./api/get-live";
 import { LiveCourseChart } from "./components/live-course-chart";
+import { LiveChampionship } from "./components/live-championship";
 import styles from "./live-results-page.module.css";
+
+// Keep the championship projection available without mounting it or fetching its data.
+const SHOW_LIVE_CHAMPIONSHIP = false;
 
 export default function LiveResultsPage() {
   useDomainMetadata();
@@ -122,6 +126,10 @@ export default function LiveResultsPage() {
               riders={resultsQuery.data?.riders ?? []}
               riderIds={riderIdsQuery.data}
             />
+
+            {SHOW_LIVE_CHAMPIONSHIP && formatLiveSessionLabel(session, 'code') === 'final' && (
+              <LiveChampionship key={`${session.roundId}:${session.category}`} session={session} catalog={catalogQuery.data ?? []} snapshot={resultsQuery.data!} />
+            )}
 
             {displayResults && displayResults.items.length === 0 ? (
                 <TableFeedbackState

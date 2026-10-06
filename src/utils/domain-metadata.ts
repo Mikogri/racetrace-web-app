@@ -25,7 +25,7 @@ export const domainMetadataSchema = z.object({
 });
 
 export type DomainMetadata = z.infer<typeof domainMetadataSchema>;
-type SessionLabel = "name" | "shortName" | "abbreviation" | "groupName";
+type SessionLabel = "name" | "shortName" | "abbreviation" | "groupName" | "code";
 
 // Compatibility labels while metadata is loading or unavailable; API values win.
 const fallbackSessions: DomainMetadata["sessionTypes"] = [

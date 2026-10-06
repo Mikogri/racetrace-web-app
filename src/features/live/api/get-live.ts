@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
 import { ApiError } from "../../../types/api";
@@ -1245,10 +1245,10 @@ export function useResolvedLiveRiderIds(uciIds: string[]) {
   });
 }
 
-export function useChronoRaceSessionSnapshot(session: LiveSession | undefined) {
+export function chronoRaceSessionSnapshotOptions(session: LiveSession | undefined) {
   const context = session?.contextName ?? "";
   const key = session?.id ?? "";
-  return useQuery({
+  return queryOptions({
     queryKey: liveQueryKeys.chronoResults(session?.provider ?? "chronorace", `${context}-${key}`),
     enabled: Boolean(session?.id && (session.provider === "tissot" || session.contextName)),
     queryFn: async ({ signal }) => {
@@ -1279,6 +1279,9 @@ export function useChronoRaceSessionSnapshot(session: LiveSession | undefined) {
   });
 }
 
+export function useChronoRaceSessionSnapshot(session: LiveSession | undefined) {
+  return useQuery(chronoRaceSessionSnapshotOptions(session));
+}
 
 export function useChronoRaceSessionResults(session: LiveSession | undefined) {
   return useChronoRaceSessionSnapshot(session);
