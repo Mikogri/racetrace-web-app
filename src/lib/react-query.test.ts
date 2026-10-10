@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { ApiError } from '../types/api'
-import { shouldRetryQuery } from './react-query'
+import { queryClient, shouldRetryQuery } from './react-query'
 
 describe('query retries', () => {
+  it('refreshes stale data on focus without polling or removing previous data', () => {
+    const options = queryClient.getDefaultOptions().queries!
+    expect(options.refetchOnWindowFocus).toBe(true)
+    expect(options.staleTime).toBe(30_000)
+    expect(options.refetchInterval).toBeUndefined()
+    expect(options.placeholderData).toBeTypeOf('function')
+  })
   it.each([408, 429, 500, 502, 503, 504])('retries transient HTTP %i at most twice', (status) => {
     const error = new ApiError('Failed', { code: 'http', status })
     expect(shouldRetryQuery(0, error)).toBe(true)

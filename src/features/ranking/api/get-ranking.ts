@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { metricsApiQuery, serializeFilterValues as csv } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -244,3 +245,4 @@ export function useRanking(params: RankingParams) {
           }),
   });
 }
+export type RankingWireContract = AssertApiContract<ApiSchema<'RankingResponseDto'> extends z.input<typeof rankingResponseSchema> ? true : false>

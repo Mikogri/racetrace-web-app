@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { metricsApiQuery } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -51,3 +52,4 @@ export function usePressurePerformance(riderId: string, filters: MetricsFilters)
     structuralSharing: false,
   });
 }
+export type PressurePerformanceWireContract = AssertApiContract<ApiSchema<'PressurePerformanceResponseDto'> extends z.input<typeof pressurePerformanceSchema> ? true : false>

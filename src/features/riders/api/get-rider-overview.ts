@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { metricsApiQuery } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -241,3 +242,6 @@ export function useRiderOverview(riderId: string, filters: MetricsFilters) {
     structuralSharing: false,
   });
 }
+export type RiderStatisticsWireContract = AssertApiContract<ApiSchema<'RiderStatisticsDto'> extends z.input<typeof statisticsSchema> ? true : false>
+export type RiderRoundWireContract = AssertApiContract<ApiSchema<'RiderRoundResultDto'> extends z.input<typeof roundResultSchema> ? true : false>
+export type RiderTrackWireContract = AssertApiContract<ApiSchema<'RiderTrackStatisticsDto'> extends z.input<typeof trackStatisticsSchema> ? true : false>

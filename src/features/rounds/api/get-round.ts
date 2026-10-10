@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -156,3 +157,4 @@ export function useRoundResults(params: {
     placeholderData: keepPreviousData,
   });
 }
+export type RoundSessionsWireContract = AssertApiContract<ApiSchema<'PublicPagedResponseOfCommonSessionDto'> extends z.input<typeof sessionsResponseSchema> ? true : false>

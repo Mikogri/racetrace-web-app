@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import { apiClient } from '../../../lib/api-client';
@@ -12,7 +13,7 @@ const projectionSchema = z.object({
   status: z.enum(['unavailable', 'incomplete', 'tied', 'open', 'secured', 'decided']),
 });
 
-export function championshipSession(session: LiveSession, snapshot: { results: ReturnType<typeof normalizeChronoRacePayload>; status: string }) {
+export function championshipSession(session: LiveSession, snapshot: { results: ReturnType<typeof normalizeChronoRacePayload>; status: string }): ApiSchema<'ChampionshipSession'> {
   return {
     session_type: formatLiveSessionLabel(session, 'code'),
     complete: snapshot.status === 'completed',
@@ -62,3 +63,5 @@ export function useLiveChampionship(session: LiveSession, catalog: LiveSession[]
     retry: () => { void context.refetch(); snapshots.forEach(query => { void query.refetch(); }); if (ready) void projection.refetch(); },
   };
 }
+export type ChampionshipContextWireContract = AssertApiContract<ApiSchema<'ChampionshipContext'> extends z.input<typeof contextSchema> ? true : false>
+export type ChampionshipProjectionWireContract = AssertApiContract<ApiSchema<'ChampionshipProjection'> extends z.input<typeof projectionSchema> ? true : false>

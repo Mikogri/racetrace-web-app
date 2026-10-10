@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { apiClient } from '../../../lib/api-client'
@@ -98,3 +99,4 @@ export function useRounds(params: { season: number; page: number }) {
     }),
   })
 }
+export type RoundsWireContract = AssertApiContract<ApiSchema<'PublicPagedResponseOfRoundListItemDto'> extends z.input<typeof roundsResponseSchema> ? true : false>

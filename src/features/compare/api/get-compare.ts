@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { serializeFilterValues as csv } from '../../../utils/metrics-api-query'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
@@ -160,3 +161,4 @@ export function useCompare(riderIds: string[], filters: MetricsFilters) {
     placeholderData: keepPreviousData,
   })
 }
+export type CompareWireContract = AssertApiContract<ApiSchema<'CompareResponseDto'> extends z.input<typeof compareResponseSchema> ? true : false>

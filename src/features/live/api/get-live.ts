@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -1286,3 +1287,4 @@ export function useChronoRaceSessionSnapshot(session: LiveSession | undefined) {
 export function useChronoRaceSessionResults(session: LiveSession | undefined) {
   return useChronoRaceSessionSnapshot(session);
 }
+export type SessionResultsWireContract = AssertApiContract<ApiSchema<'SessionResultsResponseDto'> extends z.input<typeof sessionResultsSchema> ? true : false>

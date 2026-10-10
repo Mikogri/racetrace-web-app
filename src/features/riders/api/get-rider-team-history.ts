@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -8,7 +9,7 @@ const riderTeamHistoryItemSchema = z.object({
   id: entityIdSchema,
   riderId: entityIdSchema,
   teamId: entityIdSchema,
-  teamName: z.string(),
+  teamName: z.string().nullable(),
   teamCode: nullableStringSchema,
   validFrom: z.string(),
   validTo: nullableStringSchema,
@@ -35,3 +36,4 @@ export function useRiderTeamHistory(
     placeholderData: keepPreviousData,
   });
 }
+export type RiderTeamHistoryWireContract = AssertApiContract<ApiSchema<'RiderTeamHistoryDto'> extends z.input<typeof riderTeamHistoryItemSchema> ? true : false>

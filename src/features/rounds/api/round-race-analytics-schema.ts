@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { z } from "zod";
 import { entityIdSchema } from "../../../lib/validation";
 
@@ -33,3 +34,4 @@ export const roundRaceAnalyticsSchema = z.object({
 });
 
 export type RoundRaceAnalytics = z.infer<typeof roundRaceAnalyticsSchema>;
+export type RoundAnalyticsWireContract = AssertApiContract<ApiSchema<'RoundRaceAnalyticsDto'> extends z.input<typeof roundRaceAnalyticsSchema> ? true : false>

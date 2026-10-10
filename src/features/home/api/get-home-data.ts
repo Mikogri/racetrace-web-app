@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -195,3 +196,6 @@ export function usePodiumPredictor(season: number, category: string) {
     ),
   });
 }
+export type SeasonOverviewWireContract = AssertApiContract<ApiSchema<'SeasonOverviewResponseDto'> extends z.input<typeof seasonOverviewSchema> ? true : false>
+export type RoundProfileWireContract = AssertApiContract<ApiSchema<'RoundProfileResponseDto'> extends z.input<typeof roundProfileSchema> ? true : false>
+export type PodiumPredictorWireContract = AssertApiContract<ApiSchema<'PodiumPredictionResponseDto'> extends z.input<typeof podiumPredictorSchema> ? true : false>

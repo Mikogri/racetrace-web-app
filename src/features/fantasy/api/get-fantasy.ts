@@ -1,3 +1,4 @@
+import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { apiClient } from '../../../lib/api-client'
@@ -80,3 +81,5 @@ export function useFantasyRules() {
     staleTime: 300_000,
   })
 }
+export type FantasyCurrentWireContract = AssertApiContract<ApiSchema<'FantasyCurrentDto'> extends z.input<typeof fantasyCurrentSchema> ? true : false>
+export type FantasyRulesWireContract = AssertApiContract<ApiSchema<'FantasyRulesDto'> extends z.input<typeof fantasyRulesSchema> ? true : false>
