@@ -35,8 +35,7 @@ import {
 import styles from "./ranking-page.module.css";
 import { UpdateProgress } from "../../components/feedback/update-progress";
 
-// Toggle request diagnostics without removing the underlying implementation.
-const SHOW_RANKING_REQUEST_DETAILS = false;
+const SHOW_RANKING_REQUEST_DETAILS = true;
 
 const rankingSorts: RankingSort[] = [
   "position",
@@ -300,8 +299,18 @@ export default function RankingPage() {
         className={showFullPageFeedback ? styles.feedbackSection : undefined}
         aria-labelledby="leaderboard-title"
       >
-        {SHOW_RANKING_REQUEST_DETAILS ? (
-          <RequestDetails data={rankingData} />
+        {SHOW_RANKING_REQUEST_DETAILS && rankingData ? (
+          <div className={styles.requestControls}>
+            <RequestDetails data={rankingData} />
+            <button
+              className={styles.clearCacheButton}
+              type="button"
+              disabled={rankingQuery.isFetching}
+              onClick={() => void rankingQuery.clearCache()}
+            >
+              Clear cache
+            </button>
+          </div>
         ) : null}
         <div className={styles.transitionStage}>
           {showInitialLoading ? (

@@ -1,6 +1,7 @@
 import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
 import { metricsApiQuery, serializeFilterValues as csv } from "../../../utils/metrics-api-query";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
 import { GLOBAL_PAGE_SIZE } from "../../../config/pagination";
@@ -217,16 +218,21 @@ async function getSimulatedRanking(
 }
 
 export function useRanking(params: RankingParams) {
-  return useQuery({
+  const queryClient = useQueryClient();
+  const refreshNextRequest = useRef(false);
+  const query = useQuery({
     queryKey: rankingQueryKeys.list(params),
     placeholderData: keepPreviousData,
     structuralSharing: false,
-    queryFn: ({ signal }) =>
-      USE_SIMULATED_API_DATA
+    queryFn: async ({ signal }) => {
+      const refresh = refreshNextRequest.current;
+      refreshNextRequest.current = false;
+      return USE_SIMULATED_API_DATA
         ? getSimulatedRanking(params, signal)
         : apiClient.get("/api/v1/ranking", rankingResponseSchema, {
             signal,
             query: {
+              refresh: refresh ? 1 : undefined,
               ...metricsApiQuery(params.filters),
               category: params.filters.categories[0] ?? "elite_men",
               search: params.search,
@@ -242,7 +248,16 @@ export function useRanking(params: RankingParams) {
               comparisonCategory: params.comparisonFilters?.filters.categories[0],
               comparisonSearch: params.comparisonFilters?.search,
             },
-          }),
+          });
+    },
   });
+  return {
+    ...query,
+    clearCache: () => {
+      queryClient.removeQueries({ queryKey: rankingQueryKeys.lists(), type: "inactive" });
+      refreshNextRequest.current = true;
+      return query.refetch();
+    },
+  };
 }
 export type RankingWireContract = AssertApiContract<ApiSchema<'RankingResponseDto'> extends z.input<typeof rankingResponseSchema> ? true : false>

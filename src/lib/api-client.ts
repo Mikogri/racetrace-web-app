@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import { env } from "../config/env";
 import { ApiError } from "../types/api";
-import { setApiResponseMeta } from "./api-response-meta";
+import { parseServerTiming, setApiResponseMeta } from "./api-response-meta";
 import { observeCategoriesInApiPayload } from "../utils/categories";
 
 type RequestOptions<TSchema extends z.ZodType> = Omit<RequestInit, "body"> & {
@@ -107,6 +107,7 @@ async function request<TSchema extends z.ZodType>({
       durationMs: performance.now() - requestStartedAt,
       responseBytes,
       transferredBytes,
+      serverTimings: parseServerTiming(response.headers.get('server-timing')),
     });
     return parsed.data;
   } catch (error) {
