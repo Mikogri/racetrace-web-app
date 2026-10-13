@@ -35,7 +35,7 @@ import {
 import styles from "./ranking-page.module.css";
 import { UpdateProgress } from "../../components/feedback/update-progress";
 
-const SHOW_RANKING_REQUEST_DETAILS = true;
+const SHOW_RANKING_REQUEST_DETAILS = false;
 
 const rankingSorts: RankingSort[] = [
   "position",
@@ -299,9 +299,9 @@ export default function RankingPage() {
         className={showFullPageFeedback ? styles.feedbackSection : undefined}
         aria-labelledby="leaderboard-title"
       >
-        {SHOW_RANKING_REQUEST_DETAILS && rankingData ? (
+        {rankingData ? (
           <div className={styles.requestControls}>
-            <RequestDetails data={rankingData} />
+            {SHOW_RANKING_REQUEST_DETAILS ? <RequestDetails data={rankingData} /> : null}
             <button
               className={styles.clearCacheButton}
               type="button"
