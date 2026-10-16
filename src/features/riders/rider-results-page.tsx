@@ -12,6 +12,7 @@ import { getRiderNavigationState } from "../../components/navigation/rider-navig
 import { routes } from "../../config/routes";
 import { useClientTable } from "../../hooks/use-client-table";
 import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
+import { EventClassBadge } from "../../components/data-display/event-class-badge";
 import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import type { RiderSessionResult } from "./api/get-rider-sessions";
 import type { RiderOutletContext } from "./rider-route-layout";
@@ -105,24 +106,6 @@ function formatResultDate(value: string | null) {
     String(date.getUTCMonth() + 1).padStart(2, "0"),
     date.getUTCFullYear(),
   ].join(".");
-}
-
-function classDetails(row: ResultRow) {
-  const source =
-    `${row.competitionClassCode ?? ""} ${row.competitionClassName ?? ""}`.toLowerCase();
-  const label = formatCompetitionClassAbbreviation({
-    abbreviation: row.competitionClassAbbreviation,
-    code: row.competitionClassCode,
-    name: row.competitionClassName,
-  });
-  if (source.includes("champ"))
-    return { label, className: styles.worldChampionshipBadge };
-  if (source.includes("cup") || source.includes("wc"))
-    return { label, className: styles.worldCupBadge };
-  return {
-    label,
-    className: styles.otherClassBadge,
-  };
 }
 
 function SessionSequence({ entries, cycling = false }: { entries: SessionEntry[]; cycling?: boolean }) {
@@ -256,7 +239,7 @@ export default function RiderResultsPage() {
           </thead>
           <tbody>
             {table.items.map((row, index) => {
-              const eventClass = classDetails(row);
+              const classLabel = formatCompetitionClassAbbreviation({ code: row.competitionClassCode, name: row.competitionClassName, abbreviation: row.competitionClassAbbreviation });
               return (
                 <tr
                   className={styles.riderResultRow}
@@ -291,11 +274,9 @@ export default function RiderResultsPage() {
                   </td>
                   <td>{isUpdating ? <CyclingText value={formatResultDate(row.roundStartDate)} /> : formatResultDate(row.roundStartDate)}</td>
                   <td>
-                    <span
-                      className={`${styles.resultClassBadge} ${eventClass.className}`}
-                    >
-                      {isUpdating ? <CyclingText value={eventClass.label} /> : eventClass.label}
-                    </span>
+                    <EventClassBadge code={row.competitionClassCode} name={row.competitionClassName} abbreviation={row.competitionClassAbbreviation}>
+                      {isUpdating ? <CyclingText value={classLabel} /> : classLabel}
+                    </EventClassBadge>
                   </td>
                   <td>
                     <RatingValue value={row.rating} animate={isUpdating} animationLoop />

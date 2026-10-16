@@ -14,15 +14,51 @@ function abbreviationFromCode(value: string) {
     .toUpperCase();
 }
 
+export type CompetitionClassDisplay = {
+  abbreviation?: string | null | undefined;
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+};
+
+const neutralColors = {
+  text: "var(--color-event-class-neutral-text)",
+  border: "var(--color-event-class-neutral-border)",
+  chart: "var(--color-event-class-neutral-text)",
+};
+
+const classColors = new Map<string, typeof neutralColors>([
+  ["world_cup", {
+    text: "var(--color-event-class-world-cup-text)",
+    border: "var(--color-event-class-world-cup-border)",
+    chart: "var(--color-rating-top)",
+  }],
+  ["world_championship", {
+    text: "var(--color-event-class-world-championship-text)",
+    border: "var(--color-event-class-world-championship-border)",
+    chart: "var(--color-event-class-world-championship-text)",
+  }],
+]);
+
+const classAliases = new Map([
+  ["wc", "world_cup"],
+  ["wch", "world_championship"],
+  ["world_championships", "world_championship"],
+]);
+
+export function getCompetitionClassColors({ code, abbreviation, name }: CompetitionClassDisplay) {
+  for (const value of [code, abbreviation, name]) {
+    const key = value?.trim().toLowerCase().replace(/[\s-]+/g, "_") ?? "";
+    const colors = classColors.get(classAliases.get(key) ?? key);
+    if (colors) return colors;
+  }
+  return neutralColors;
+}
+
 export function formatCompetitionClassAbbreviation({
   abbreviation,
   code,
   name,
-}: {
-  abbreviation?: string | null | undefined;
-  code?: string | null | undefined;
-  name?: string | null | undefined;
-}) {
+}: CompetitionClassDisplay) {
   const apiValue = abbreviation?.trim();
   if (apiValue) return apiValue.toUpperCase();
   return abbreviationFromCode(code?.trim() || name?.trim() || "");

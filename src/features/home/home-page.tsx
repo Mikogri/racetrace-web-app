@@ -55,12 +55,6 @@ export default function HomePage() {
       ...item,
       time: item.raceTime,
     })),
-    seasonProgress: overviewQuery.data?.progress ?? {
-      roundsCount: 0,
-      completedRoundsCount: 0,
-      finalWinnersCount: 0,
-      categoriesCount: 0,
-    },
     seasonTopRated: (options?.topRated ?? []).flatMap((item) =>
       item.rating == null ? [] : [{
         position: item.position,

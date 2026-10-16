@@ -43,6 +43,7 @@ import {
 } from "../../../utils/categories";
 import { formatCountryName } from "../../../utils/countries";
 import { formatCompetitionClassAbbreviation } from "../../../utils/competition-classes";
+import { EventClassBadge } from "../../../components/data-display/event-class-badge";
 import { normalizeDisplayName } from "../../../utils/display-name";
 import {
   formatDateRange,
@@ -208,14 +209,6 @@ const classCode = (round: HomeSummary["nextRound"] | undefined) =>
     name: round?.competitionClassName,
   });
 
-const classBadgeClass = (round: HomeSummary["nextRound"] | undefined) => {
-  const value = `${round?.competitionClassCode ?? ""} ${round?.competitionClassName ?? ""} ${classCode(round)}`
-    .toLocaleLowerCase();
-  return value.includes("champ") || value.includes("wch")
-    ? `${styles.classBadge} ${styles.classBadgeWorldChampionship}`
-    : styles.classBadge;
-};
-
 export function NextRoundSection({
   summary,
   loading,
@@ -261,9 +254,7 @@ export function NextRoundSection({
               {loading ? (
                 <Scaffold compact />
               ) : (
-                <span className={classBadgeClass(round)}>
-                  {classCode(round)}
-                </span>
+                <EventClassBadge className={styles.classBadge} code={round?.competitionClassCode} name={round?.competitionClassName} abbreviation={round?.competitionClassAbbreviation} />
               )}
             </div>
             <span>
@@ -375,9 +366,7 @@ export function LastRoundResultsSection({
           <div className={styles.lastResultsText}>
             <div className={styles.lastResultsHeading}>
               <strong>{`${formatCountryName(round?.countryCode)}, ${round?.venueName ?? round?.trackName ?? "--"}`}</strong>
-              <span className={classBadgeClass(round)}>
-                {classCode(round)}
-              </span>
+              <EventClassBadge className={styles.classBadge} code={round?.competitionClassCode} name={round?.competitionClassName} abbreviation={round?.competitionClassAbbreviation} />
             </div>
             <span className={styles.lastResultsDate}>
               {round ? formatDateRange(round.startDate, round.endDate) : "--"}
@@ -819,75 +808,6 @@ export function FieldSpreadSection({
   );
 }
 
-export function SeasonProgressSection({
-  summary,
-  loading,
-}: {
-  summary?: HomeSummary;
-  loading: boolean;
-}) {
-  const progress = summary?.seasonProgress;
-  const percent =
-    !progress || progress.roundsCount === 0
-      ? 0
-      : (progress.completedRoundsCount * 100) / progress.roundsCount;
-  return (
-    <div className={styles.sectionBlock}>
-      <SectionHeader
-        title="Season Progress"
-        meta={[summary?.season ?? "----", "DHI", "Progress"]}
-        description="Season progression in numbers"
-      />
-      <Panel
-        padding="none"
-        className={`${styles.homePanel} ${styles.seasonProgressPanel}`}
-      >
-        <div className={styles.seasonOverviewHeader}>
-          <span>Season Overview</span>
-          <span>
-            {loading ? <Scaffold compact /> : (summary?.season ?? "----")}
-          </span>
-        </div>
-        <div className={styles.seasonMetrics}>
-          {[
-            ["Rounds", progress?.roundsCount],
-            ["Completed", progress?.completedRoundsCount],
-            ["Winners", progress?.finalWinnersCount],
-            ["Categories", progress?.categoriesCount],
-          ].map(([label, value]) => (
-            <div className={styles.seasonMetric} key={label}>
-              <strong>
-                {loading ? <Scaffold compact /> : (value ?? "--")}
-              </strong>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
-        <div className={styles.seasonProgressRow}>
-          <div
-            className={styles.seasonProgressTrack}
-            role="progressbar"
-            aria-label="Completed season rounds"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-            style={{ "--season-progress": `${percent}%` } as CSSProperties}
-          >
-            <span />
-            <i aria-hidden="true" />
-          </div>
-          <span className={styles.seasonProgressLabel}>
-            Rounds{" "}
-            {loading
-              ? "--/--"
-              : `${progress?.completedRoundsCount ?? "--"}/${progress?.roundsCount ?? "--"}`}
-          </span>
-        </div>
-      </Panel>
-      <SectionAction to={routes.results}>See Full Calendar</SectionAction>
-    </div>
-  );
-}
 
 export function PodiumPredictorSection({
   prediction,
@@ -919,9 +839,7 @@ export function PodiumPredictorSection({
         <div className={styles.lastResultsText}>
           <div className={styles.lastResultsHeading}>
             <strong>{`${formatCountryName(round?.countryCode)}, ${round?.trackName ?? round?.venueName ?? "--"}`}</strong>
-            <span className={classBadgeClass(round)}>
-              {classCode(round)}
-            </span>
+            <EventClassBadge className={styles.classBadge} code={round?.competitionClassCode} name={round?.competitionClassName} abbreviation={round?.competitionClassAbbreviation} />
           </div>
           <span className={styles.lastResultsDate}>
             Higher means more likely to get on podium

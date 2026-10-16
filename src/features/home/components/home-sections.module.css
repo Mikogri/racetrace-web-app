@@ -285,21 +285,9 @@
 }
 
 .classBadge {
-  padding: var(--space-3) var(--space-8);
-  color: var(--color-event-class-world-cup-text);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
-  line-height: 13px;
-  letter-spacing: 0.15em;
-  border: var(--component-border-width) solid
-    var(--color-event-class-world-cup-border);
+  height: auto;
+  min-width: 0;
   border-radius: var(--radius-sm);
-}
-
-.classBadgeWorldChampionship {
-  color: var(--color-event-class-world-championship-text);
-  border-color: var(--color-event-class-world-championship-border);
 }
 
 .analyticsGrid {
@@ -565,102 +553,6 @@
   line-height: 16px;
 }
 
-.seasonProgressPanel {
-  height: 210px;
-}
-
-.seasonOverviewHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 54px;
-  padding: 18px var(--space-24);
-  color: var(--color-text-secondary);
-  font-family: var(--font-family-mono);
-  font-size: 14px;
-  font-weight: var(--font-weight-medium);
-  line-height: 18px;
-  border-bottom: var(--component-border-width) solid var(--color-border-default);
-}
-
-.seasonMetrics {
-  display: flex;
-  align-items: stretch;
-  height: 92px;
-  padding: var(--space-24);
-  border-bottom: var(--component-border-width) solid var(--color-border-default);
-}
-
-.seasonMetric {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  gap: var(--space-5);
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-family-mono);
-  font-weight: var(--font-weight-medium);
-}
-
-.seasonMetric + .seasonMetric {
-  border-left: var(--component-border-width) solid var(--color-border-default);
-}
-
-.seasonMetric strong {
-  color: var(--color-brand-primary);
-  font-size: var(--font-size-panel-title);
-  line-height: 23px;
-}
-
-.seasonMetric span {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-control);
-  line-height: 16px;
-}
-
-.seasonProgressRow {
-  display: flex;
-  gap: var(--space-24);
-  align-items: center;
-  height: 64px;
-  padding: var(--space-24);
-}
-
-.seasonProgressTrack {
-  position: relative;
-  flex: 1 1 auto;
-  height: 6px;
-  background: var(--color-interaction-selected-background);
-  border-radius: var(--radius-progress);
-}
-
-.seasonProgressTrack > span {
-  display: block;
-  width: var(--season-progress);
-  height: 100%;
-  background: var(--color-brand-primary);
-  border-radius: var(--radius-progress) 0 0 var(--radius-progress);
-}
-
-.seasonProgressTrack > i {
-  position: absolute;
-  top: 50%;
-  left: var(--season-progress);
-  width: 6px;
-  height: 10px;
-  background: var(--color-text-primary);
-  border-radius: var(--radius-pill);
-  transform: translate(-50%, -50%);
-}
-
-.seasonProgressLabel {
-  flex: none;
-  color: var(--color-text-secondary);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-control);
-  font-weight: var(--font-weight-medium);
-  line-height: 16px;
-}
 
 .podiumPredictorPanel {
   display: flex;

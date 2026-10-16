@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { joinClassNames } from "../../utils/join-class-names";
-import { Panel } from "../ui/panel";
 import { Typography } from "../ui/typography";
 import failedIcon from "../../assets/icons/failed.png";
 import noDataIcon from "../../assets/icons/no-data.png";
@@ -128,28 +127,6 @@ export function TableFeedbackState({
   );
 }
 
-export function EmptyState({
-  title,
-  description,
-  action,
-}: {
-  title: string;
-  description: string;
-  action?: ReactNode;
-}) {
-  return (
-    <Panel className={joinClassNames(styles.state, styles.enterState)}>
-      <span className={styles.marker} aria-hidden="true">
-        //
-      </span>
-      <Typography as="h2" variant="panelTitle">
-        {title}
-      </Typography>
-      <Typography>{description}</Typography>
-      {action}
-    </Panel>
-  );
-}
 
 export function ErrorState({
   onRetry,

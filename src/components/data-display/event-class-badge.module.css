@@ -1,21 +1,15 @@
-.world-cup,
-.world-championship {
+.badge {
   display: inline-flex;
   align-items: center;
-  min-height: var(--component-icon-size);
-  padding-inline: var(--spacing-icon-panel-padding-x);
+  justify-content: center;
+  min-width: 30px;
+  height: 19px;
+  padding: var(--space-3) var(--space-8);
   font-family: var(--font-family-data);
   font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: 13px;
+  letter-spacing: 0.15em;
   border: var(--component-border-width) solid;
   border-radius: var(--radius-badge);
-}
-
-.world-cup {
-  color: var(--color-event-class-world-cup-text);
-  border-color: var(--color-event-class-world-cup-border);
-}
-
-.world-championship {
-  color: var(--color-event-class-world-championship-text);
-  border-color: var(--color-event-class-world-championship-border);
 }

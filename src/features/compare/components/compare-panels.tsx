@@ -22,8 +22,6 @@ import {
   DataTableHeader,
   DataTableRow,
 } from "../../../components/data-display/data-table";
-import { PerformanceValue } from "../../../components/data-display/performance-value";
-import { RatingValue } from "../../../components/data-display/rating-value";
 import { normalizeDisplayName } from "../../../utils/display-name";
 import { RiderLink } from "../../../components/navigation/rider-navigation";
 import { ChartTooltip, TooltipRows } from "../../../components/overlays/tooltip";
@@ -426,14 +424,5 @@ export function ComparePositionChart({ data }: { data: CompareData }) {
       averageLineColor="series"
       className={styles.resultsChart}
     />
-  );
-}
-
-export function CompareRiderSummary({ rider }: { rider: CompareRider }) {
-  return (
-    <span className={styles.summaryMetrics}>
-      <RatingValue value={rider.rating} />
-      <PerformanceValue value={rider.pace} />
-    </span>
   );
 }

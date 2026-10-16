@@ -82,6 +82,8 @@
   --color-event-class-world-cup-border: rgb(218 166 82 / 70%);
   --color-event-class-world-championship-text: var(--palette-red-strong);
   --color-event-class-world-championship-border: var(--palette-red-strong);
+  --color-event-class-neutral-text: var(--color-text-secondary);
+  --color-event-class-neutral-border: var(--color-border-default);
 
   --color-compare-rider-a-accent: var(--palette-olive-500);
   --color-compare-rider-a-background: rgb(106 140 61 / 40%);

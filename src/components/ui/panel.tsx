@@ -34,16 +34,6 @@ export function PanelHeader({ title, description, info }: { title: string; descr
   )
 }
 
-export function MetricPanel({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <Panel padding="compact" className={styles.metric}>
-      <Typography variant="caption">{label}</Typography>
-      <Typography as="div" variant="data" className={styles.metricValue}>
-        {value}
-      </Typography>
-    </Panel>
-  )
-}
 
 export function SummaryBanner({ children, loading = false }: { children: ReactNode; loading?: boolean }) {
   const text = Children.toArray(children)
@@ -68,8 +58,4 @@ export function SummaryBanner({ children, loading = false }: { children: ReactNo
           ))}
     </div>
   )
-}
-
-export function Divider() {
-  return <hr className={styles.divider} />
 }

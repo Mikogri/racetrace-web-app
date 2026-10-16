@@ -1,11 +1,6 @@
 import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
-import { metricsApiQuery } from "../../../utils/metrics-api-query";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { apiClient } from "../../../lib/api-client";
 import { entityIdSchema, nullableNumberSchema, nullableStringSchema } from "../../../lib/validation";
-import type { MetricsFilters } from "../../../types/domain";
-import { riderQueryKeys } from "./rider-query-keys";
 
 export const pressurePerformanceSchema = z.object({
   riderId: entityIdSchema,
@@ -37,19 +32,4 @@ export const pressurePerformanceSchema = z.object({
 
 export type PressurePerformance = z.infer<typeof pressurePerformanceSchema>;
 
-export function usePressurePerformance(riderId: string, filters: MetricsFilters) {
-  return useQuery({
-    queryKey: riderQueryKeys.pressurePerformance(riderId, filters),
-    queryFn: ({ signal }) => apiClient.get(
-      `/api/v1/analytics/riders/${encodeURIComponent(riderId)}/pressure-performance`,
-      pressurePerformanceSchema,
-      {
-        signal,
-        query: metricsApiQuery(filters),
-      },
-    ),
-    placeholderData: keepPreviousData,
-    structuralSharing: false,
-  });
-}
 export type PressurePerformanceWireContract = AssertApiContract<ApiSchema<'PressurePerformanceResponseDto'> extends z.input<typeof pressurePerformanceSchema> ? true : false>

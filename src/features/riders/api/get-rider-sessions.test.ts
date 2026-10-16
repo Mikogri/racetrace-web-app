@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { applyDomainMetadata } from "../../../utils/domain-metadata";
 import {
-  filterRiderSessions,
-  getRiderSessionGender,
   normalizeSessionKind,
-  riderSessionsSchema,
+  riderSessionResultsSchema,
 } from "./get-rider-sessions";
 
 const rawResult = {
@@ -35,7 +33,7 @@ const rawResult = {
 };
 
 describe("rider session results", () => {
-  it("normalizes every pre-final stage used by the Blazor view", () => {
+  it("normalizes every pre-final stage", () => {
     expect(normalizeSessionKind("Q")).toBe("qualifying");
     expect(normalizeSessionKind("Qualifying 1")).toBe("qualifying_1");
     expect(normalizeSessionKind("Q2")).toBe("qualifying_2");
@@ -43,8 +41,8 @@ describe("rider session results", () => {
     expect(normalizeSessionKind("Final Run")).toBe("final");
   });
 
-  it("maps nested API results and applies the same rider filters", () => {
-    const [result] = riderSessionsSchema.parse({ results: [rawResult] });
+  it("maps nested overview results", () => {
+    const [result] = riderSessionResultsSchema.parse([rawResult]);
     expect(result).toMatchObject({
       roundId: "30",
       trackId: "4",
@@ -55,52 +53,23 @@ describe("rider session results", () => {
       isFinal: false,
       position: 5,
     });
-
-    expect(
-      filterRiderSessions([result], {
-        seasons: ["2026"],
-        tracks: ["4"],
-        conditions: ["3"],
-        classes: ["2"],
-        categories: ["elite_men"],
-      }),
-    ).toHaveLength(1);
-    expect(
-      filterRiderSessions([result], {
-        seasons: ["2025"],
-        tracks: [],
-        conditions: [],
-        classes: [],
-        categories: ["elite_men"],
-      }),
-    ).toHaveLength(0);
   });
 
-  it.each([
-    ["male", "male"],
-    ["female", "female"],
-    [null, null],
-    [undefined, null],
-  ])(
-    "keeps optional rider gender %s from rider details",
-    (gender, expected) => {
-      const result = riderSessionsSchema.parse({
-        results: [],
-        ...(gender === undefined ? {} : { gender }),
-      });
-      expect(getRiderSessionGender(result)).toBe(expected);
-    },
-  );
+  it.each(['DNS', 'DNF', 'DSQ'])('does not classify a %s result even if a position is present', (status) => {
+    const [result] = riderSessionResultsSchema.parse([{ ...rawResult, status }]);
+    expect(result.isClassified).toBe(false);
+    expect(result.isStart).toBe(status !== 'DNS');
+  });
 
   it("uses new session display metadata without changing classification or chronological order", () => {
     applyDomainMetadata({
       categories: [], roundStatuses: [], sessionStatuses: [],
       sessionTypes: [{ code: "new_heat", name: "New Heat", shortName: "Heat", abbreviation: "NH", groupName: "New Heats", displayOrder: -1, aliases: ["NH"] }],
     });
-    const [result] = riderSessionsSchema.parse({ results: [{
+    const [result] = riderSessionResultsSchema.parse([{
       ...rawResult,
       sessions: { ...rawResult.sessions, session_type: "new_heat" },
-    }] });
+    }]);
     expect(result).toMatchObject({ abbreviation: "NH", kind: "other", sessionOrder: 50, isFinal: false, isClassified: true, isStart: true });
   });
 });

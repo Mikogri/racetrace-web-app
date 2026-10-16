@@ -299,7 +299,7 @@ export default function RankingPage() {
         className={showFullPageFeedback ? styles.feedbackSection : undefined}
         aria-labelledby="leaderboard-title"
       >
-        {rankingData ? (
+        {SHOW_RANKING_REQUEST_DETAILS && rankingData ? (
           <div className={styles.requestControls}>
             {SHOW_RANKING_REQUEST_DETAILS ? <RequestDetails data={rankingData} /> : null}
             <button

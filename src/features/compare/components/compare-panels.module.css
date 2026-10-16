@@ -131,10 +131,6 @@
 
 .resultsChart { overflow: visible; }
 
-.summaryMetrics {
-  display: inline-flex;
-  gap: var(--space-12);
-}
 
 @media (max-width: 900px) {
   .historyGrid { grid-template-columns: 1fr; }

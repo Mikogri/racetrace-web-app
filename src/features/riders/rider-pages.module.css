@@ -451,37 +451,6 @@
   color: var(--color-text-secondary);
 }
 
-.resultClassBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 30px;
-  height: 19px;
-  padding: var(--space-3) var(--space-8);
-  font-family: var(--font-family-data);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
-  line-height: 13px;
-  letter-spacing: 0.15em;
-  border: var(--component-border-width) solid;
-  border-radius: var(--radius-badge);
-}
-
-.worldCupBadge {
-  color: var(--color-event-class-world-cup-text);
-  border-color: var(--color-event-class-world-cup-border);
-}
-
-.worldChampionshipBadge {
-  color: var(--color-event-class-world-championship-text);
-  border-color: var(--color-event-class-world-championship-border);
-}
-
-.otherClassBadge {
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-default);
-}
-
 .statisticsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

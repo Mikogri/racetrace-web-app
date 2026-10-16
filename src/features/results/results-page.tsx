@@ -13,21 +13,13 @@ import {
 } from "../../components/layout/page-container";
 import { routes } from "../../config/routes";
 import { formatDateRange } from "../../utils/formatters";
-import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
+import { EventClassBadge } from "../../components/data-display/event-class-badge";
 import { formatDomainLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import { LiveStatusBadge } from "../live/components/live-status-badge";
 import demoRoundImage from "../../assets/hero.png";
 import roundPlaceholder from "../../assets/round-placeholder.png";
 import { useRounds, type RoundListItem } from "./api/get-rounds";
 import styles from "./results-page.module.css";
-
-function competitionClassAbbreviation(round: RoundListItem) {
-  return formatCompetitionClassAbbreviation({
-    abbreviation: round.competitionClassAbbreviation,
-    code: round.competitionClassCode,
-    name: round.competitionClassName,
-  });
-}
 
 function isLiveRound(status: string) {
   return ["live", "active", "running"].includes(status.trim().toLowerCase());
@@ -290,11 +282,11 @@ export default function ResultsPage() {
                                 : round.status).toLowerCase()}
                             </span>
                           )}
-                          <span
-                            className={`${styles.classBadge} ${round.competitionClassCode === "world_championship" ? styles.worldChampionship : styles.worldCup}`}
-                          >
-                            {competitionClassAbbreviation(round)}
-                          </span>
+                          <EventClassBadge
+                            code={round.competitionClassCode}
+                            name={round.competitionClassName}
+                            abbreviation={round.competitionClassAbbreviation}
+                          />
                         </div>
                       </div>
                     </Link>

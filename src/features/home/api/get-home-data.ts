@@ -130,7 +130,6 @@ export type HomeSummary = {
     time: number | null;
     gapToLeader: number | null;
   }>;
-  seasonProgress: SeasonOverview["progress"];
   seasonTopRated: Array<z.infer<typeof riderIdentitySchema> & {
     rating: number;
     pace: number | null;

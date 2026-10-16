@@ -1,8 +1,5 @@
 export type EntityId = string
 export type RatingTone = 'low' | 'medium' | 'high' | 'veryHigh' | 'top'
-export type EventClass = 'world-cup' | 'world-championship'
-export type ResultStatus = 'classified' | 'dns' | 'dnf' | 'dsq'
-export type SectorDeltaState = 'gain' | 'loss' | 'neutral' | 'missing' | 'incident'
 
 export type FilterOption = {
   value: string

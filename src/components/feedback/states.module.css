@@ -143,14 +143,6 @@
 }
 
 
-.marker {
-  font-family: var(--font-family-data);
-  font-size: var(--font-size-section-title);
-}
-
-.marker {
-  color: var(--color-brand-primary);
-}
 
 .inlineError {
   color: var(--color-status-error);

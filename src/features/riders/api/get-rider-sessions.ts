@@ -1,15 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { apiClient } from "../../../lib/api-client";
 import {
   entityIdSchema,
   nullableNumberSchema,
   nullableStringSchema,
 } from "../../../lib/validation";
-import type { MetricsFilters } from "../../../types/domain";
 import { normalizeCategoryValue } from "../../../utils/categories";
 import { formatSessionLabel } from "../../../utils/domain-metadata";
-import { riderQueryKeys } from "./rider-query-keys";
 
 export type RiderSessionKind =
   | "seeding"
@@ -144,7 +140,7 @@ const resultRawSchema = z
         round.competition_class_id ?? competitionClass?.id ?? null,
       competitionClassCode: competitionClass?.code ?? null,
       competitionClassName: competitionClass?.name ?? null,
-      category: publicCategoryCode(category?.code),
+      category: normalizeCategoryValue(category?.code),
       kind,
       sessionType: session.session_type ?? session.name ?? "Other",
       abbreviation: formatSessionLabel(session.session_type ?? session.name ?? "Other", "abbreviation"),
@@ -163,28 +159,6 @@ const resultRawSchema = z
     };
   });
 
-export type RiderSessionCollection = RiderSessionResult[] & {
-  riderGender?: string | null;
-};
-
-export const riderSessionsSchema = z
-  .object({
-    results: z.array(resultRawSchema).optional(),
-    gender: nullableStringSchema.optional(),
-    sex: nullableStringSchema.optional(),
-  })
-  .passthrough()
-  .transform((value) => {
-    const results = (value.results ?? [])
-      .filter((result): result is RiderSessionResult => result !== null)
-      .sort(compareSessions) as RiderSessionCollection;
-    Object.defineProperty(results, "riderGender", {
-      value: value.gender ?? value.sex ?? null,
-      enumerable: false,
-    });
-    return results;
-  });
-
 export const riderSessionResultsSchema = z
   .array(resultRawSchema)
   .transform((value) =>
@@ -192,12 +166,6 @@ export const riderSessionResultsSchema = z
       .filter((result): result is RiderSessionResult => result !== null)
       .sort(compareSessions),
   );
-
-export function getRiderSessionGender(
-  results: RiderSessionCollection | undefined,
-) {
-  return results?.riderGender ?? null;
-}
 
 export function normalizeSessionKind(
   value: string | null | undefined,
@@ -242,10 +210,6 @@ function normalizeStatus(value: string | null | undefined) {
   return value?.trim().toUpperCase() || "MISSING";
 }
 
-function publicCategoryCode(value: string | null | undefined) {
-  return normalizeCategoryValue(value);
-}
-
 function compareSessions(left: RiderSessionResult, right: RiderSessionResult) {
   return (
     (left.date ?? "").localeCompare(right.date ?? "") ||
@@ -253,42 +217,4 @@ function compareSessions(left: RiderSessionResult, right: RiderSessionResult) {
     left.sessionOrder - right.sessionOrder ||
     left.sessionId.localeCompare(right.sessionId, undefined, { numeric: true })
   );
-}
-
-export function filterRiderSessions(
-  results: RiderSessionResult[],
-  filters: MetricsFilters,
-) {
-  return results.filter(
-    (result) =>
-      (filters.seasons.length === 0 ||
-        (result.season !== null &&
-          filters.seasons.includes(String(result.season)))) &&
-      (filters.tracks.length === 0 ||
-        (result.trackId !== null && filters.tracks.includes(result.trackId))) &&
-      (filters.conditions.length === 0 ||
-        (result.conditionId !== null &&
-          filters.conditions.includes(result.conditionId))) &&
-      (filters.classes.length === 0 ||
-        (result.competitionClassId !== null &&
-          filters.classes.includes(result.competitionClassId))) &&
-      (filters.categories.length === 0 ||
-        (result.category !== null &&
-          filters.categories.includes(result.category))),
-  );
-}
-
-export function useRiderSessions(riderId: string) {
-  return useQuery({
-    queryKey: riderQueryKeys.sessions(riderId),
-    queryFn: ({ signal }) =>
-      apiClient.get(
-        `/api/v1/riders/${encodeURIComponent(riderId)}`,
-        riderSessionsSchema,
-        {
-          signal,
-          query: { include: "results" },
-        },
-      ),
-  });
 }

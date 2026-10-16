@@ -23,6 +23,7 @@ import { riderBasePath } from "../../components/navigation/rider-navigation-stat
 import { ChartTooltip, TooltipRows } from "../../components/overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
 import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import { getCompetitionClassColors } from "../../utils/competition-classes";
 import type { RiderSessionResult } from "./api/get-rider-sessions";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
@@ -39,13 +40,6 @@ const resultPointColors = [
   "#D9827C",
   "#B96C68",
 ];
-
-function roundClassColor(round: RiderOutletContext["overview"]["roundResults"][number]) {
-  const value = `${round.competitionClassCode ?? ""} ${round.competitionClassAbbreviation ?? ""} ${round.competitionClassName ?? ""}`.toLowerCase();
-  return value.includes("champ") || value.includes("wch")
-    ? "var(--color-event-class-world-championship-text)"
-    : "var(--color-rating-top)";
-}
 
 function distinctCount(values: Array<string | number | null>) {
   return new Set(
@@ -287,7 +281,7 @@ export default function RiderDetailsPage() {
       label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
       x: round.pace,
       y: round.consistency,
-      color: roundClassColor(round),
+      color: getCompetitionClassColors({ code: round.competitionClassCode, name: round.competitionClassName, abbreviation: round.competitionClassAbbreviation }).chart,
       detail: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Pace ${formatOneDecimal(round.pace)} · Consistency ${formatOneDecimal(round.consistency)}`,
     }],
   );
