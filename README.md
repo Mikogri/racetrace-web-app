@@ -1,75 +1,36 @@
-# React + TypeScript + Vite
+# RaceTrace Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend RaceTrace do analizy wyników downhill: ranking, profile zawodników, wyniki i Analytics rund, porównania, Live Timing oraz Fantasy. React 19 i TypeScript działają na Vite; TanStack Query obsługuje zapytania, Zod waliduje odpowiedzi, a Recharts rysuje wykresy. Obliczenia sportowe wykonuje sąsiednie API .NET, nie interfejs.
 
-Currently, two official plugins are available:
+## Praca lokalna
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Wymagane są Node zgodny z wersją Vite oraz pnpm. Z katalogu repozytorium:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```powershell
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Uruchom również `racetrace-api` na porcie 5017 albo ustaw serwerowy `API_PROXY_TARGET`. Proxy Vite pobiera lokalny sekret API z .NET User Secrets (`racetrace-api-2026`) lub `API_READ_SECRET` i dodaje go do żądań `/api`. Nie umieszczaj sekretów w zmiennych `VITE_*`: są publiczne. `VITE_API_BASE_URL` ustawia bazowy adres, a `VITE_API_TIMEOUT_MS` limit czasu (domyślnie 12 s). Produkcja wymaga osobnej konfiguracji routingu SPA i autoryzowanego proxy; serwer deweloperski nie jest hostingiem produkcyjnym.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+`src/features/` grupuje strony i ich hooki, `src/components/` zawiera wspólny UI, `src/lib/api-client.ts` obsługuje HTTP, a `src/styles/tokens/` design system. Filtry i wybór riderów są synchronizowane z URL. Błędy i odświeżanie korzystają ze wspólnych stanów aplikacji.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Kontrakty i dokumentacja
 
-```
+API i frontend używają `camelCase`. Po zmianie API uruchom `pnpm contracts:export`, `pnpm contracts:generate`, `pnpm contracts:check` i `pnpm contracts:test`; nie edytuj ręcznie wygenerowanych typów. Komendy wymagają sąsiedniego repozytorium API i .NET.
+
+Wspólna dokumentacja jest utrzymywana w repozytorium backendu:
+
+- [Architektura](https://github.com/Mikogri/racetrace-api/blob/main/docs/ARCHITECTURE.md)
+- [API i kontrakty](https://github.com/Mikogri/racetrace-api/blob/main/docs/API.md)
+- [Algorytmy](https://github.com/Mikogri/racetrace-api/blob/main/docs/ALGORITHMS.md)
+- [Dane i cache](https://github.com/Mikogri/racetrace-api/blob/main/docs/DATA_PIPELINE.md)
+- [Round Analytics](https://github.com/Mikogri/racetrace-api/blob/main/docs/ROUND_ANALYTICS.md)
+- [Predykcje i Fantasy](https://github.com/Mikogri/racetrace-api/blob/main/docs/PREDICTIONS.md)
+- [Wydajność i diagnostyka](https://github.com/Mikogri/racetrace-api/blob/main/docs/PERFORMANCE.md)
+
+Lokalnie te same dokumenty znajdują się w sąsiednim `racetrace-api/docs/`. Linki GitHub wskazują gałąź `main` i wymagają opublikowania zmian dokumentacji w repozytorium API.
