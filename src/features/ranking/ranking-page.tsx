@@ -301,7 +301,7 @@ export default function RankingPage() {
       >
         {SHOW_RANKING_REQUEST_DETAILS && rankingData ? (
           <div className={styles.requestControls}>
-            {SHOW_RANKING_REQUEST_DETAILS ? <RequestDetails data={rankingData} /> : null}
+            <RequestDetails data={rankingData} />
             <button
               className={styles.clearCacheButton}
               type="button"

@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import { env } from "../config/env";
 import { ApiError } from "../types/api";
-import { parseServerTiming, setApiResponseMeta } from "./api-response-meta";
+import { measureResponseBody, recordApiResponseDiagnostics } from "./api-request-diagnostics";
 import { observeCategoriesInApiPayload } from "../utils/categories";
 
 type RequestOptions<TSchema extends z.ZodType> = Omit<RequestInit, "body"> & {
@@ -60,14 +60,7 @@ async function request<TSchema extends z.ZodType>({
     });
 
     const responseText = await response.text();
-    const responseBytes = new TextEncoder().encode(responseText).byteLength;
-    const contentLengthHeader = response.headers.get("content-length");
-    const contentLength =
-      contentLengthHeader === null ? Number.NaN : Number(contentLengthHeader);
-    const transferredBytes =
-      Number.isFinite(contentLength) && contentLength >= 0
-        ? contentLength
-        : null;
+    const bodyMeasurement = measureResponseBody(responseText, response.headers);
     let payload: unknown = null;
     try {
       payload = responseText ? JSON.parse(responseText) : null;
@@ -103,12 +96,7 @@ async function request<TSchema extends z.ZodType>({
 
     observeCategoriesInApiPayload(payload);
 
-    setApiResponseMeta(parsed.data, {
-      durationMs: performance.now() - requestStartedAt,
-      responseBytes,
-      transferredBytes,
-      serverTimings: parseServerTiming(response.headers.get('server-timing')),
-    });
+    recordApiResponseDiagnostics(parsed.data, requestStartedAt, response.headers, bodyMeasurement);
     return parsed.data;
   } catch (error) {
     if (error instanceof ApiError) throw error;

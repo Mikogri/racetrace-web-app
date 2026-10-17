@@ -15,12 +15,12 @@ describe('championship timing snapshot', () => {
       ],
     }, session);
     const snapshot = championshipSession(session, { results, status: 'live' });
-    expect(snapshot.session_type).toBe('final');
+    expect(snapshot.sessionType).toBe('final');
     expect(snapshot.complete).toBe(false);
     expect(snapshot.riders).toHaveLength(3);
-    expect(snapshot.riders.find(r => r.uci_id === '100')?.state).toBe('finished');
-    expect(snapshot.riders.find(r => r.uci_id === '200')?.state).toBe('pending');
-    expect(snapshot.riders.find(r => r.uci_id === '200')?.position).toBeNull();
-    expect(snapshot.riders.find(r => r.uci_id === '300')?.state).toBe('dns');
+    expect(snapshot.riders.find(r => r.uciId === '100')?.state).toBe('finished');
+    expect(snapshot.riders.find(r => r.uciId === '200')?.state).toBe('pending');
+    expect(snapshot.riders.find(r => r.uciId === '200')?.position).toBeNull();
+    expect(snapshot.riders.find(r => r.uciId === '300')?.state).toBe('dns');
   });
 });

@@ -11565,10 +11565,10 @@ export interface components {
         };
         ChampionshipContext: {
             eligible: boolean;
-            session_types: string[];
+            sessionTypes: string[];
         };
         ChampionshipProjection: {
-            can_change: null | boolean;
+            canChange: null | boolean;
             items: components["schemas"]["ChampionshipRider"][];
             /** Format: int32 */
             lead: null | number;
@@ -11579,8 +11579,8 @@ export interface components {
             name: string;
             /** Format: int32 */
             points: number;
-            rider_id: null | string;
-            uci_id: string;
+            riderId: null | string;
+            uciId: string;
         };
         ChampionshipRun: {
             name: string;
@@ -11588,12 +11588,12 @@ export interface components {
             position: null | number;
             /** @enum {string} */
             state: "finished" | "pending" | "dnf" | "dns" | "dsq";
-            uci_id: null | string;
+            uciId: null | string;
         };
         ChampionshipSession: {
             complete: boolean;
             riders: components["schemas"]["ChampionshipRun"][];
-            session_type: string;
+            sessionType: string;
         };
         ChaosComponentDto: {
             key: string;
@@ -11616,56 +11616,56 @@ export interface components {
             starters: number;
         };
         ChronoRaceImportRequest: {
-            category_code: string;
-            chronorace_json: components["schemas"]["JsonObject"];
-            competition_class: null | components["schemas"]["ImportCompetitionClassPayload"];
+            categoryCode: string;
+            chronoraceJson: components["schemas"]["JsonObject"];
+            competitionClass: null | components["schemas"]["ImportCompetitionClassPayload"];
             condition: null | components["schemas"]["ImportConditionPayload"];
             round: components["schemas"]["ImportRoundPayload"];
             session: components["schemas"]["ImportSessionPayload"];
             track: components["schemas"]["ImportTrackPayload"];
         };
         ChronoRaceImportResponse: {
-            points_recalculated: boolean;
+            pointsRecalculated: boolean;
             /** Format: int32 */
-            results_upserted: number;
+            resultsUpserted: number;
             /** Format: int32 */
-            riders_created: number;
+            ridersCreated: number;
             /** Format: int32 */
-            riders_updated: number;
-            round_id: string;
-            session_id: string;
+            ridersUpdated: number;
+            roundId: string;
+            sessionId: string;
             /** Format: int32 */
-            splits_upserted: number;
+            splitsUpserted: number;
             warnings: string[];
         };
         ChronoRaceRoundFormCategoryPayload: {
-            category_code: string;
-            chronorace_json: null | components["schemas"]["JsonObject"];
-            chronorace_url: null | string;
-            result_json?: null | components["schemas"]["JsonObject"];
-            result_url?: null | string;
+            categoryCode: string;
+            chronoraceJson: null | components["schemas"]["JsonObject"];
+            chronoraceUrl: null | string;
+            resultJson?: null | components["schemas"]["JsonObject"];
+            resultUrl?: null | string;
         };
         ChronoRaceRoundFormImportItemResponse: {
-            category_code: string;
-            chronorace_url: null | string;
-            points_recalculated: boolean;
-            resolved_chronorace_json_url: null | string;
+            categoryCode: string;
+            chronoraceUrl: null | string;
+            pointsRecalculated: boolean;
+            resolvedChronoraceJsonUrl: null | string;
             /** Format: int32 */
-            results_upserted: number;
+            resultsUpserted: number;
             /** Format: int32 */
-            riders_created: number;
+            ridersCreated: number;
             /** Format: int32 */
-            riders_updated: number;
-            round_id: null | string;
-            session_id: null | string;
-            session_name: string;
-            session_type: string;
+            ridersUpdated: number;
+            roundId: null | string;
+            sessionId: null | string;
+            sessionName: string;
+            sessionType: string;
             /** Format: int32 */
-            splits_upserted: number;
+            splitsUpserted: number;
             warnings: string[];
         };
         ChronoRaceRoundFormImportRequest: {
-            competition_class: null | components["schemas"]["ImportCompetitionClassPayload"];
+            competitionClass: null | components["schemas"]["ImportCompetitionClassPayload"];
             condition: null | components["schemas"]["ImportConditionPayload"];
             image?: null | components["schemas"]["ImportRoundImagePayload"];
             round: components["schemas"]["ImportRoundPayload"];
@@ -11674,22 +11674,22 @@ export interface components {
         };
         ChronoRaceRoundFormImportResponse: {
             /** Format: int32 */
-            categories_imported: number;
-            image_upserted: boolean;
+            categoriesImported: number;
+            imageUpserted: boolean;
             items: components["schemas"]["ChronoRaceRoundFormImportItemResponse"][];
             /** Format: int32 */
-            points_recalculated: number;
+            pointsRecalculated: number;
             /** Format: int32 */
-            results_upserted: number;
+            resultsUpserted: number;
             /** Format: int32 */
-            riders_created: number;
+            ridersCreated: number;
             /** Format: int32 */
-            riders_updated: number;
-            round_id: null | string;
+            ridersUpdated: number;
+            roundId: null | string;
             /** Format: int32 */
-            sessions_imported: number;
+            sessionsImported: number;
             /** Format: int32 */
-            splits_upserted: number;
+            splitsUpserted: number;
             warnings: string[];
         };
         ChronoRaceRoundFormSessionPayload: {
@@ -11697,20 +11697,20 @@ export interface components {
             condition: null | components["schemas"]["ImportConditionPayload"];
             name: string;
             /** Format: date */
-            session_date: null | string;
-            session_type: string;
+            sessionDate: null | string;
+            sessionType: string;
             status: null | string;
         };
         ChronoRaceSessionReimportRequest: {
-            chronorace_json: null | components["schemas"]["JsonObject"];
-            chronorace_url: null | string;
-            result_json?: null | components["schemas"]["JsonObject"];
+            chronoraceJson: null | components["schemas"]["JsonObject"];
+            chronoraceUrl: null | string;
+            resultJson?: null | components["schemas"]["JsonObject"];
         };
         ChronoRaceSessionReimportResponse: {
-            chronorace_url: null | string;
+            chronoraceUrl: null | string;
             import: components["schemas"]["ChronoRaceImportResponse"];
-            resolved_chronorace_json_url: null | string;
-            session_id: string;
+            resolvedChronoraceJsonUrl: null | string;
+            sessionId: string;
             warnings: string[];
         };
         CommonSessionDto: {
@@ -11942,22 +11942,22 @@ export interface components {
         };
         FantasyBacktestMetrics: {
             /** Format: double */
-            mean_absolute_error: number;
+            meanAbsoluteError: number;
             /** Format: double */
-            oracle_actual_points: null | number;
+            oracleActualPoints: null | number;
             /** Format: double */
-            predicted_team_actual_points: null | number;
+            predictedTeamActualPoints: null | number;
             /** Format: double */
             regret: null | number;
             /** Format: int32 */
-            rider_count: number;
+            riderCount: number;
             /** Format: double */
-            root_mean_squared_error: number;
-            salary_optimization_unavailable_reason: null | string;
+            rootMeanSquaredError: number;
+            salaryOptimizationUnavailableReason: null | string;
             /** Format: double */
-            spearman_rank_correlation: null | number;
+            spearmanRankCorrelation: null | number;
             /** Format: double */
-            top_k_recall: number;
+            topKRecall: number;
         };
         FantasyBonusDto: {
             /** Format: int32 */
@@ -12009,48 +12009,48 @@ export interface components {
         FantasyPreparedRider: {
             /** Format: double */
             confidence: number;
-            country_code: null | string;
+            countryCode: null | string;
             /** Format: double */
-            expected_fantasy_points: number;
+            expectedFantasyPoints: number;
             /** Format: double */
-            expected_final_points: number;
+            expectedFinalPoints: number;
             /** Format: double */
-            expected_q1_bonus: number;
+            expectedQ1Bonus: number;
             gender: string;
             name: string;
             /** Format: double */
-            predicted_position: null | number;
-            rider_id: string;
+            predictedPosition: null | number;
+            riderId: string;
         };
         FantasyPreparedRound: {
             backtests: components["schemas"]["FantasyRoundBacktest"][];
-            calculation_fingerprint: null | string;
+            calculationFingerprint: null | string;
             calibrations: null | {
                 [key: string]: components["schemas"]["FantasyStageCalibration"];
             };
-            configuration_hash: null | string;
-            data_revision: null | string;
-            engine_version: string;
-            event_fingerprint: string;
+            configurationHash: null | string;
+            dataRevision: null | string;
+            engineVersion: string;
+            eventFingerprint: string;
             /** Format: date-time */
-            prediction_as_of: null | string;
+            predictionAsOf: null | string;
             /** Format: date-time */
-            prepared_at_utc: string;
-            projection_version: string;
+            preparedAtUtc: string;
+            projectionVersion: string;
             riders: components["schemas"]["FantasyPreparedRider"][];
-            round_id: string;
+            roundId: string;
             /** Format: date-time */
-            round_start_utc: string;
-            rules_version: string;
+            roundStartUtc: string;
+            rulesVersion: string;
             /** Format: int32 */
             season: number;
             /** Format: int32 */
-            simulation_iterations: null | number;
+            simulationIterations: null | number;
             /** Format: int32 */
-            simulation_seed: null | number;
+            simulationSeed: null | number;
             /** Format: date-time */
-            training_data_cutoff: null | string;
-            training_fields: null | components["schemas"]["FantasyTrainingField"][];
+            trainingDataCutoff: null | string;
+            trainingFields: null | components["schemas"]["FantasyTrainingField"][];
             warnings: string[];
         };
         FantasyRecommendationDto: {
@@ -12090,7 +12090,7 @@ export interface components {
         FantasyRoundBacktest: {
             category: string;
             metrics: components["schemas"]["FantasyBacktestMetrics"];
-            round_id: string;
+            roundId: string;
             /** Format: int32 */
             year: number;
         };
@@ -12122,7 +12122,7 @@ export interface components {
         FantasyStageCalibration: {
             /** Format: double */
             blend: number;
-            empirical_probabilities: {
+            empiricalProbabilities: {
                 [key: string]: number;
             };
             /** Format: int32 */
@@ -12130,15 +12130,15 @@ export interface components {
             /** Format: int32 */
             samples: number;
             /** Format: date-time */
-            trained_through_utc: string;
+            trainedThroughUtc: string;
         };
         FantasyTrainingField: {
             context: string;
             /** Format: date-time */
-            fetched_at_utc: string;
+            fetchedAtUtc: string;
             gender: string;
-            rider_ids: string[];
-            source_url: string;
+            riderIds: string[];
+            sourceUrl: string;
         };
         FieldSpreadDto: {
             classification: string;
@@ -12175,49 +12175,49 @@ export interface components {
         ImportConditionPayload: {
             /** Format: int32 */
             id: null | number;
-            is_dry: null | boolean;
+            isDry: null | boolean;
             name: null | string;
         };
         ImportRoundImagePayload: {
-            alt_text: null | string;
-            file_name: null | string;
+            altText: null | string;
+            fileName: null | string;
             /** Format: int32 */
-            height_px: null | number;
-            image_base64: string;
+            heightPx: null | number;
+            imageBase64: string;
             /** Format: int32 */
-            width_px: null | number;
+            widthPx: null | number;
         };
         ImportRoundPayload: {
-            competition_class_code?: null | string;
+            competitionClassCode?: null | string;
             /** Format: int64 */
-            competition_class_id?: null | number;
-            context_name: string;
+            competitionClassId?: null | number;
+            contextName: string;
             /** Format: date-time */
-            end_date: null | string;
+            endDate: null | string;
             /** @default false */
-            is_season_final_round: boolean;
+            isSeasonFinalRound: boolean;
             /** Format: int32 */
-            round_number: null | number;
+            roundNumber: null | number;
             /** Format: int32 */
-            season_year: number;
+            seasonYear: number;
             /** Format: date-time */
-            start_date: null | string;
+            startDate: null | string;
             status?: null | string;
         };
         ImportSessionPayload: {
-            chronorace_url?: null | string;
+            chronoraceUrl?: null | string;
             name: string;
             /** Format: date */
-            session_date: null | string;
-            session_type: string;
+            sessionDate: null | string;
+            sessionType: string;
             status: null | string;
         };
         ImportTrackPayload: {
             /** Format: double */
-            avg_slope: null | number;
-            country_code: null | string;
+            avgSlope: null | number;
+            countryCode: null | string;
             /** Format: int32 */
-            length_m: null | number;
+            lengthM: null | number;
             name: string;
             venue: string;
         };
@@ -12241,7 +12241,7 @@ export interface components {
             /** Format: int32 */
             total: number;
             /** Format: int32 */
-            total_pages: number;
+            totalPages: number;
         };
         PerformanceBinDto: {
             /** Format: int32 */
@@ -12269,38 +12269,38 @@ export interface components {
             riderId: number;
         };
         PlannedRoundCreateRequest: {
-            category_codes: string[];
-            competition_class_code: string;
+            categoryCodes: string[];
+            competitionClassCode: string;
             /** Format: int64 */
-            competition_class_id: number;
-            competition_class_name: string;
+            competitionClassId: number;
+            competitionClassName: string;
             /** Format: int32 */
-            competition_class_priority: null | number;
+            competitionClassPriority: null | number;
             /** Format: int32 */
-            condition_id: number;
-            context_name?: null | string;
+            conditionId: number;
+            contextName?: null | string;
             /** Format: date-time */
-            end_date: string;
+            endDate: string;
             image?: null | components["schemas"]["ImportRoundImagePayload"];
             /** @default false */
-            is_season_final_round: boolean;
+            isSeasonFinalRound: boolean;
             /** Format: int32 */
-            round_number: null | number;
+            roundNumber: null | number;
             /** Format: int32 */
-            season_year: number;
+            seasonYear: number;
             /** Format: date-time */
-            start_date: string;
+            startDate: string;
             status: string;
             track: null | components["schemas"]["ImportTrackPayload"];
             /** Format: int64 */
-            track_id: null | number;
+            trackId: null | number;
         };
         PlannedRoundCreateResponse: {
-            category_codes: string[];
-            image_upserted: boolean;
-            round_id: string;
+            categoryCodes: string[];
+            imageUpserted: boolean;
+            roundId: string;
             status: string;
-            track_id: string;
+            trackId: string;
         };
         PodiumPredictionContextDto: {
             /** Format: double */
@@ -12359,11 +12359,11 @@ export interface components {
             winProbability: number;
         };
         PointsRecalculateRequest: {
-            category_code: null | string;
+            categoryCode: null | string;
             scope: null | string;
             /** Format: int32 */
-            season_year: null | number;
-            session_id: null | string;
+            seasonYear: null | number;
+            sessionId: null | string;
         };
         PressurePerformancePointDto: {
             /** Format: date */
@@ -12574,17 +12574,17 @@ export interface components {
         };
         RiderProfileImageImportResponse: {
             /** Format: int32 */
-            files_processed: number;
+            filesProcessed: number;
             /** Format: int32 */
-            images_found: number;
+            imagesFound: number;
             /** Format: int32 */
-            invalid_urls: number;
+            invalidUrls: number;
             /** Format: int32 */
-            riders_updated: number;
+            ridersUpdated: number;
             /** Format: int32 */
             unchanged: number;
             /** Format: int32 */
-            unmatched_riders: number;
+            unmatchedRiders: number;
             warnings: string[];
         };
         RiderRoundResultDto: {
@@ -13024,17 +13024,17 @@ export interface components {
         };
         UciMtbWorldSeriesSupplementResponse: {
             /** Format: int32 */
-            matched_results: number;
-            points_recalculated: boolean;
+            matchedResults: number;
+            pointsRecalculated: boolean;
             /** Format: int32 */
-            results_updated: number;
-            session_id: string;
+            resultsUpdated: number;
+            sessionId: string;
             /** Format: int32 */
-            skipped_results: number;
+            skippedResults: number;
             /** Format: int32 */
-            source_results: number;
+            sourceResults: number;
             /** Format: int32 */
-            splits_upserted: number;
+            splitsUpserted: number;
             warnings: string[];
         };
         WinningMarginDto: {

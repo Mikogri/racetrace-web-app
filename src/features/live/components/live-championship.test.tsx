@@ -18,7 +18,7 @@ function setup() {
 
 describe('live championship panel', () => {
   it('does not render or project outside the season finale', async () => {
-    const get = vi.spyOn(apiClient, 'get').mockResolvedValue({ eligible: false, session_types: [] });
+    const get = vi.spyOn(apiClient, 'get').mockResolvedValue({ eligible: false, sessionTypes: [] });
     const post = vi.spyOn(apiClient, 'post');
     const view = setup();
     await waitFor(() => expect(get).toHaveBeenCalled());
@@ -26,15 +26,20 @@ describe('live championship panel', () => {
     expect(post).not.toHaveBeenCalled();
   });
   it('renders the server-calculated top two, lead and title status', async () => {
-    vi.spyOn(apiClient, 'get').mockResolvedValue({ eligible: true, session_types: ['final'] });
-    vi.spyOn(apiClient, 'post').mockResolvedValue({
-      items: [{ rider_id: '1', uci_id: '100', name: 'Loic BRUNI', points: 1200 }, { rider_id: '2', uci_id: '200', name: 'Asa VERMETTE', points: 1150 }],
-      lead: 50, can_change: true, status: 'open',
-    });
+    vi.spyOn(apiClient, 'get').mockImplementation(async (_path, schema) => schema.parse({ eligible: true, sessionTypes: ['final'] }));
+    const post = vi.spyOn(apiClient, 'post').mockImplementation(async (_path, schema) => schema.parse({
+      items: [{ riderId: '1', uciId: '100', name: 'Loic BRUNI', points: 1200 }, { riderId: '2', uciId: '200', name: 'Asa VERMETTE', points: 1150 }],
+      lead: 50, canChange: true, status: 'open',
+    }));
     setup();
     expect(await screen.findByText('Loic Bruni')).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     expect(screen.getByText('50 pts lead')).toBeInTheDocument();
     expect(screen.getByText('Title still open')).toBeInTheDocument();
+    expect(post).toHaveBeenCalledExactlyOnceWith(
+      '/api/v1/live/rounds/38/championship', expect.anything(),
+      [{ sessionType: 'final', complete: false, riders: [{ uciId: '100', name: 'A', position: 1, state: 'finished' }] }],
+      { signal: expect.any(AbortSignal), query: { category: 'elite_men' } },
+    );
   });
 });

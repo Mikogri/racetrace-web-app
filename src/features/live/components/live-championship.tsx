@@ -27,7 +27,7 @@ export function LiveChampionship({ session, catalog, snapshot }: { session: Live
       ) : null}
       {query.data && query.data.items.length > 0 ? <>
         <ol className={styles.riders}>
-          {query.data.items.map((rider, index) => <li key={rider.uci_id}>
+          {query.data.items.map((rider, index) => <li key={rider.uciId}>
             <span className={styles.position}>{query.data?.lead === 0 ? '=' : index + 1}</span>
             <span className={styles.name}>{normalizeDisplayName(rider.name)}</span>
             <strong>{rider.points} <small>pts</small></strong>
@@ -35,7 +35,7 @@ export function LiveChampionship({ session, catalog, snapshot }: { session: Live
         </ol>
         <div className={styles.summary}>
           <span>{query.data.lead === null ? 'Lead unavailable' : `${query.data.lead} pts lead`}</span>
-          <span className={!query.error && query.data.can_change === false ? styles.secured : undefined}>
+          <span className={!query.error && query.data.canChange === false ? styles.secured : undefined}>
             {query.error ? 'Update failed · showing previous standings' : labels[query.data.status]}
           </span>
         </div>

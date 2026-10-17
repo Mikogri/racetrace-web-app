@@ -52,7 +52,7 @@ const relatedSchema = z
     code: nullableStringSchema,
     name: nullableStringSchema,
     venue: nullableStringSchema,
-    country_code: nullableStringSchema,
+    countryCode: nullableStringSchema,
   })
   .passthrough()
   .nullish();
@@ -60,16 +60,16 @@ const relatedSchema = z
 const roundSchema = z
   .object({
     id: entityIdSchema.optional(),
-    round_number: z.number().int().nullish(),
-    season_year: z.number().int().nullish(),
-    start_date: nullableStringSchema,
-    track_id: entityIdSchema.nullish(),
-    condition_id: entityIdSchema.nullish(),
-    competition_class_id: entityIdSchema.nullish(),
+    roundNumber: z.number().int().nullish(),
+    seasonYear: z.number().int().nullish(),
+    startDate: nullableStringSchema,
+    trackId: entityIdSchema.nullish(),
+    conditionId: entityIdSchema.nullish(),
+    competitionClassId: entityIdSchema.nullish(),
     tracks: relatedSchema,
     conditions: relatedSchema,
-    competition_class: relatedSchema,
-    competition_levels: relatedSchema,
+    competitionClass: relatedSchema,
+    competitionLevels: relatedSchema,
   })
   .passthrough()
   .nullish();
@@ -86,10 +86,10 @@ const sessionSchema = z
   .object({
     id: entityIdSchema.optional(),
     name: nullableStringSchema,
-    session_type: nullableStringSchema,
-    session_date: nullableStringSchema,
+    sessionType: nullableStringSchema,
+    sessionDate: nullableStringSchema,
     rounds: roundSchema,
-    round_categories: roundCategorySchema,
+    roundCategories: roundCategorySchema,
     categories: relatedSchema,
     conditions: relatedSchema,
   })
@@ -101,61 +101,61 @@ const resultRawSchema = z
     id: entityIdSchema.optional(),
     position: z.number().int().nullish(),
     status: nullableStringSchema,
-    is_classified: z.boolean().nullish(),
-    top_speed: nullableNumberSchema,
-    awarded_points: z.number().nullish(),
+    isClassified: z.boolean().nullish(),
+    topSpeed: nullableNumberSchema,
+    awardedPoints: z.number().nullish(),
     sessions: sessionSchema,
   })
   .passthrough()
   .transform((value): RiderSessionResult | null => {
     const session = value.sessions;
-    const round = session?.rounds ?? session?.round_categories?.rounds;
+    const round = session?.rounds ?? session?.roundCategories?.rounds;
     const resultId = value.id;
     const sessionId = session?.id;
     const roundId = round?.id;
     if (!resultId || !sessionId || !roundId) return null;
 
-    const kind = normalizeSessionKind(session.session_type ?? session.name);
+    const kind = normalizeSessionKind(session.sessionType ?? session.name);
     const status = normalizeStatus(value.status);
     const position = value.position ?? null;
-    const category = session.categories ?? session.round_categories?.categories;
+    const category = session.categories ?? session.roundCategories?.categories;
     const condition = session.conditions ?? round.conditions;
     const competitionClass =
-      round.competition_class ?? round.competition_levels;
+      round.competitionClass ?? round.competitionLevels;
 
     return {
       resultId,
       sessionId,
       roundId,
-      roundNumber: round.round_number ?? null,
-      season: round.season_year ?? null,
-      trackId: round.track_id ?? round.tracks?.id ?? null,
+      roundNumber: round.roundNumber ?? null,
+      season: round.seasonYear ?? null,
+      trackId: round.trackId ?? round.tracks?.id ?? null,
       trackName: round.tracks?.name ?? null,
       venueName: round.tracks?.venue ?? round.tracks?.name ?? null,
-      countryCode: round.tracks?.country_code ?? null,
-      date: session.session_date ?? round.start_date ?? null,
-      conditionId: round.condition_id ?? condition?.id ?? null,
+      countryCode: round.tracks?.countryCode ?? null,
+      date: session.sessionDate ?? round.startDate ?? null,
+      conditionId: round.conditionId ?? condition?.id ?? null,
       conditionName: condition?.name ?? null,
       competitionClassId:
-        round.competition_class_id ?? competitionClass?.id ?? null,
+        round.competitionClassId ?? competitionClass?.id ?? null,
       competitionClassCode: competitionClass?.code ?? null,
       competitionClassName: competitionClass?.name ?? null,
       category: normalizeCategoryValue(category?.code),
       kind,
-      sessionType: session.session_type ?? session.name ?? "Other",
-      abbreviation: formatSessionLabel(session.session_type ?? session.name ?? "Other", "abbreviation"),
+      sessionType: session.sessionType ?? session.name ?? "Other",
+      abbreviation: formatSessionLabel(session.sessionType ?? session.name ?? "Other", "abbreviation"),
       sessionOrder: sessionOrder(kind),
       isFinal: kind === "final",
       position,
       status,
       isClassified:
-        value.is_classified === true &&
+        value.isClassified === true &&
         position !== null &&
         position > 0 &&
         !["DNS", "DNF", "DSQ", "DNQ", "CANCELLED", "MISSING"].includes(status),
       isStart: !["DNS", "CANCELLED", "MISSING"].includes(status),
-      topSpeed: value.top_speed,
-      awardedPoints: value.awarded_points ?? 0,
+      topSpeed: value.topSpeed,
+      awardedPoints: value.awardedPoints ?? 0,
     };
   });
 

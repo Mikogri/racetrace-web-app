@@ -8,7 +8,7 @@ export const liveRoundsResponseSchema = z.object({
 });
 
 export const liveRoundContextSchema = z.object({
-  context_name: z.string().nullish(),
+  contextName: z.string().nullish(),
 });
 
 export const tissotCatalogSchema = z.object({
@@ -43,7 +43,7 @@ const nestedSchema = z
     code: z.string().nullish(),
     name: z.string().nullish(),
     venue: z.string().nullish(),
-    country_code: z.string().nullish(),
+    countryCode: z.string().nullish(),
   })
   .passthrough()
   .nullish();
@@ -52,18 +52,15 @@ export const liveSessionRawSchema = z
   .object({
     id: entityIdSchema.optional(),
     sessionId: entityIdSchema.optional(),
-    round_id: entityIdSchema.optional(),
+    roundId: entityIdSchema.optional(),
     name: z.string().nullish(),
-    session_type: z.string().nullish(),
     sessionType: z.string().nullish(),
     category: z.string().nullish(),
     categories: nestedSchema,
     status: z.string().nullish(),
-    session_date: z.string().nullish(),
     sessionDate: z.string().nullish(),
     riderIds: z.array(entityIdSchema).optional(),
     riderCount: z.number().int().nonnegative().nullish(),
-    chronorace_url: z.string().url().nullish(),
     chronoraceUrl: z.string().url().nullish(),
     provider: z.enum(["chronorace", "tissot"]).optional(),
     competitionCode: z.string().nullish(),
@@ -72,10 +69,10 @@ export const liveSessionRawSchema = z
     rounds: z
       .object({
         id: entityIdSchema.optional(),
-        round_number: z.number().int().nullish(),
-        season_year: z.number().int().nullish(),
-        context_name: z.string().nullish(),
-        competition_levels: nestedSchema,
+        roundNumber: z.number().int().nullish(),
+        seasonYear: z.number().int().nullish(),
+        contextName: z.string().nullish(),
+        competitionLevels: nestedSchema,
         tracks: nestedSchema,
       })
       .passthrough()
@@ -84,20 +81,20 @@ export const liveSessionRawSchema = z
   .passthrough()
   .transform((value) => ({
     id: value.sessionId ?? value.id ?? "",
-    name: value.name ?? value.sessionType ?? value.session_type ?? "Session",
-    sessionType: value.sessionType ?? value.session_type ?? null,
+    name: value.name ?? value.sessionType ?? "Session",
+    sessionType: value.sessionType ?? null,
     category: value.category ?? value.categories?.code ?? null,
     status: value.status ?? "unknown",
-    date: value.sessionDate ?? value.session_date ?? null,
-    roundId: value.rounds?.id ?? value.round_id ?? null,
-    roundNumber: value.rounds?.round_number ?? null,
+    date: value.sessionDate ?? null,
+    roundId: value.rounds?.id ?? value.roundId ?? null,
+    roundNumber: value.rounds?.roundNumber ?? null,
     venue: value.rounds?.tracks?.venue ?? value.rounds?.tracks?.name ?? null,
-    countryCode: value.rounds?.tracks?.country_code ?? null,
-    season: value.rounds?.season_year ?? null,
-    contextName: value.rounds?.context_name ?? null,
-    competitionName: value.rounds?.competition_levels?.name ?? null,
+    countryCode: value.rounds?.tracks?.countryCode ?? null,
+    season: value.rounds?.seasonYear ?? null,
+    contextName: value.rounds?.contextName ?? null,
+    competitionName: value.rounds?.competitionLevels?.name ?? null,
     riderCount: value.riderCount ?? value.riderIds?.length ?? null,
-    chronoraceUrl: value.chronoraceUrl ?? value.chronorace_url ?? null,
+    chronoraceUrl: value.chronoraceUrl ?? null,
     provider: value.provider ?? "chronorace",
     competitionCode: value.competitionCode ?? null,
     eventNumber: value.eventNumber ?? null,

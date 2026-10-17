@@ -5,7 +5,7 @@ import { chronoRaceSessionSnapshotOptions, liveSessionRawSchema } from "./get-li
 const session = liveSessionRawSchema.parse({
   id: "final-em",
   status: "live",
-  rounds: { context_name: "20260820_mtb", season_year: 2026 },
+  rounds: { contextName: "20260820_mtb", seasonYear: 2026 },
 });
 
 afterEach(() => vi.restoreAllMocks());

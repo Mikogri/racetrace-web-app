@@ -13,7 +13,7 @@ const relatedSchema = z
     code: z.string().nullish(),
     name: z.string().nullish(),
     venue: z.string().nullish(),
-    country_code: z.string().nullish(),
+    countryCode: z.string().nullish(),
   })
   .passthrough()
   .nullish();
@@ -22,47 +22,44 @@ const roundRawSchema = z
   .object({
     id: entityIdSchema.optional(),
     roundId: entityIdSchema.optional(),
-    round_number: z.number().int().nullish(),
     roundNumber: z.number().int().nullish(),
-    season_year: z.number().int().nullish(),
+    seasonYear: z.number().int().nullish(),
     season: z.number().int().nullish(),
-    context_name: z.string().nullish(),
-    start_date: z.string().nullish(),
+    contextName: z.string().nullish(),
     startDate: z.string().nullish(),
-    end_date: z.string().nullish(),
     endDate: z.string().nullish(),
     status: z.string().nullish(),
     tracks: relatedSchema,
     trackName: z.string().nullish(),
     venueName: z.string().nullish(),
     countryCode: z.string().nullish(),
-    competition_class: relatedSchema,
-    competition_levels: relatedSchema,
+    competitionClass: relatedSchema,
+    competitionLevels: relatedSchema,
     competitionClassName: z.string().nullish(),
     conditions: relatedSchema,
   })
   .passthrough()
   .transform((value) => ({
     id: value.roundId ?? value.id ?? "",
-    roundNumber: value.roundNumber ?? value.round_number ?? null,
-    season: value.season ?? value.season_year ?? null,
+    roundNumber: value.roundNumber ?? null,
+    season: value.season ?? value.seasonYear ?? null,
     title:
       value.venueName ??
       value.tracks?.venue ??
       value.trackName ??
       value.tracks?.name ??
-      value.context_name ??
+      value.contextName ??
       "Round details",
     trackName: value.trackName ?? value.tracks?.name ?? null,
     venueName: value.venueName ?? value.tracks?.venue ?? null,
-    countryCode: value.countryCode ?? value.tracks?.country_code ?? null,
-    startDate: value.startDate ?? value.start_date ?? null,
-    endDate: value.endDate ?? value.end_date ?? null,
+    countryCode: value.countryCode ?? value.tracks?.countryCode ?? null,
+    startDate: value.startDate ?? null,
+    endDate: value.endDate ?? null,
     status: value.status ?? "unknown",
     competitionName:
       value.competitionClassName ??
-      value.competition_class?.name ??
-      value.competition_levels?.name ??
+      value.competitionClass?.name ??
+      value.competitionLevels?.name ??
       null,
     conditionName: value.conditions?.name ?? null,
   }));

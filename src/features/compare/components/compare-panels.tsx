@@ -1,5 +1,6 @@
+import { comparisonResultsSeries, pointsSeries, ratingSeries, riderColors, riderName, shortRiderName } from "../compare-chart-data";
 import { useRef } from "react";
-import { formatSessionLabel, useDomainMetadata } from "../../../utils/domain-metadata";
+import { useDomainMetadata } from "../../../utils/domain-metadata";
 import { useLocation } from "react-router-dom";
 import {
   Bar,
@@ -11,29 +12,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  PositionChart,
-  type PositionChartPoint,
-  type PositionChartSeries,
-} from "../../../components/charts/position-chart";
+import { PositionChart } from "../../../components/charts/position-chart";
 import { MetricScatterChart } from "../../../components/charts/metric-scatter-chart";
 import {
   DataTable,
   DataTableHeader,
   DataTableRow,
 } from "../../../components/data-display/data-table";
-import { normalizeDisplayName } from "../../../utils/display-name";
 import { RiderLink } from "../../../components/navigation/rider-navigation";
 import { ChartTooltip, TooltipRows } from "../../../components/overlays/tooltip";
-import { riderPathForLocation } from "../../../components/navigation/rider-navigation-state";
 import { formatOneDecimal } from "../../../utils/formatters";
 import type { CompareData, CompareRider } from "../api/get-compare";
 import styles from "./compare-panels.module.css";
-
-const riderColors = [
-  "var(--color-compare-rider-a-accent)",
-  "var(--color-compare-rider-b-accent)",
-];
 
 const riderBarColors = [
   "var(--color-compare-rider-a-bar)",
@@ -42,13 +32,6 @@ const riderBarColors = [
 
 const displayValue = (number: number | null) =>
   number === null ? "--" : formatOneDecimal(number);
-const riderName = (rider: CompareRider) => normalizeDisplayName(rider.fullName);
-const shortRiderName = (rider: CompareRider) => {
-  const parts = riderName(rider).trim().split(/\s+/);
-  if (parts.length < 2) return parts[0] ?? "--";
-  return `${parts[0][0]}. ${parts.slice(1).join(" ")}`;
-};
-
 const comparisonGap = (number: number | null) => {
   if (number === null) return "--";
   return `${number < 0 ? "-" : "+"}${Math.abs(number).toFixed(3)}`;
@@ -304,85 +287,6 @@ export function CompareStatisticsTable({ data }: { data: CompareData }) {
       <p className={styles.note}>Average positions, timing wins and selected-range performance.</p>
     </div>
   );
-}
-
-function comparisonResultsSeries(
-  data: CompareData,
-  pathname: string,
-): PositionChartSeries[] {
-  const sessions = [...data.commonSessions].sort(
-    (left, right) =>
-      (left.sessionDate ?? "").localeCompare(right.sessionDate ?? "") ||
-      Number(left.sessionId) - Number(right.sessionId),
-  );
-  return data.riders.map((rider, riderIndex) => ({
-    id: rider.riderId,
-    name: riderName(rider),
-    color: riderColors[riderIndex],
-    href: riderPathForLocation(pathname, rider.riderId),
-    averagePosition: rider.resultsAveragePosition,
-    points: sessions.map((session) => {
-      const result = session.results.find((item) => item.riderId === rider.riderId);
-      const sessionLabel = session.sessionType?.toLowerCase().includes("final")
-        ? "FIN"
-        : session.sessionType ? formatSessionLabel(session.sessionType).toUpperCase() : "SESSION";
-      return {
-        label: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"}`,
-        tooltipLabel: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"} · ${session.venueName ?? session.trackName ?? "Unknown venue"} · ${sessionLabel}`,
-        position: result?.isClassified ? result.position : null,
-        status: result?.status ?? null,
-        tooltip: `${shortRiderName(rider)} · ${result?.position ? `P${result.position}` : (result?.status ?? "not classified")}`,
-      };
-    }),
-  }));
-}
-
-function pointsSeries(data: CompareData, pathname: string): PositionChartSeries[] {
-  return data.riders.map((rider, riderIndex) => {
-    const roundById = new Map(rider.roundMetrics.map((round) => [round.roundId, round]));
-    const ordered = [...rider.pointsProgress].sort(
-      (left, right) =>
-        (left.date ?? "").localeCompare(right.date ?? "") ||
-        Number(left.resultId) - Number(right.resultId),
-    );
-    const lastByRound = new Map<string, typeof ordered[number]>();
-    ordered.forEach((point) => lastByRound.set(point.roundId, point));
-    const points: PositionChartPoint[] = [...lastByRound.values()].map((point) => {
-      const round = roundById.get(point.roundId);
-      return {
-        label: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-        tooltipLabel: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`} · ${round?.venueName ?? round?.trackName ?? "Unknown venue"}`,
-        position: point.cumulativePoints,
-        tooltip: `${shortRiderName(rider)} · ${Math.round(point.cumulativePoints)} pts`,
-      };
-    });
-    return {
-      id: rider.riderId,
-      name: riderName(rider),
-      color: riderColors[riderIndex],
-      href: riderPathForLocation(pathname, rider.riderId),
-      points,
-    };
-  });
-}
-
-function ratingSeries(data: CompareData, pathname: string): PositionChartSeries[] {
-  return data.riders.map((rider, riderIndex) => ({
-    id: rider.riderId,
-    name: riderName(rider),
-    color: riderColors[riderIndex],
-    href: riderPathForLocation(pathname, rider.riderId),
-    points: [...rider.roundMetrics]
-      .sort((left, right) =>
-        (left.date ?? "").localeCompare(right.date ?? "") || Number(left.roundId) - Number(right.roundId),
-      )
-      .map((round) => ({
-        label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-        tooltipLabel: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`} · ${round.venueName ?? round.trackName ?? "Unknown venue"}`,
-        position: round.rating,
-        tooltip: `${shortRiderName(rider)} · Rating ${round.rating == null ? "--" : formatOneDecimal(round.rating)}`,
-      })),
-  }));
 }
 
 export function CompareHistoryCharts({ data }: { data: CompareData }) {

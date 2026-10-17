@@ -47,7 +47,7 @@ export function useLiveRound(params: {
         liveRoundContextSchema,
         { signal },
       );
-      return { ...selected, contextName: detail.context_name ?? null };
+      return { ...selected, contextName: detail.contextName ?? null };
     },
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -75,20 +75,20 @@ export function useChronoRaceCatalog(round: LiveRound | null | undefined) {
       if (tissot.success) {
         return tissot.data.sessions.map((session) => liveSessionRawSchema.parse({
           ...session,
-          round_id: round.roundId,
+          roundId: round.roundId,
           rounds: {
             id: round.roundId,
-            round_number: round.roundNumber,
-            season_year: round.season,
-            context_name: null,
-            competition_levels: {
+            roundNumber: round.roundNumber,
+            seasonYear: round.season,
+            contextName: null,
+            competitionLevels: {
               code: round.competitionClassCode,
               name: round.competitionClassName ?? tissot.data.competitionName,
             },
             tracks: {
               name: round.trackName,
               venue: round.venueName,
-              country_code: round.countryCode,
+              countryCode: round.countryCode,
             },
           },
         }));

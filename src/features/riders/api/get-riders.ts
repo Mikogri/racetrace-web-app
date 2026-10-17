@@ -16,33 +16,29 @@ const riderItemSchema = z
     fullName: nullableString,
     firstName: nullableString,
     lastName: nullableString,
-    first_name: nullableString,
-    last_name: nullableString,
     teamName: nullableString,
-    team_name: nullableString,
     countryCode: nullableString,
     nation: nullableString,
     category: nullableString,
     categoryCode: nullableString,
     profileImageUrl: nullableString,
-    profile_image_url: nullableString,
   })
   .passthrough()
   .transform((value): RiderSummary | null => {
     const id = value.riderId ?? value.id
     const name =
       value.fullName ??
-      [value.firstName ?? value.first_name, value.lastName ?? value.last_name]
+      [value.firstName, value.lastName]
         .filter(Boolean)
         .join(' ')
     if (!id || !name.trim()) return null
     return {
       id,
       name: name.trim(),
-      team: value.teamName ?? value.team_name ?? null,
+      team: value.teamName ?? null,
       country: value.countryCode ?? value.nation ?? null,
       category: value.category ?? value.categoryCode ?? null,
-      profileImageUrl: value.profileImageUrl ?? value.profile_image_url ?? null,
+      profileImageUrl: value.profileImageUrl ?? null,
     }
   })
 
