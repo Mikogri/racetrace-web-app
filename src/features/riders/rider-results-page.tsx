@@ -14,7 +14,7 @@ import { useClientTable } from "../../hooks/use-client-table";
 import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
 import { EventClassBadge } from "../../components/data-display/event-class-badge";
 import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
-import type { RiderSessionResult } from "./api/get-rider-sessions";
+import type { RiderSessionResult } from "./api/rider-session-schema";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
 

@@ -2095,6 +2095,167 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/admin/round-images/convert-webp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JsonObject"];
+                        "text/json": components["schemas"]["JsonObject"];
+                        "text/plain": components["schemas"]["JsonObject"];
+                    };
+                };
+                /** @description Invalid query, payload or model binding. Framework validation uses Problem Details; domain validation uses the API error envelope. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        } | {
+                            detail?: null | string;
+                            errors?: {
+                                [key: string]: string[];
+                            };
+                            instance?: null | string;
+                            /** Format: int32 */
+                            status?: null | number;
+                            title?: null | string;
+                            type?: null | string;
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/rounds": {
         parameters: {
             query?: never;
@@ -3255,242 +3416,6 @@ export interface paths {
                 };
             };
         };
-        trace?: never;
-    };
-    "/api/v1/analytics/rider-similarity": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    season?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    seasons?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    seasonYears?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    season_years?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    seasonYear?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    season_year?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    trackId?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    track_id?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    tracks?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    venueId?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    venue_id?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    venue?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    venueName?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    venue_name?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    countryCode?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    country_code?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    category?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    categories?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    categoryCode?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    categoryCodes?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    category_code?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    category_codes?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    sessionType?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    session_type?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    dateFrom?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    date_from?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    from_date?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    dateTo?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    date_to?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    to_date?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    competitionClassId?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    competition_class_id?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    competitionClassCode?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    competition_class_code?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    class?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    conditionId?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    condition_id?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    conditions?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    condition?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    roundId?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    round_id?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    status?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    trackName?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    track_name?: string;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    minSectors?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    min_sectors?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    minSessions?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    min_sessions?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    minSharedFeatures?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    min_shared_features?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    clusterCount?: number;
-                    /** @description Existing query parameter/alias; CSV filters remain comma-separated strings. Validation and defaults are owned by the backend. */
-                    cluster_count?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["RiderSimilarityResponseDto"];
-                        "text/json": components["schemas"]["RiderSimilarityResponseDto"];
-                        "text/plain": components["schemas"]["RiderSimilarityResponseDto"];
-                    };
-                };
-                /** @description Invalid query, payload or model binding. Framework validation uses Problem Details; domain validation uses the API error envelope. */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        } | {
-                            detail?: null | string;
-                            errors?: {
-                                [key: string]: string[];
-                            };
-                            instance?: null | string;
-                            /** Format: int32 */
-                            status?: null | number;
-                            title?: null | string;
-                            type?: null | string;
-                        };
-                    };
-                };
-                /** @description API access, database or upstream error. */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        };
-                    };
-                };
-                /** @description API access, database or upstream error. */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        };
-                    };
-                };
-                /** @description API access, database or upstream error. */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        };
-                    };
-                };
-                /** @description API access, database or upstream error. */
-                503: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: {
-                                code: string;
-                                message: string;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/api/v1/analytics/riders/{riderId}/pressure-performance": {
@@ -12703,100 +12628,6 @@ export interface components {
             /** Format: int64 */
             venueId: null | number;
             venueName: null | string;
-        };
-        RiderSectorProfileDto: {
-            /** Format: double */
-            consistency: null | number;
-            /** Format: double */
-            fast: null | number;
-            /** Format: double */
-            finish: null | number;
-            /** Format: double */
-            middle: null | number;
-            /** Format: double */
-            peak: null | number;
-            /** Format: double */
-            start: null | number;
-            /** Format: double */
-            technical: null | number;
-            /** Format: double */
-            variance: null | number;
-            /** Format: double */
-            weak: null | number;
-        };
-        RiderSimilarityClusterDto: {
-            centroid: components["schemas"]["RiderSectorProfileDto"];
-            /** Format: int32 */
-            clusterId: number;
-            riderIds: string[];
-            /** Format: int32 */
-            size: number;
-            tags: string[];
-        };
-        RiderSimilarityFiltersDto: {
-            categories: string[];
-            /** Format: int32 */
-            clusterCount: null | number;
-            conditions: string[];
-            /** Format: int32 */
-            minSectors: number;
-            /** Format: int32 */
-            minSessions: number;
-            /** Format: int32 */
-            minSharedFeatures: number;
-            trackIds: string[];
-        };
-        RiderSimilarityMergeDto: {
-            /** Format: double */
-            distance: number;
-            leftId: string;
-            nodeId: string;
-            rightId: string;
-            /** Format: int32 */
-            size: number;
-        };
-        RiderSimilarityMetaDto: {
-            dataSource: string;
-            featureNames: string[];
-            /** Format: int32 */
-            riderCount: number;
-            /** Format: int32 */
-            sectorObservationCount: number;
-            /** Format: int32 */
-            sessionCount: number;
-        };
-        RiderSimilarityPairDto: {
-            riderAId: string;
-            riderBId: string;
-            /** Format: int32 */
-            sharedFeatures: number;
-            /** Format: double */
-            similarity: null | number;
-        };
-        RiderSimilarityResponseDto: {
-            clusters: components["schemas"]["RiderSimilarityClusterDto"][];
-            dendrogram: components["schemas"]["RiderSimilarityMergeDto"][];
-            filters: components["schemas"]["RiderSimilarityFiltersDto"];
-            meta: components["schemas"]["RiderSimilarityMetaDto"];
-            riders: components["schemas"]["RiderSimilarityRiderDto"][];
-            similarityMatrix: components["schemas"]["RiderSimilarityPairDto"][];
-        };
-        RiderSimilarityRiderDto: {
-            category: null | string;
-            /** Format: int32 */
-            clusterId: number;
-            countryCode: null | string;
-            /** Format: double */
-            evidence: number;
-            name: string;
-            profile: components["schemas"]["RiderSectorProfileDto"];
-            profileId: string;
-            riderId: string;
-            /** Format: int32 */
-            sectorCount: number;
-            /** Format: int32 */
-            sessionCount: number;
-            styleTags: string[];
         };
         RiderSpeedDto: {
             final: components["schemas"]["SpeedGroupDto"];

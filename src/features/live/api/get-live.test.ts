@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   discoverChronoRaceSessions,
   isLiveRoundStatus,
@@ -31,6 +31,29 @@ const session = {
 } as LiveSession;
 
 describe("ChronoRace live result normalization", () => {
+  it("preserves missing checkpoint indexes and the fifth finishing sector", () => {
+    const table = normalizeChronoRacePayload({
+      Results: [{ RaceNr: 1, Position: 1, RaceTime: 100000,
+        Times: [20000, null, 60000, 80000].map((RaceTime) => ({ RaceTime })) }],
+    }, session);
+    expect(table.items.find((row) => !row.isPerfectRun)?.times.map(({ index, time }) => ({ index, time }))).toEqual([
+      { index: 1, time: 20 }, { index: 3, time: 40 }, { index: 4, time: 20 }, { index: 5, time: 20 },
+    ]);
+    expect(table.session.splitCount).toBe(4);
+  });
+
+  it("retains elapsed on-track clock origin without inventing a finish time", () => {
+    const clock = vi.spyOn(Date, "now").mockReturnValue(1_000_000);
+    try {
+      const table = normalizeChronoRacePayload({
+        OnTrack: [{ RaceNr: 2, RaceTime: 12000, SortOrder: 1, Times: [] }],
+      }, session);
+      expect(table.items[0]).toMatchObject({ status: "On Track", liveStartedAt: 988000, finalTime: null, position: null });
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
   it("uses the same checkpoint, shares tied ranks and replaces stale on-track results", () => {
     const table = normalizeChronoRacePayload({
       NextToStart: [{ RaceNr: 5 }],

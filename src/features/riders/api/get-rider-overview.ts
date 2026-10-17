@@ -10,9 +10,9 @@ import {
 } from "../../../lib/validation";
 import type { MetricsFilters } from "../../../types/domain";
 import { riderQueryKeys } from "./rider-query-keys";
-import { pressurePerformanceSchema } from "./get-pressure-performance";
-import { riderSessionResultsSchema } from "./get-rider-sessions";
-import { riderTeamHistorySchema } from "./get-rider-team-history";
+import { pressurePerformanceSchema } from "./pressure-performance-schema";
+import { riderSessionResultsSchema } from "./rider-session-schema";
+import { riderTeamHistorySchema } from "./team-history-schema";
 
 const sessionPositionSchema = z.object({
   roundId: entityIdSchema,

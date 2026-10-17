@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { UpdateProgress } from "../../components/feedback/update-progress";
-import type { PressurePerformance } from "./api/get-pressure-performance";
+import type { PressurePerformance } from "./api/pressure-performance-schema";
 import { RouteLoadingPage } from "../../app/routes/route-states";
 import { useRequiredRouteParam } from "../../app/routes/use-required-route-param";
 import { useContextFilterOptions } from "../../components/filters/api/get-filter-options";
@@ -23,10 +23,10 @@ import { riderImageFromId } from "../../utils/rider-image";
 import { useRiderOverview, type RiderOverview } from "./api/get-rider-overview";
 import {
   type RiderSessionResult,
-} from "./api/get-rider-sessions";
+} from "./api/rider-session-schema";
 import {
   type RiderTeamHistoryItem,
-} from "./api/get-rider-team-history";
+} from "./api/team-history-schema";
 import styles from "./rider-route-layout.module.css";
 
 

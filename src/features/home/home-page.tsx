@@ -4,11 +4,9 @@ import {
   LastRoundResultsSection,
   NextRoundSection,
   PodiumPredictorSection,
-  FieldSpreadSection,
-  TrackFingerprintSection,
   TopRatedSection,
-  SpeedVsRunTimeSection,
 } from "./components/home-sections";
+import { FieldSpreadSection, TrackFingerprintSection, SpeedVsRunTimeSection } from "../../components/analytics/analytics-sections";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {

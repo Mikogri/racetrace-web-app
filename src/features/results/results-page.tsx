@@ -16,7 +16,6 @@ import { formatDateRange } from "../../utils/formatters";
 import { EventClassBadge } from "../../components/data-display/event-class-badge";
 import { formatDomainLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import { LiveStatusBadge } from "../live/components/live-status-badge";
-import demoRoundImage from "../../assets/hero.png";
 import roundPlaceholder from "../../assets/round-placeholder.png";
 import { useRounds, type RoundListItem } from "./api/get-rounds";
 import styles from "./results-page.module.css";
@@ -28,10 +27,7 @@ function isLiveRound(status: string) {
 function RoundCardImage({ round }: { round: RoundListItem }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
-  const source =
-    round.imageUrl === "demo"
-      ? demoRoundImage
-      : `/api/v1/rounds/${encodeURIComponent(round.roundId)}/image`;
+  const source = `/api/v1/rounds/${encodeURIComponent(round.roundId)}/image`;
 
   if (failed) return <RoundImagePlaceholder />;
 

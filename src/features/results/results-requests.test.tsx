@@ -10,7 +10,6 @@ import { filterOptionQueryKeys } from '../../components/filters/api/filter-optio
 import ResultsPage from './results-page'
 
 vi.mock('../../lib/api-client', () => ({ apiClient: { get: vi.fn() } }))
-vi.mock('../../config/demo-data', () => ({ USE_SIMULATED_API_DATA: false }))
 
 afterEach(() => vi.clearAllMocks())
 

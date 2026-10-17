@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { riderTeamHistorySchema } from '../features/riders/api/get-rider-team-history'
+import { riderTeamHistorySchema } from '../features/riders/api/team-history-schema'
 import { fantasyRiderSchema } from '../features/fantasy/api/get-fantasy'
 
 describe('OpenAPI-compatible runtime validation', () => {

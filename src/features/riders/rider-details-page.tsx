@@ -24,7 +24,7 @@ import { ChartTooltip, TooltipRows } from "../../components/overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
 import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
 import { getCompetitionClassColors } from "../../utils/competition-classes";
-import type { RiderSessionResult } from "./api/get-rider-sessions";
+import type { RiderSessionResult } from "./api/rider-session-schema";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
 

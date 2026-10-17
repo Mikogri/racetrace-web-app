@@ -3,7 +3,7 @@ import { applyDomainMetadata } from "../../../utils/domain-metadata";
 import {
   normalizeSessionKind,
   riderSessionResultsSchema,
-} from "./get-rider-sessions";
+} from "./rider-session-schema";
 
 const rawResult = {
   id: 10,
