@@ -22,12 +22,14 @@ Uruchom również `racetrace-api` na porcie 5017 albo ustaw serwerowy `API_PROXY
 
 Connect this repository to **Pages**, production branch `main`, repository root `/`, output directory `dist`. Use Node 24 (`.node-version`), build command `npm ci && npm run build`, and build variable `SKIP_DEPENDENCY_INSTALL=true` to avoid a second automatic install with a different package manager. Keep `VITE_API_BASE_URL` empty. No custom domain is required; the initial `*.pages.dev` address works.
 
-Configure these **runtime bindings** for production before deploying:
+Runtime bindings for production:
 
 | Binding | Value |
 | --- | --- |
-| `API_ORIGIN` | Railway public HTTPS origin, without a path |
-| `API_READ_SECRET` | Secret binding, identical to Railway's read secret |
+| `API_ORIGIN` | Defined in `wrangler.jsonc`: `https://racetrace-api-production.up.railway.app` |
+| `API_READ_SECRET` | Encrypted Secret in Cloudflare, identical to Railway's read secret; never add its value to Wrangler or Git |
+
+Wrangler is the source of truth for plain runtime `vars`. Change `API_ORIGIN` in the file, not a competing production dashboard variable; existing deployments require a new deployment to receive the change. There are no environment overrides in this repository, so the top-level origin also applies to local Pages runs and previews. Do not bind production read credentials to untrusted previews. Vite development still uses `API_PROXY_TARGET`, independently of Pages runtime bindings. `VITE_API_BASE_URL` must remain empty so browser requests use the same-origin gateway, rather than bypassing it and hitting Railway without authorization. Dashboard Secret bindings remain separate from the plain `vars` map.
 
 `functions/api/[[path]].js` proxies `/api/v1/*` server-side. Browser credentials and cookies are not forwarded. Administrative/import routes and writes are blocked; the only POST exception is the existing read-only live championship projection (body limited to 256 KiB). Upstream redirects are not followed with credentials; public round-image HTTPS redirects are relayed to the browser. API responses are not cached at the edge. `public/_routes.json` keeps static files and SPA routes outside the Function; Pages provides SPA fallback because there is no root `404.html`.
 
