@@ -16,6 +16,9 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: true,
       placeholderData: keepPreviousData,
       retry: shouldRetryQuery,
+      retryDelay: (attempt, error) => error instanceof ApiError && error.retryAfterMs !== null
+        ? Math.max(1000, error.retryAfterMs)
+        : Math.min(1000 * 2 ** attempt, 30_000),
     },
     mutations: {
       retry: false,

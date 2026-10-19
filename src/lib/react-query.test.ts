@@ -28,4 +28,12 @@ describe('query retries', () => {
   it('does not retry unknown/programming errors', () => {
     expect(shouldRetryQuery(0, new Error('Unexpected'))).toBe(false)
   })
+  it('waits for Retry-After instead of immediately retrying a rate-limited request', () => {
+    const delay = queryClient.getDefaultOptions().queries!.retryDelay
+    expect(delay).toBeTypeOf('function')
+    if (typeof delay !== 'function') throw new Error('Missing retry delay policy')
+    expect(delay(0, new ApiError('Limited', { code: 'http', status: 429, retryAfter: '60' }))).toBe(60_000)
+    expect(delay(1, new ApiError('Failed', { code: 'network' }))).toBe(2_000)
+    expect(delay(0, new ApiError('Limited', { code: 'http', status: 429, retryAfter: 'invalid' }))).toBe(1_000)
+  })
 })

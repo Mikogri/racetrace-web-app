@@ -82,6 +82,7 @@ async function request<TSchema extends z.ZodType>({
         code: "http",
         status: response.status,
         details: payload,
+        retryAfter: response.headers.get("Retry-After"),
       });
     }
 
