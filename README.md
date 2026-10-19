@@ -26,7 +26,7 @@ Runtime bindings for production:
 
 | Binding | Value |
 | --- | --- |
-| `API_ORIGIN` | Defined in `wrangler.jsonc`: `https://racetrace-api-production.up.railway.app` |
+| `API_ORIGIN` | Defined in `wrangler.jsonc`: `https://api.racetracemtb.com` |
 | `API_READ_SECRET` | Encrypted Secret in Cloudflare, identical to Railway's read secret; never add its value to Wrangler or Git |
 
 Wrangler is the source of truth for plain runtime `vars`. Change `API_ORIGIN` in the file, not a competing production dashboard variable; existing deployments require a new deployment to receive the change. There are no environment overrides in this repository, so the top-level origin also applies to local Pages runs and previews. Do not bind production read credentials to untrusted previews. Vite development still uses `API_PROXY_TARGET`, independently of Pages runtime bindings. `VITE_API_BASE_URL` must remain empty so browser requests use the same-origin gateway, rather than bypassing it and hitting Railway without authorization. Dashboard Secret bindings remain separate from the plain `vars` map.
@@ -42,6 +42,8 @@ GitHub Actions runs installation, lint, types, tests, the gateway checks (`node 
 `src/features/` grupuje strony i ich hooki, `src/components/` zawiera wspólny UI, `src/lib/api-client.ts` obsługuje HTTP, a `src/styles/tokens/` design system. Filtry i wybór riderów są synchronizowane z URL. Błędy i odświeżanie korzystają ze wspólnych stanów aplikacji.
 
 ## Kontrakty i dokumentacja
+
+`public/sitemap.xml` lists the eight main public routes on the current `https://racetrace-web-app.pages.dev` origin; `public/robots.txt` advertises it. Vite copies both files to `dist`, outside the `/api` Function routes. The sitemap excludes filter URLs, navigation aliases and dynamic rider/round/session detail pages; it does not query the API during builds. Update both files when assigning a custom canonical domain or adding a main route. A sitemap helps discovery but does not guarantee indexing of client-rendered content.
 
 API i frontend używają `camelCase`. Po zmianie API uruchom `pnpm contracts:export`, `pnpm contracts:generate`, `pnpm contracts:check` i `pnpm contracts:test`; nie edytuj ręcznie wygenerowanych typów. Komendy wymagają sąsiedniego repozytorium API i .NET.
 
