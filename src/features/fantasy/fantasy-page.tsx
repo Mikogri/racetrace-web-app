@@ -18,11 +18,11 @@ import styles from './fantasy-page.module.css'
 import failedIcon from '../../assets/icons/failed.png'
 
 function FantasyIdentity({ rider, teamNumber }: { rider: FantasyRider; teamNumber?: number }) {
-  const warnings = [...(rider.injuryFlag ? ['Reported injury'] : []), ...rider.warnings]
+  const warnings = rider.warnings
   const recommended = rider.isRecommended
   const checkStatus = warnings.length > 0
-  const status = rider.injuryFlag ? 'Reported injury' : recommended ? 'Recommended' : checkStatus ? 'Check status' : 'Available'
-  const statusTone = rider.injuryFlag ? 'injury' : recommended ? 'recommended' : checkStatus ? 'warning' : 'neutral'
+  const status = rider.entryStatus === 'not_entered' ? 'Not entered' : recommended ? 'Recommended' : rider.entryStatus === 'entered' ? 'Entered' : checkStatus ? 'Check status' : 'Entry unknown'
+  const statusTone = rider.entryStatus === 'not_entered' ? 'excluded' : recommended || rider.entryStatus === 'entered' ? 'recommended' : checkStatus ? 'warning' : 'neutral'
   const badge = <span className={styles.identityStatus} data-status={statusTone} tabIndex={warnings.length ? 0 : undefined}>{status}</span>
   return <div className={styles.riderIdentity}>
     {teamNumber !== undefined ? <span className={styles.teamNumber} aria-label={`Team rider ${teamNumber}`}>{teamNumber}</span> : null}
@@ -137,11 +137,11 @@ export default function FantasyPage() {
     {activeDialog === 'guide' ? <Dialog className={styles.rulesDialog} open title="How It Works" onClose={() => setActiveDialog(null)}>
       <div className={styles.rulesBody}>
         <dl className={styles.guide}>
-            <div><dt>Best Team</dt><dd>The combination of four men and two women with the highest total projected points within the budget. Riders with reported injuries or missing prices or predictions are excluded.</dd></div>
+            <div><dt>Best Team</dt><dd>The combination of four men and two women with the highest total projected points within the budget. Confirmed non-entries and riders with missing prices or predictions are excluded. Unknown entry status does not exclude a rider.</dd></div>
             <div><dt>Projected Points</dt><dd>Expected Fantasy points in the next round: final placement points plus the Q1 bonus. These are probability-weighted estimates, not guaranteed results or season totals.</dd></div>
             <div><dt>Value</dt><dd>Projected points per $100,000 of rider price. For example, 200 points at $250,000 gives a Value of 80.0. A higher Value means more expected points for the price; Best Team optimizes total points, not Value alone.</dd></div>
             <div><dt>Price Pool &amp; Team Slots</dt><dd>Price Pool is the budget for the entire six-rider team. Team Slots is the number of riders required from the selected category.</dd></div>
-            <div><dt>Data &amp; Availability</dt><dd>Prices and injury reports come from the latest successful Pinkbike import. Without a confirmed entry list, selection uses the Pinkbike catalogue; participation is not guaranteed. A dash means data is unavailable.</dd></div>
+            <div><dt>Data &amp; Availability</dt><dd>Prices come from the latest successful Pinkbike import. Entry status describes confirmed participation in this round only, not readiness to race. Without current entry evidence it remains unknown. A dash means data is unavailable.</dd></div>
           </dl>
       </div>
       <ModalFooter><Button onClick={() => setActiveDialog(null)}>Close</Button></ModalFooter>

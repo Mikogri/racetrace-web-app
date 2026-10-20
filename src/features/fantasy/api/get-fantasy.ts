@@ -13,7 +13,7 @@ export const fantasyRiderSchema = z.object({
   gender: z.enum(['male', 'female']).nullable(),
   price: nullableNumber,
   pinkbikeSeasonPoints: nullableNumber,
-  injuryFlag: z.boolean(),
+  entryStatus: z.enum(['unknown', 'entered', 'not_entered']),
   expectedFinalPoints: nullableNumber,
   expectedQ1Bonus: nullableNumber,
   expectedFantasyPoints: nullableNumber,

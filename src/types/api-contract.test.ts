@@ -13,7 +13,7 @@ describe('OpenAPI-compatible runtime validation', () => {
 
   it('retains runtime rejection of malformed nullable numbers and unknown enum values', () => {
     const rider = { pinkbikeExternalId: '1', riderId: null, name: 'Rider', countryCode: null,
-      gender: 'male', price: null, pinkbikeSeasonPoints: null, injuryFlag: false,
+      gender: 'male', price: null, pinkbikeSeasonPoints: null, entryStatus: 'unknown',
       expectedFinalPoints: null, expectedQ1Bonus: null, expectedFantasyPoints: null,
       predictedPosition: null, confidence: null, isRecommended: false, warnings: [] }
     expect(fantasyRiderSchema.safeParse(rider).success).toBe(true)

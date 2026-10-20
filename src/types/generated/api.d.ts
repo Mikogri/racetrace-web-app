@@ -12030,6 +12030,8 @@ export interface components {
             };
             configurationHash: null | string;
             dataRevision: null | string;
+            /** Format: int32 */
+            dataVersion: number;
             engineVersion: string;
             eventFingerprint: string;
             /** Format: date-time */
@@ -12066,6 +12068,8 @@ export interface components {
             /** Format: double */
             confidence: null | number;
             countryCode: null | string;
+            /** @enum {string} */
+            entryStatus: "unknown" | "entered" | "not_entered";
             /** Format: double */
             expectedFantasyPoints: null | number;
             /** Format: double */
@@ -12074,7 +12078,6 @@ export interface components {
             expectedQ1Bonus: null | number;
             /** @enum {string} */
             gender: "male" | "female";
-            injuryFlag: boolean;
             isRecommended: boolean;
             name: string;
             pinkbikeExternalId: string;

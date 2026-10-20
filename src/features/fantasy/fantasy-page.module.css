@@ -24,7 +24,7 @@
 .identity { display: grid; gap: var(--space-5); min-width: 0; }
 .identityStatus { display: inline-flex; align-items: center; justify-self: start; width: fit-content; padding: var(--space-3) var(--space-6); line-height: 14px; border-radius: var(--radius-control); color: var(--color-text-secondary); background: var(--color-interaction-selected-background); font-size: var(--font-size-caption); font-family: var(--font-family-body); }
 .identityStatus[data-status='recommended'] { color: var(--color-status-success-label-text); background: var(--color-status-success-label-background); }
-.identityStatus[data-status='injury'] { color: var(--color-status-injury-label-text); background: var(--color-status-injury-label-background); }
+.identityStatus[data-status='excluded'] { color: var(--color-status-error-label-text); background: var(--color-status-error-label-background); }
 .identityStatus[data-status='neutral'] { color: var(--color-status-neutral-label-text); }
 .identityStatus[data-status='warning'] { color: var(--color-status-warning-label-text); background: var(--color-status-warning-label-background); }
 .points { color: var(--color-rating-top); }

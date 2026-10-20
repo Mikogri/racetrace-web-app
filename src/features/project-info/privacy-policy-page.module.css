@@ -1,0 +1,25 @@
+.page a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  display: grid;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  color: var(--color-text-secondary);
+  border: var(--component-border-width) solid var(--color-border-default);
+  border-radius: var(--radius-panel);
+}
+
+.heading {
+  margin: 0;
+  line-height: 1.6;
+  text-transform: none;
+}
+
+.page strong {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}

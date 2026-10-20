@@ -17,7 +17,7 @@ vi.mock('./api/get-fantasy', async importOriginal => ({
 
 function rider(overrides: Partial<FantasyRider> = {}): FantasyRider {
   return { pinkbikeExternalId: '1', riderId: '101', name: 'Sample Rider', countryCode: 'FRA', gender: 'male',
-    price: 200000, pinkbikeSeasonPoints: 500, injuryFlag: false, expectedFinalPoints: 220, expectedQ1Bonus: 30,
+    price: 200000, pinkbikeSeasonPoints: 500, entryStatus: 'unknown', expectedFinalPoints: 220, expectedQ1Bonus: 30,
     expectedFantasyPoints: 250, predictedPosition: 4.2, confidence: 80, isRecommended: false, warnings: [], ...overrides }
 }
 function overview(riders: FantasyRider[] = []): FantasyCurrent {
@@ -120,16 +120,16 @@ describe('Fantasy page', () => {
     expect(panels[1]).toHaveAccessibleName('Team rider 2: Woman Rider')
   })
 
-  it('uses semantic colors for table recommendation, injury and warning badges', () => {
+  it('uses semantic colors for table recommendation, entry and warning badges', () => {
     state.data = overview([
       rider({ name: 'Recommended Rider', isRecommended: true }),
-      rider({ pinkbikeExternalId: '2', name: 'Injured Rider', injuryFlag: true }),
+      rider({ pinkbikeExternalId: '2', name: 'Non-entered Rider', entryStatus: 'not_entered' }),
       rider({ pinkbikeExternalId: '3', name: 'Warning Rider', warnings: ['Missing prediction'] }),
     ])
     render(view())
     const table = within(screen.getByRole('table', { name: 'Fantasy rider projections' }))
     expect(table.getByText('Recommended')).toHaveAttribute('data-status', 'recommended')
-    expect(table.getByText('Reported injury')).toHaveAttribute('data-status', 'injury')
+    expect(table.getByText('Not entered')).toHaveAttribute('data-status', 'excluded')
     expect(table.getByText('Check status')).toHaveAttribute('data-status', 'warning')
   })
 

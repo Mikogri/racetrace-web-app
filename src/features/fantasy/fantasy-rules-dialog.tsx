@@ -25,7 +25,7 @@ export function FantasyRulesDialog({ open, onClose }: { open: boolean; onClose: 
           <tbody>{rules.q1Bonus.map(row => <DataTableRow key={row.position}><td>{row.position}</td><td>+{row.points}</td></DataTableRow>)}</tbody>
         </DataTable>
         {rules.dynamicPricing ? <p className={styles.note}>Prices are dynamic and may change after each round. Team selection uses the latest successfully imported prices, not a fixed rider-price ceiling.</p> : null}
-        <p className={styles.note}>Projected points are expected values, not guaranteed results. Missing prices or predictions may prevent a recommendation. A confirmed start list is optional; without one, selection uses the Pinkbike catalogue and reported injuries.</p>
+        <p className={styles.note}>Projected points are expected values, not guaranteed results. Missing prices or predictions may prevent a recommendation. A confirmed entry list is optional; unknown participation does not exclude a rider.</p>
         <p className={styles.note}>Rules version: {rules.version} · <a href={rules.sourceUrl} target="_blank" rel="noreferrer">Official source</a></p>
       </>}
     </div>
