@@ -7,6 +7,7 @@ describe('Privacy Policy', () => {
     render(<PrivacyPolicyPage />)
     expect(screen.getByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeVisible()
     expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(8)
+    expect(screen.getAllByRole('heading', { level: 2 }).at(-1)).toHaveTextContent('Who is responsible?')
     for (const link of screen.getAllByRole('link', { name: 'contact@racetracemtb.com' })) {
       expect(link).toHaveAttribute('href', 'mailto:contact@racetracemtb.com')
     }

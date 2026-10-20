@@ -7,12 +7,6 @@ const contact = <a href="mailto:contact@racetracemtb.com">contact@racetracemtb.c
 
 const sections = [
   {
-    title: 'Who is responsible?',
-    paragraphs: [
-      <>The data controller is Mikołaj Grigoriew, based in Poland. For privacy questions and requests, email {contact}.</>,
-    ],
-  },
-  {
     title: 'What information do we process?',
     paragraphs: [
       <><strong>Visitors:</strong> Technical information used to operate and protect the website, such as IP addresses, request times, URLs and browser headers. Searches and selected filters may appear in requests or browser history. You can browse RaceTrace without creating an account.</>,
@@ -32,7 +26,7 @@ const sections = [
     title: 'Service providers and international transfers',
     paragraphs: [
       <>We use Cloudflare for website delivery and security, Railway for API hosting and Supabase for data storage. These providers may generate technical, access, security or error logs as part of their services. The exact production logging settings and retention periods still need to be verified. Some pages request flags from FlagCDN or live timing from ChronoRace or Tissot Timing. These services may receive technical connection data, including IP addresses.</>,
-      <>Some providers may process information outside the European Economic Area. Relevant safeguards and transfer arrangements are determined by the applicable provider agreements and configuration; details can be requested using the contact above.</>,
+      <>Some providers may process information outside the European Economic Area. Relevant safeguards and transfer arrangements are determined by the applicable provider agreements and configuration; details can be requested using the contact in &quot;Who is responsible?&quot;.</>,
     ],
   },
   {
@@ -62,6 +56,12 @@ const sections = [
     title: 'Updates',
     paragraphs: [
       <>We will update this notice when our processing practices change and show the latest publication date above.</>,
+    ],
+  },
+  {
+    title: 'Who is responsible?',
+    paragraphs: [
+      <>The data controller is Mikołaj Grigoriew, based in Poland. For privacy questions and requests, email {contact}.</>,
     ],
   },
 ]
