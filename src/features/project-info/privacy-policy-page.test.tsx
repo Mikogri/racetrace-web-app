@@ -18,7 +18,7 @@ describe('Privacy Policy', () => {
   it('shows the updated notice without inventing provider retention or self-managed backups', () => {
     render(<PrivacyPolicyPage />)
     expect(screen.queryByText(/Draft — not yet an effective privacy notice/)).not.toBeInTheDocument()
-    expect(screen.getByText('20 October 2026')).toHaveAttribute('datetime', '2026-10-20')
+    expect(screen.queryByText(/Last updated:/)).not.toBeInTheDocument()
     expect(screen.getByText(/The data controller is Mikołaj Grigoriew, based in Poland/)).toBeVisible()
     expect(screen.getByText(/RaceTrace does not maintain separate, self-managed backups/)).toBeVisible()
     expect(screen.getByText(/RaceTrace does not have an in-app messaging system/)).toBeVisible()

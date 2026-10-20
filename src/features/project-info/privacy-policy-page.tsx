@@ -55,7 +55,7 @@ const sections = [
   {
     title: 'Updates',
     paragraphs: [
-      <>We will update this notice when our processing practices change and show the latest publication date above.</>,
+      <>We will update this notice when our processing practices change.</>,
     ],
   },
   {
@@ -74,10 +74,6 @@ export default function PrivacyPolicyPage() {
         eyebrow="Privacy // Data // Transparency"
         description="Information about how RaceTrace handles personal data and respects your privacy."
       />
-      <div className={styles.notice}>
-        <Typography>Last updated: <time dateTime="2026-10-20">20 October 2026</time></Typography>
-        <Typography>RaceTrace (<a href="https://racetracemtb.com">racetracemtb.com</a>) is an independent MTB downhill statistics and analysis platform. This notice explains how we process information about visitors and athletes.</Typography>
-      </div>
       {sections.map((section, index) => (
         <Section key={section.title} className={layout.section} aria-labelledby={`privacy-section-${index + 1}`}>
           <h2 id={`privacy-section-${index + 1}`} className={`${layout.label} ${styles.heading}`}>
