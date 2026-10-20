@@ -14,10 +14,13 @@ describe('Privacy Policy', () => {
     expect(screen.queryByText('No content available')).not.toBeInTheDocument()
   })
 
-  it('identifies the controller without presenting unconfirmed retention as a published policy', () => {
+  it('shows the updated notice without inventing provider retention or self-managed backups', () => {
     render(<PrivacyPolicyPage />)
-    expect(screen.getByRole('note')).toHaveTextContent('Draft — not yet an effective privacy notice')
+    expect(screen.queryByText(/Draft — not yet an effective privacy notice/)).not.toBeInTheDocument()
+    expect(screen.getByText('20 October 2026')).toHaveAttribute('datetime', '2026-10-20')
     expect(screen.getByText(/The data controller is Mikołaj Grigoriew, based in Poland/)).toBeVisible()
-    expect(screen.getByText(/Specific retention periods for logs, correspondence and backups are awaiting confirmation/)).toBeVisible()
+    expect(screen.getByText(/RaceTrace does not maintain separate, self-managed backups/)).toBeVisible()
+    expect(screen.getByText(/RaceTrace does not have an in-app messaging system/)).toBeVisible()
+    expect(screen.getByText(/The exact production logging settings and retention periods still need to be verified/)).toBeVisible()
   })
 })

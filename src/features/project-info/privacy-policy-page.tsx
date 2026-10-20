@@ -9,13 +9,14 @@ const sections = [
   {
     title: 'Who is responsible?',
     paragraphs: [
-      <>The data controller is Mikołaj Grigoriew, based in Poland. For privacy matters, contact {contact}.</>,
+      <>The data controller is Mikołaj Grigoriew, based in Poland. For privacy questions and requests, email {contact}.</>,
     ],
   },
   {
     title: 'What information do we process?',
     paragraphs: [
-      <><strong>Visitors:</strong> Technical information required to operate and protect the website, such as IP addresses, request times, URLs and browser headers. Searches and selected filters may appear in requests or browser history. You can browse RaceTrace without creating an account.</>,
+      <><strong>Visitors:</strong> Technical information used to operate and protect the website, such as IP addresses, request times, URLs and browser headers. Searches and selected filters may appear in requests or browser history. You can browse RaceTrace without creating an account.</>,
+      <><strong>Email correspondence:</strong> If you email {contact} (for example, to request a correction or deletion of athlete information), we process your email address and the content of your message to handle your request. RaceTrace does not have an in-app messaging system.</>,
       <><strong>Athletes:</strong> Published sporting information, including names, nationalities, categories, ages or dates of birth where available, teams, UCI identifiers, race entries, results, positions, points, times and splits. This includes competitors in junior categories. RaceTrace also calculates ratings, comparisons, forecasts and Fantasy statistics.</>,
       <>A round-specific <code>entryStatus</code> describes confirmed entry, confirmed non-entry or insufficient evidence. It does not indicate an athlete&apos;s health or fitness to compete. Athlete information may be accessible through public pages and read-only API endpoints.</>,
     ],
@@ -30,7 +31,7 @@ const sections = [
   {
     title: 'Service providers and international transfers',
     paragraphs: [
-      <>We use Cloudflare for website delivery and security, Railway for API hosting and Supabase for data storage. Some pages request flags from FlagCDN or live timing from ChronoRace or Tissot Timing. These services may receive technical connection data, including IP addresses.</>,
+      <>We use Cloudflare for website delivery and security, Railway for API hosting and Supabase for data storage. These providers may generate technical, access, security or error logs as part of their services. The exact production logging settings and retention periods still need to be verified. Some pages request flags from FlagCDN or live timing from ChronoRace or Tissot Timing. These services may receive technical connection data, including IP addresses.</>,
       <>Some providers may process information outside the European Economic Area. Relevant safeguards and transfer arrangements are determined by the applicable provider agreements and configuration; details can be requested using the contact above.</>,
     ],
   },
@@ -43,21 +44,24 @@ const sections = [
   {
     title: 'Retention',
     paragraphs: [
-      <>We maintain historical competition records while they remain necessary for RaceTrace&apos;s sporting archive, subject to applicable rights and data-minimisation requirements. Technical logs, messages, caches and backups are kept according to their operational or legal purposes.</>,
-      <>Specific retention periods for logs, correspondence and backups are awaiting confirmation.</>,
+      <>We maintain historical competition records while they remain necessary for RaceTrace&apos;s sporting archive, subject to applicable rights and data-minimisation requirements.</>,
+      <><strong>Email correspondence:</strong> Messages sent to {contact} are retained only as needed to respond to the request and meet applicable legal obligations. A specific retention period has not yet been established.</>,
+      <><strong>Technical logs:</strong> Cloudflare, Railway and Supabase may retain request, security or error logs depending on their actual service configuration. Which logs are stored, where and for how long remains subject to verification.</>,
+      <><strong>Backups:</strong> RaceTrace does not maintain separate, self-managed backups. Infrastructure providers, particularly the database provider, may hold automated backups or other retained copies depending on the service plan and settings. Provider backup settings, retention and deletion rules remain subject to verification.</>,
+      <>Temporary application caches are distinct from these records and do not determine how long source data is stored.</>,
     ],
   },
   {
     title: 'Your rights',
     paragraphs: [
       <>Subject to the relevant legal conditions, you can request access, correction, deletion or restriction of your personal information, or object to processing based on legitimate interests. Other GDPR rights apply where relevant.</>,
-      <>Contact {contact} and identify the information concerned. We normally respond within one month, subject to lawful extensions. You may complain to your data-protection authority, including Poland&apos;s <a href="https://uodo.gov.pl/">UODO</a>.</>,
+      <>Email {contact} and identify the information concerned. We normally respond within one month, subject to lawful extensions. You may complain to your data-protection authority, including Poland&apos;s <a href="https://uodo.gov.pl/">UODO</a>.</>,
     ],
   },
   {
     title: 'Updates',
     paragraphs: [
-      <>We will update this notice when our processing practices change and show the latest publication date once the policy has been approved.</>,
+      <>We will update this notice when our processing practices change and show the latest publication date above.</>,
     ],
   },
 ]
@@ -70,10 +74,10 @@ export default function PrivacyPolicyPage() {
         eyebrow="Privacy // Data // Transparency"
         description="Information about how RaceTrace handles personal data and respects your privacy."
       />
-      <aside role="note" className={styles.notice}>
-        <Typography><strong>Draft — not yet an effective privacy notice.</strong> Retention periods and production practices must be confirmed before publication.</Typography>
+      <div className={styles.notice}>
+        <Typography>Last updated: <time dateTime="2026-10-20">20 October 2026</time></Typography>
         <Typography>RaceTrace (<a href="https://racetracemtb.com">racetracemtb.com</a>) is an independent MTB downhill statistics and analysis platform. This notice explains how we process information about visitors and athletes.</Typography>
-      </aside>
+      </div>
       {sections.map((section, index) => (
         <Section key={section.title} className={layout.section} aria-labelledby={`privacy-section-${index + 1}`}>
           <h2 id={`privacy-section-${index + 1}`} className={`${layout.label} ${styles.heading}`}>
