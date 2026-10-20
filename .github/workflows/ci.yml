@@ -16,5 +16,6 @@ jobs:
       - run: npm run typecheck
       - run: npm test -- --maxWorkers=2
       - run: node --test scripts/cloudflare-proxy.check.mjs
+      - run: node --test scripts/tooltip-css.check.mjs
       - run: npm run build
       - run: npm audit --audit-level=high

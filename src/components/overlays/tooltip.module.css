@@ -19,8 +19,8 @@
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
-  backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   font-family: var(--font-family-data);
   overflow-wrap: anywhere;
   pointer-events: none;
