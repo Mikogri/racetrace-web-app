@@ -221,7 +221,8 @@ const riderOverviewSchema = z.preprocess((value) => {
     resultsAveragePosition: nullableNumberSchema,
     cumulativePointsByRound: z.record(z.string(), z.number()),
     preFinalAverageByTrack: z.record(z.string(), z.number().nullable()),
-  }).optional().default({ resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {} }),
+    cumulativeRatingByRound: z.record(z.string(), z.number().nullable()).default({}),
+  }).optional().default({ resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {}, cumulativeRatingByRound: {} }),
 }));
 
 export type RiderOverview = z.infer<typeof riderOverviewSchema>;

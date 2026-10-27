@@ -269,12 +269,15 @@ export default function RiderDetailsPage() {
       tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · ${cumulativePoints ?? "--"} total points`,
     };
   });
-  const ratingByRound: PositionChartPoint[] = orderedRoundResults.map((round) => ({
-    label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-    position: round.rating,
-    color: "var(--color-chart-rating)",
-    tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Rating ${round.rating == null ? "--" : formatOneDecimal(round.rating)}`,
-  }));
+  const ratingByRound: PositionChartPoint[] = orderedRoundResults.map((round) => {
+    const rating = overview.chartStatistics.cumulativeRatingByRound[round.roundId] ?? null;
+    return {
+      label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+      position: rating,
+      color: "var(--color-chart-rating)",
+      tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Rating after round ${rating == null ? "--" : formatOneDecimal(rating)}`,
+    };
+  });
   const consistencyPoints = orderedRoundResults.flatMap((round) =>
     round.pace == null || round.consistency == null ? [] : [{
       id: round.roundId,

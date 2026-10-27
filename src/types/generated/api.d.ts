@@ -12560,6 +12560,9 @@ export interface components {
             cumulativePointsByRound: {
                 [key: string]: number;
             };
+            cumulativeRatingByRound: {
+                [key: string]: null | number;
+            };
             preFinalAverageByTrack: {
                 [key: string]: null | number;
             };
