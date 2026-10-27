@@ -451,6 +451,7 @@ export default function RiderDetailsPage() {
             title="// Rating"
             compact
             scale="rating"
+            ratingFloor={50}
             series={chartSeries(ratingByRound, "var(--color-chart-rating)")}
           />
         </div>

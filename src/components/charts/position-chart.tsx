@@ -64,6 +64,7 @@ function scaleConfiguration(
   scale: ChartScale,
   series: PositionChartSeries[],
   positionPadding: number,
+  ratingFloor: number,
 ) {
   if (scale === "position") {
     const positions = series.flatMap((item) =>
@@ -86,10 +87,12 @@ function scaleConfiguration(
     };
   }
   if (scale === "rating") {
+    const minimum = Math.min(ratingFloor, ...series.flatMap(item => item.points.flatMap(point =>
+      point.position !== null && Number.isFinite(point.position) && point.position >= 0 ? [point.position] : [])));
     return {
-      minimum: 0,
+      minimum,
       maximum: 100,
-      ticks: [0, 25, 50, 75, 100],
+      ticks: Array.from({ length: 5 }, (_, index) => Number((minimum + ((100 - minimum) * index) / 4).toFixed(2))),
       normalize: (value: number) => Math.min(100, Math.max(0, value)),
       accepts: (value: number) => value >= 0,
     };
@@ -162,6 +165,7 @@ export function PositionChart({
   compact = false,
   scale = "position",
   positionPadding = 0,
+  ratingFloor = 0,
   xEdgePadding = 0,
   showArea = true,
   heightOverride,
@@ -176,6 +180,7 @@ export function PositionChart({
   compact?: boolean;
   scale?: ChartScale;
   positionPadding?: number;
+  ratingFloor?: number;
   xEdgePadding?: number;
   showArea?: boolean;
   heightOverride?: number;
@@ -188,7 +193,7 @@ export function PositionChart({
     ...series.map((item) => item.points.length),
   );
   const height = heightOverride ?? (compact ? (connectLines ? 275 : 291) : chartHeight);
-  const scaleConfig = scaleConfiguration(scale, series, positionPadding);
+  const scaleConfig = scaleConfiguration(scale, series, positionPadding, ratingFloor);
   const { minimum, maximum, ticks: yTicks, normalize, accepts } = scaleConfig;
   const displayedXTicks = xEdgePadding > 0
     ? [1 - xEdgePadding, ...xTicks, 11 + xEdgePadding]
