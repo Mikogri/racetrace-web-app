@@ -1,12 +1,11 @@
 import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
 import {
   nullableNumberSchema,
 } from "../../../lib/validation";
-import type { MetricsFilters } from "../../../types/domain";
-import { useRanking } from "../../ranking/api/get-ranking";
+import { rankingResponseSchema } from "../../ranking/api/get-ranking";
 import { homeQueryKeys } from "./home-query-keys";
 import { riderIdentitySchema, roundSummarySchema as homeRoundSchema, type RoundProfile } from "../../analytics/api/get-round-profile";
 export { useRoundProfile, roundSummarySchema as homeRoundSchema, type RoundProfile } from "../../analytics/api/get-round-profile";
@@ -77,12 +76,9 @@ export function useSeasonOverview(season: number) {
 }
 
 
-const rankingFilters = (season: number, category: string): MetricsFilters => ({
-  seasons: [String(season)],
-  tracks: [],
-  conditions: [],
-  classes: [],
-  categories: [category],
+const homeRankingSchema = z.object({
+  topRated: rankingResponseSchema,
+  standings: rankingResponseSchema,
 });
 
 export function useHomeRanking(
@@ -90,13 +86,16 @@ export function useHomeRanking(
   category: string,
   sortBy: "rating" | "totalPoints",
 ) {
-  return useRanking({
-    filters: rankingFilters(season, category),
-    search: "",
-    page: 1,
-    pageSize: 5,
-    sortBy,
-    sortDirection: "desc",
+  return useQuery({
+    queryKey: homeQueryKeys.ranking(season, category),
+    placeholderData: keepPreviousData,
+    structuralSharing: false,
+    queryFn: ({ signal }) => apiClient.get(
+      "/api/v1/home/ranking",
+      homeRankingSchema,
+      { signal, query: { season, category } },
+    ),
+    select: (data) => sortBy === "rating" ? data.topRated : data.standings,
   });
 }
 
@@ -112,3 +111,4 @@ export function usePodiumPredictor(season: number, category: string) {
 }
 export type SeasonOverviewWireContract = AssertApiContract<ApiSchema<'SeasonOverviewResponseDto'> extends z.input<typeof seasonOverviewSchema> ? true : false>
 export type PodiumPredictorWireContract = AssertApiContract<ApiSchema<'PodiumPredictionResponseDto'> extends z.input<typeof podiumPredictorSchema> ? true : false>
+export type HomeRankingWireContract = AssertApiContract<ApiSchema<'HomeRankingResponseDto'> extends z.input<typeof homeRankingSchema> ? true : false>

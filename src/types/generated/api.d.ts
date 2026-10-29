@@ -4904,6 +4904,268 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/filter-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FilterOptionsDto"];
+                        "text/json": components["schemas"]["FilterOptionsDto"];
+                        "text/plain": components["schemas"]["FilterOptionsDto"];
+                    };
+                };
+                /** @description Invalid query, payload or model binding. Framework validation uses Problem Details; domain validation uses the API error envelope. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        } | {
+                            detail?: null | string;
+                            errors?: {
+                                [key: string]: string[];
+                            };
+                            instance?: null | string;
+                            /** Format: int32 */
+                            status?: null | number;
+                            title?: null | string;
+                            type?: null | string;
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/home/ranking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["HomeRankingResponseDto"];
+                        "text/json": components["schemas"]["HomeRankingResponseDto"];
+                        "text/plain": components["schemas"]["HomeRankingResponseDto"];
+                    };
+                };
+                /** @description Invalid query, payload or model binding. Framework validation uses Problem Details; domain validation uses the API error envelope. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        } | {
+                            detail?: null | string;
+                            errors?: {
+                                [key: string]: string[];
+                            };
+                            instance?: null | string;
+                            /** Format: int32 */
+                            status?: null | number;
+                            title?: null | string;
+                            type?: null | string;
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Requested resource unavailable, conflicting operation or invalid imported data. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+                /** @description API access, database or upstream error. */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: {
+                                code: string;
+                                message: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/import/riders/profile-images": {
         parameters: {
             query?: never;
@@ -11917,6 +12179,18 @@ export interface components {
             id: null | number;
             name: null | string;
         };
+        ContextNamedOptionDto: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+        };
+        ContextTrackOptionDto: {
+            countryCode: null | string;
+            /** Format: int64 */
+            id: number;
+            name: null | string;
+            venue: null | string;
+        };
         CorrelationRiderDto: {
             /** Format: int32 */
             finalPosition: number;
@@ -12166,6 +12440,16 @@ export interface components {
             previousPosition: number;
             /** Format: double */
             raceTime: number;
+        };
+        FilterOptionsDto: {
+            competitionClasses: components["schemas"]["ContextNamedOptionDto"][];
+            conditions: components["schemas"]["ContextNamedOptionDto"][];
+            seasons: number[];
+            tracks: components["schemas"]["ContextTrackOptionDto"][];
+        };
+        HomeRankingResponseDto: {
+            standings: components["schemas"]["RankingResponseDto"];
+            topRated: components["schemas"]["RankingResponseDto"];
         };
         /** Format: binary */
         IFormFile: string;

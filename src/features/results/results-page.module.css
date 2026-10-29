@@ -191,7 +191,7 @@
 }
 
 .roundCardEnter {
-  animation: round-card-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation: round-card-enter 100ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
   animation-delay: var(--card-enter-delay);
 }
 

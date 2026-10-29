@@ -34,7 +34,7 @@ const rankingRiderSchema = z.object({
   positionChange: z.number().int().nullable().optional().transform((value) => value ?? null),
 });
 
-const rankingResponseSchema = z.object({
+export const rankingResponseSchema = z.object({
   items: z.array(rankingRiderSchema),
   page: z.number().int().positive(),
   pageSize: z.number().int().positive(),

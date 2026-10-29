@@ -17,6 +17,7 @@ function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   vi.mocked(apiClient.get).mockImplementation(async (path) => {
     if (path === '/api/v1/rounds/seasons') return { items: [2026, 2025] }
+    if (path === '/api/v1/filter-options') return { seasons: [2026, 2025], tracks: [], conditions: [], competitionClasses: [] }
     if (path === '/api/v1/rounds') return { items: [], page: 1, pageSize: 100, totalItems: 0, totalPages: 0 }
     return []
   })
@@ -38,15 +39,15 @@ describe('filter request budget', () => {
     client.clear()
   })
 
-  it('shares seasons between Results and all context filters and reuses fresh dictionaries on remount', async () => {
+  it('keeps Results seasons independent and reuses the fresh context bundle on remount', async () => {
     const { client, wrapper } = setup()
     const first = renderHook(() => ({ seasons: useSeasons(), filters: useContextFilterOptions() }), { wrapper })
     await waitFor(() => expect(first.result.current.filters.isPending).toBe(false))
-    expect(apiClient.get).toHaveBeenCalledTimes(4)
+    expect(apiClient.get).toHaveBeenCalledTimes(2)
     first.unmount()
     const second = renderHook(() => useContextFilterOptions(), { wrapper })
     await waitFor(() => expect(second.result.current.isPending).toBe(false))
-    expect(apiClient.get).toHaveBeenCalledTimes(4)
+    expect(apiClient.get).toHaveBeenCalledTimes(2)
     second.unmount()
     client.clear()
   })

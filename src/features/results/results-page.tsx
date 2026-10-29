@@ -27,9 +27,9 @@ function isLiveRound(status: string) {
 function RoundCardImage({ round }: { round: RoundListItem }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
-  const source = `/api/v1/rounds/${encodeURIComponent(round.roundId)}/image`;
+  const source = round.imageUrl;
 
-  if (failed) return <RoundImagePlaceholder />;
+  if (failed || !source) return <RoundImagePlaceholder />;
 
   return (
     <div className={styles.roundImageFrame} aria-busy={!loaded}>
@@ -205,7 +205,7 @@ export default function ResultsPage() {
                       className={`${styles.roundCard} ${!isUpdating ? styles.roundCardEnter : ""} ${round.status === "upcoming" || round.status === "scheduled" ? styles.upcomingCard : ""}`}
                       style={
                         {
-                          "--card-enter-delay": `${index * 150}ms`,
+                          "--card-enter-delay": `${index * 100}ms`,
                         } as CSSProperties
                       }
                       to={

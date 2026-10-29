@@ -8,6 +8,14 @@ afterEach(() => { globalThis.fetch = originalFetch })
 const env = { API_ORIGIN: 'https://racetrace.up.railway.app', API_READ_SECRET: 'server-only-read-key' }
 const invoke = (path, init, bindings = env) => onRequest({ request: new Request(`https://racetrace.pages.dev${path}`, init), env: bindings })
 
+test('measures upstream headers separately while retaining API timing and response body', async () => {
+  globalThis.fetch = async () => new Response('{"items":[]}', { headers: { 'server-timing': 'api;dur=20' } })
+  const response = await invoke('/api/v1/ranking')
+  assert.match(response.headers.get('server-timing'), /api;dur=20/)
+  assert.match(response.headers.get('server-timing'), /upstream_headers;dur=\d+(\.\d+)?/)
+  assert.equal(await response.text(), '{"items":[]}')
+})
+
 test('preserves streamed compression metadata and payload', async () => {
   globalThis.fetch = async () => new Response(gzipSync('{"rating":90}'), { headers: { 'content-type': 'application/json', 'content-encoding': 'gzip' } })
   const response = await invoke('/api/v1/ranking')

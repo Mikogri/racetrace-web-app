@@ -42,10 +42,12 @@ export async function onRequest({ request, env }) {
   }
 
   try {
+    const upstreamStarted = performance.now()
     const response = await fetch(new Request(`${origin.origin}${path}${url.search}`, {
       method: request.method, headers, body, redirect: 'manual',
       signal: AbortSignal.any([request.signal, AbortSignal.timeout(30000)]),
     }))
+    const upstreamHeadersMs = performance.now() - upstreamStarted
     if (response.status >= 300 && response.status < 400) {
       // Images may redirect to public Storage; never follow with the API credential.
       const location = response.headers.get('location')
@@ -62,6 +64,8 @@ export async function onRequest({ request, env }) {
       const value = response.headers.get(name)
       if (value) output.set(name, value)
     }
+    // Fetch resolves at headers; this is not SQL duration or complete body transfer time.
+    output.append('Server-Timing', `upstream_headers;dur=${upstreamHeadersMs.toFixed(2)}`)
     return new Response(response.body, { status: response.status, headers: output })
   } catch {
     return failure(502, 'UPSTREAM_UNAVAILABLE', 'Unable to connect to the API.')

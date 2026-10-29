@@ -1,5 +1,6 @@
 export const filterOptionQueryKeys = {
   all: ['filter-options'] as const,
+  context: () => [...filterOptionQueryKeys.all, 'context'] as const,
   seasons: () => [...filterOptionQueryKeys.all, 'seasons'] as const,
   tracks: () => [...filterOptionQueryKeys.all, 'tracks'] as const,
   conditions: () => [...filterOptionQueryKeys.all, 'conditions'] as const,
