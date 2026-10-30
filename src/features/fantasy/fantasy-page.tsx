@@ -69,7 +69,7 @@ export default function FantasyPage() {
 
   return <PageContainer>
     <PageHeader title="Fantasy" eyebrow="Pinkbike DH // Expected points // Team optimizer"
-      description="Find a legal team for the next round using current rider prices and RaceTrace predictions. Projected points are estimates, not guaranteed results." />
+      description="Find a legal team for the next round using current rider prices and Race Trace MTB predictions. Projected points are estimates, not guaranteed results." />
     {!data ? <Section><TableFeedbackState type={query.isFetching ? 'loading' : query.isError ? 'error' : 'empty'}
       onRetry={() => void query.refetch()} /></Section> : <div className={styles.contentStage} aria-busy={refreshing}>
       {refreshing ? <UpdateProgress className={styles.updateProgress} label="Updating fantasy data" /> : null}

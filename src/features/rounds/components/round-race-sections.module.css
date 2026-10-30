@@ -35,7 +35,7 @@
   stroke-dasharray: 1.5 3;
 }
 
-.tick, .axisUnit, .summary, .metrics, .score, .note, .outliers {
+.tick, .axisUnit, .summary, .metrics, .score, .note {
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   color: var(--color-text-secondary);
@@ -45,13 +45,12 @@
 .axisUnit { position: absolute; bottom: 0; right: 0; }
 .note { margin: 0; line-height: 1.6; }
 .summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-12); }
-.summary strong, .outliers strong { color: var(--color-text-primary); font-weight: 500; }
+.summary strong { color: var(--color-text-primary); font-weight: 500; }
 .score { display: flex; gap: var(--space-12); align-items: baseline; }
 .score strong { color: var(--color-text-primary); font-size: 24px; font-weight: 500; }
 .metrics { display: grid; margin: 0; }
 .metrics > div { display: flex; justify-content: space-between; gap: var(--space-12); padding-block: var(--space-12); border-bottom: 1px solid var(--color-border-default); }
 .metrics dd { color: var(--color-text-primary); margin: 0; }
-.outliers { display: flex; flex-wrap: wrap; gap: var(--space-12); }
 .skeleton { height: 275px; position: relative; overflow: hidden; }
 .skeleton span { position: absolute; inset: 24px 0; background: repeating-linear-gradient(to bottom, var(--color-border-default) 0 2px, transparent 2px 48px); opacity: 0.35; animation: analytics-skeleton 1.5s ease-in-out infinite alternate; }
 @keyframes analytics-skeleton { to { opacity: 0.8; } }

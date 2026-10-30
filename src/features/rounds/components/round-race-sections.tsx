@@ -108,8 +108,6 @@ export function RoundRaceSections({ data, loading }: { data: RoundRaceAnalytics 
           label: String(bin.to), value: bin.count, color: "var(--color-chart-rating)",
           detail: `${bin.count} riders · Pace ${bin.from} ≤ score ${bin.to === 100 ? "≤" : "<"} ${bin.to}`,
         }))} />
-        {distribution.outliers.length > 0 && <div className={styles.outliers}>{distribution.outliers.map((rider) =>
-          <span key={rider.riderId}>{normalizeDisplayName(rider.fullName)} <strong>{value(rider.pace)}</strong></span>)}</div>}
       </> : empty("Final Pace values for classified riders are not available.")}
     </AnalyticsSection>
   </div>;

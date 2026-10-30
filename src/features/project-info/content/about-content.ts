@@ -3,7 +3,7 @@ export const aboutSections = [
     index: '00',
     title: 'About Project',
     paragraphs: [
-      'RaceTrace is an independent analytics project for UCI downhill racing. It combines race results, sector times, rider ratings, standings, comparisons, and performance trends in one place. Metrics such as Pace, Consistency, Rating, and Confidence help show not only where a rider finished, but how fast, repeatable, and reliable their performance was.',
+      'Race Trace MTB is an independent analytics project for UCI downhill racing. It combines race results, sector times, rider ratings, standings, comparisons, and performance trends in one place. Metrics such as Pace, Consistency, Rating, and Confidence help show not only where a rider finished, but how fast, repeatable, and reliable their performance was.',
       'The project is unofficial and is not affiliated with or endorsed by the UCI.',
     ],
   },
@@ -47,7 +47,7 @@ export const aboutSections = [
     index: '05',
     title: 'Development',
     paragraphs: [
-      'RaceTrace is built and maintained by one developer responsible for the entire product—from collecting and structuring race data to designing the interface and developing the performance models.',
+      'Race Trace MTB is built and maintained by one developer responsible for the entire product—from collecting and structuring race data to designing the interface and developing the performance models.',
       'The project grew from a long-standing interest in downhill racing and a desire to turn complex timing information into something clear, useful, and enjoyable to explore.',
     ],
   },

@@ -1,6 +1,6 @@
-# RaceTrace Web
+# Race Trace MTB Web
 
-Frontend RaceTrace do analizy wyników downhill: ranking, profile zawodników, wyniki i Analytics rund, porównania, Live Timing oraz Fantasy. React 19 i TypeScript działają na Vite; TanStack Query obsługuje zapytania, Zod waliduje odpowiedzi, a Recharts rysuje wykresy. Obliczenia sportowe wykonuje sąsiednie API .NET, nie interfejs.
+Frontend Race Trace MTB do analizy wyników downhill: ranking, profile zawodników, wyniki i Analytics rund, porównania, Live Timing oraz Fantasy. React 19 i TypeScript działają na Vite; TanStack Query obsługuje zapytania, Zod waliduje odpowiedzi, a Recharts rysuje wykresy. Obliczenia sportowe wykonuje sąsiednie API .NET, nie interfejs.
 
 ## Praca lokalna
 

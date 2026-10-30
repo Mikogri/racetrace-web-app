@@ -82,11 +82,26 @@ function rider(row: {
 export function NextRoundSection({
   summary,
   loading,
+  error = false,
 }: {
   summary?: HomeSummary;
   loading: boolean;
+  error?: boolean;
 }) {
   const round = summary?.nextRound;
+  if (!loading && (error || (summary && !round))) {
+    return (
+      <div className={styles.sectionBlock}>
+        <SectionHeader title="Next Round" meta={[]} description="The next round of the current season" />
+        <Panel className={styles.homePanel}>
+          {error ? <TableFeedbackState type="error" /> : (
+            <p className={styles.seasonFinished}>See you next season</p>
+          )}
+        </Panel>
+        <SectionAction to={routes.results}>See Full Calendar</SectionAction>
+      </div>
+    );
+  }
   return (
     <div className={styles.sectionBlock}>
       <SectionHeader

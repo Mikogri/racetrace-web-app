@@ -14,6 +14,17 @@ const emptyAnalytics = () => roundRaceAnalyticsSchema.parse({
 });
 
 describe("Round analytics sections", () => {
+  it("keeps the histogram without rendering individual outlier names and scores", () => {
+    const data = emptyAnalytics();
+    data.distribution = { ridersCount: 30, classifiedCount: 30, median: 80,
+      bins: [{ from: 0, to: 10, count: 1 }],
+      outliers: [{ riderId: "1", fullName: "Finn ILES", pace: 3.1 }] };
+    render(<RoundRaceSections data={data} loading={false} />);
+    expect(screen.getByText("30 / 30 riders measured")).toBeInTheDocument();
+    expect(screen.queryByText(/Finn Iles/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("3.1")).not.toBeInTheDocument();
+  });
+
   it("keeps all six section headers while loading without fabricating scores", () => {
     render(<RoundRaceSections data={null} loading />);
     expect(screen.getAllByRole("heading")).toHaveLength(6);

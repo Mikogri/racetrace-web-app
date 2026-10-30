@@ -9,16 +9,16 @@ const sections = [
   {
     title: 'What information do we process?',
     paragraphs: [
-      <><strong>Visitors:</strong> Technical information used to operate and protect the website, such as IP addresses, request times, URLs and browser headers. Searches and selected filters may appear in requests or browser history. You can browse RaceTrace without creating an account.</>,
-      <><strong>Email correspondence:</strong> If you email {contact} (for example, to request a correction or deletion of athlete information), we process your email address and the content of your message to handle your request. RaceTrace does not have an in-app messaging system.</>,
-      <><strong>Athletes:</strong> Published sporting information, including names, nationalities, categories, ages or dates of birth where available, teams, UCI identifiers, race entries, results, positions, points, times and splits. This includes competitors in junior categories. RaceTrace also calculates ratings, comparisons, forecasts and Fantasy statistics.</>,
+      <><strong>Visitors:</strong> Technical information used to operate and protect the website, such as IP addresses, request times, URLs and browser headers. Searches and selected filters may appear in requests or browser history. You can browse Race Trace MTB without creating an account.</>,
+      <><strong>Email correspondence:</strong> If you email {contact} (for example, to request a correction or deletion of athlete information), we process your email address and the content of your message to handle your request. Race Trace MTB does not have an in-app messaging system.</>,
+      <><strong>Athletes:</strong> Published sporting information, including names, nationalities, categories, ages or dates of birth where available, teams, UCI identifiers, race entries, results, positions, points, times and splits. This includes competitors in junior categories. Race Trace MTB also calculates ratings, comparisons, forecasts and Fantasy statistics.</>,
       <>A round-specific <code>entryStatus</code> describes confirmed entry, confirmed non-entry or insufficient evidence. It does not indicate an athlete&apos;s health or fitness to compete. Athlete information may be accessible through public pages and read-only API endpoints.</>,
     ],
   },
   {
     title: 'Sources, purposes and legal grounds',
     paragraphs: [
-      <>We obtain competition information from sources such as UCI MTB World Series results, ChronoRace, Tissot Timing, published race documents and Pinkbike Fantasy catalogue data. We use it to maintain historical results, publish independent analyses and generate sporting predictions. RaceTrace ratings and forecasts are <strong>not official UCI assessments</strong>.</>,
+      <>We obtain competition information from sources such as UCI MTB World Series results, ChronoRace, Tissot Timing, published race documents and Pinkbike Fantasy catalogue data. We use it to maintain historical results, publish independent analyses and generate sporting predictions. Race Trace MTB ratings and forecasts are <strong>not official UCI assessments</strong>.</>,
       <>The proposed legal basis for ordinary sporting information and proportionate platform-security processing is legitimate interests (GDPR Article 6(1)(f)), subject to a documented assessment of necessity and athletes&apos; rights. We handle privacy requests and correspondence under the legal grounds applicable to those activities. Public availability does not mean an athlete has consented to all uses of their information.</>,
     ],
   },
@@ -38,10 +38,10 @@ const sections = [
   {
     title: 'Retention',
     paragraphs: [
-      <>We maintain historical competition records while they remain necessary for RaceTrace&apos;s sporting archive, subject to applicable rights and data-minimisation requirements.</>,
+      <>We maintain historical competition records while they remain necessary for Race Trace MTB&apos;s sporting archive, subject to applicable rights and data-minimisation requirements.</>,
       <><strong>Email correspondence:</strong> Messages sent to {contact} are retained only as needed to respond to the request and meet applicable legal obligations. A specific retention period has not yet been established.</>,
       <><strong>Technical logs:</strong> Cloudflare, Railway and Supabase may retain request, security or error logs depending on their actual service configuration. Which logs are stored, where and for how long remains subject to verification.</>,
-      <><strong>Backups:</strong> RaceTrace does not maintain separate, self-managed backups. Infrastructure providers, particularly the database provider, may hold automated backups or other retained copies depending on the service plan and settings. Provider backup settings, retention and deletion rules remain subject to verification.</>,
+      <><strong>Backups:</strong> Race Trace MTB does not maintain separate, self-managed backups. Infrastructure providers, particularly the database provider, may hold automated backups or other retained copies depending on the service plan and settings. Provider backup settings, retention and deletion rules remain subject to verification.</>,
       <>Temporary application caches are distinct from these records and do not determine how long source data is stored.</>,
     ],
   },
@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
       <PageHeader
         title="Privacy Policy"
         eyebrow="Privacy // Data // Transparency"
-        description="Information about how RaceTrace handles personal data and respects your privacy."
+        description="Information about how Race Trace MTB handles personal data and respects your privacy."
       />
       {sections.map((section, index) => (
         <Section key={section.title} className={layout.section} aria-labelledby={`privacy-section-${index + 1}`}>

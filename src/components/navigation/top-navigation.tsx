@@ -20,7 +20,7 @@ export function TopNavigation() {
         <NavLink
           to="/"
           className={styles.brand}
-          aria-label="RaceTrace Analytics home"
+          aria-label="Race Trace MTB home"
         >
           <span className={styles.logoViewport}>
             <img src={logoMark} alt="" className={styles.logo} />

@@ -110,7 +110,7 @@ async function request<TSchema extends z.ZodType>({
         },
       );
     }
-    throw new ApiError("Unable to connect to the RaceTrace API.", {
+    throw new ApiError("Unable to connect to the Race Trace MTB API.", {
       code: "network",
       details: error,
     });

@@ -104,7 +104,7 @@ export default function HomePage() {
             <span />
             <span />
           </div>
-          <h1>Race Trace Analytics</h1>
+          <h1>Race Trace MTB</h1>
           <p className={styles.heroEyebrow}>Data &amp; Performance</p>
         </div>
         <p className={styles.heroDescription}>
@@ -120,6 +120,7 @@ export default function HomePage() {
         <NextRoundSection
           summary={overviewSummary}
           loading={overviewQuery.isPending}
+          error={overviewQuery.isError}
         />
       </Section>
       <Section className={styles.homeSection}>
