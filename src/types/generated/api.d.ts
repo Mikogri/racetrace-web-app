@@ -12564,7 +12564,7 @@ export interface components {
             /** Format: int32 */
             competitionClassPriority: null | number;
             /** Format: int32 */
-            conditionId: number;
+            conditionId: null | number;
             contextName?: null | string;
             /** Format: date-time */
             endDate: string;
