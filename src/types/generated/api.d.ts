@@ -12569,6 +12569,8 @@ export interface components {
             /** Format: date-time */
             endDate: string;
             image?: null | components["schemas"]["ImportRoundImagePayload"];
+            /** Format: int64 */
+            imageSourceRoundId?: null | number;
             /** @default false */
             isSeasonFinalRound: boolean;
             /** Format: int32 */
