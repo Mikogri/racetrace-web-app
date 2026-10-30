@@ -8,6 +8,8 @@ import {
 } from "./components/home-sections";
 import { FieldSpreadSection, TrackFingerprintSection, SpeedVsRunTimeSection } from "../../components/analytics/analytics-sections";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { seasonsQueryOptions } from "../../components/filters/api/get-seasons";
 import { useSearchParams } from "react-router-dom";
 import {
   useHomeRanking,
@@ -32,6 +34,9 @@ export default function HomePage() {
   const [topRatedCategory, setTopRatedCategory] = useState(initialCategory);
   const [standingsCategory, setStandingsCategory] = useState(initialCategory);
   const overviewQuery = useSeasonOverview(season);
+  const needsSeasonHistory = overviewQuery.data?.progress.roundsCount === 0;
+  const seasonsQuery = useQuery({ ...seasonsQueryOptions(), enabled: needsSeasonHistory });
+  const latestSeason = seasonsQuery.data?.items.filter((year) => year <= season).sort((a, b) => b - a)[0];
   const roundProfileQuery = useRoundProfile(season, lastResultsCategory);
   const predictionQuery = usePodiumPredictor(season, podiumCategory);
   const topRatedQuery = useHomeRanking(season, topRatedCategory, "rating");
@@ -119,8 +124,9 @@ export default function HomePage() {
       <Section className={styles.homeSection}>
         <NextRoundSection
           summary={overviewSummary}
-          loading={overviewQuery.isPending}
-          error={overviewQuery.isError}
+          loading={overviewQuery.isPending || (needsSeasonHistory && seasonsQuery.isPending)}
+          error={overviewQuery.isError || (needsSeasonHistory && seasonsQuery.isError)}
+          {...(needsSeasonHistory && latestSeason != null ? { nextSeason: latestSeason + 1 } : {})}
         />
       </Section>
       <Section className={styles.homeSection}>

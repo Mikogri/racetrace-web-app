@@ -1120,7 +1120,7 @@
   margin: 0;
   padding-block: var(--space-24);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--color-brand-primary);
   font-family: var(--font-family-data);
   font-size: var(--font-size-body);
 }

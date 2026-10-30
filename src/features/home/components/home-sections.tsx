@@ -83,19 +83,25 @@ export function NextRoundSection({
   summary,
   loading,
   error = false,
+  nextSeason,
 }: {
   summary?: HomeSummary;
   loading: boolean;
   error?: boolean;
+  nextSeason?: number;
 }) {
   const round = summary?.nextRound;
   if (!loading && (error || (summary && !round))) {
     return (
       <div className={styles.sectionBlock}>
-        <SectionHeader title="Next Round" meta={[]} description="The next round of the current season" />
+        <SectionHeader title="Next Round" meta={error ? [summary?.season ?? "----"] : [summary?.season ?? "----", "Season over"]} description="The next round of the current season" />
         <Panel className={styles.homePanel}>
           {error ? <TableFeedbackState type="error" /> : (
-            <p className={styles.seasonFinished}>See you next season</p>
+            <p className={styles.seasonFinished}>
+              <span aria-hidden="true">// </span>
+              Season over, see you {nextSeason ?? (summary?.lastCompletedRound?.season ?? summary?.season ?? 0) + 1}
+              <span aria-hidden="true"> //</span>
+            </p>
           )}
         </Panel>
         <SectionAction to={routes.results}>See Full Calendar</SectionAction>
