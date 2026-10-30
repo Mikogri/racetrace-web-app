@@ -20,6 +20,9 @@ it('shows the end-of-season message instead of empty round fields', () => {
   expect(screen.getByText(/Season over, see you 2027/)).toBeVisible();
   expect(screen.queryByText('Live Timing')).not.toBeInTheDocument();
   expect(screen.queryByText(/Round --/)).not.toBeInTheDocument();
+  const header = screen.getByRole('heading', { name: 'Next Round' }).parentElement!;
+  expect(header.querySelectorAll('[class*="metaSlash"]')).toHaveLength(3);
+  expect(screen.getByText('See you 2027')).toBeVisible();
 });
 
 it('does not announce the end of the season while loading', () => {

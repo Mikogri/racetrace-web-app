@@ -91,15 +91,16 @@ export function NextRoundSection({
   nextSeason?: number;
 }) {
   const round = summary?.nextRound;
+  const upcomingSeason = nextSeason ?? (summary?.lastCompletedRound?.season ?? summary?.season ?? 0) + 1;
   if (!loading && (error || (summary && !round))) {
     return (
       <div className={styles.sectionBlock}>
-        <SectionHeader title="Next Round" meta={error ? [summary?.season ?? "----"] : [summary?.season ?? "----", "Season over"]} description="The next round of the current season" />
+        <SectionHeader title="Next Round" meta={error ? [summary?.season ?? "----"] : [summary?.season ?? "----", "Season over", `See you ${upcomingSeason}`]} description="The next round of the current season" />
         <Panel className={styles.homePanel}>
           {error ? <TableFeedbackState type="error" /> : (
             <p className={styles.seasonFinished}>
               <span aria-hidden="true">// </span>
-              Season over, see you {nextSeason ?? (summary?.lastCompletedRound?.season ?? summary?.season ?? 0) + 1}
+              Season over, see you {upcomingSeason}
               <span aria-hidden="true"> //</span>
             </p>
           )}
