@@ -15,6 +15,8 @@ import {
 } from "../../components/layout/page-container";
 import { routes } from "../../config/routes";
 import styles from "./route-states.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 export function RouteLoadingPage() {
   const { pathname } = useLocation();
@@ -321,6 +323,7 @@ export function RouteErrorPage() {
 }
 
 export function NotFoundPage() {
+  usePageMeta(pageMeta.notFound);
   const navigate = useNavigate();
 
   return (

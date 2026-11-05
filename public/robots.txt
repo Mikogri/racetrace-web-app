@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://racetrace-web-app.pages.dev/sitemap.xml
+Sitemap: https://racetracemtb.com/sitemap.xml

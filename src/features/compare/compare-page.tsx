@@ -20,6 +20,8 @@ import {
 } from "./components/compare-panels";
 import styles from "./compare-page.module.css";
 import { formatCategoryLabel } from "../../utils/categories";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 type ActiveSlot = "a" | "b" | null;
 
@@ -41,6 +43,7 @@ function CompareDataSkeleton() {
 }
 
 export default function ComparePage() {
+  usePageMeta(pageMeta.compare);
   const { filters, setFilters } = useMetricsFilters();
   const [searchParams, setSearchParams] = useSearchParams();
   const filterOptions = useContextFilterOptions();

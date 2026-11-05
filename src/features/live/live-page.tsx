@@ -17,6 +17,8 @@ import {
 } from "./api/get-live";
 import { LiveStatusBadge } from "./components/live-status-badge";
 import styles from "./live-page.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 function groupSessions(items: LiveSession[]) {
   const groups = new Map<string, LiveSession[]>();
@@ -90,6 +92,7 @@ function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterI
 }
 
 export default function LivePage() {
+  usePageMeta(pageMeta.live);
   useDomainMetadata();
   const [searchParams] = useSearchParams();
   const seasonParam = searchParams.get("season");

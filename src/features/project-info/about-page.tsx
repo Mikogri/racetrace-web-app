@@ -2,8 +2,11 @@ import { PageContainer, PageHeader, Section } from '../../components/layout/page
 import { Typography } from '../../components/ui/typography'
 import { aboutSections } from './content/about-content'
 import styles from './about-page.module.css'
+import { pageMeta } from '../../config/seo'
+import { usePageMeta } from '../../hooks/use-page-meta'
 
 export default function AboutPage() {
+  usePageMeta(pageMeta.about)
   return (
     <PageContainer className={styles.page}>
       <PageHeader

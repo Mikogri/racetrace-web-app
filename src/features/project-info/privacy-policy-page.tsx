@@ -2,6 +2,8 @@ import { PageContainer, PageHeader, Section } from '../../components/layout/page
 import { Typography } from '../../components/ui/typography'
 import layout from './about-page.module.css'
 import styles from './privacy-policy-page.module.css'
+import { pageMeta } from '../../config/seo'
+import { usePageMeta } from '../../hooks/use-page-meta'
 
 const contact = <a href="mailto:contact@racetracemtb.com">contact@racetracemtb.com</a>
 
@@ -67,6 +69,7 @@ const sections = [
 ]
 
 export default function PrivacyPolicyPage() {
+  usePageMeta(pageMeta.privacyPolicy)
   return (
     <PageContainer className={`${layout.page} ${styles.page}`}>
       <PageHeader

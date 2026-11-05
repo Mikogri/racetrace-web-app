@@ -34,6 +34,8 @@ import {
 } from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
 import { UpdateProgress } from "../../components/feedback/update-progress";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 const SHOW_RANKING_REQUEST_DETAILS = false;
 
@@ -102,6 +104,7 @@ function ValueWithChange({
 }
 
 export default function RankingPage() {
+  usePageMeta(pageMeta.ranking);
   const [searchParams, setSearchParams] = useSearchParams();
   const { filters, setFilters } = useMetricsFilters();
   const filterOptions = useContextFilterOptions();

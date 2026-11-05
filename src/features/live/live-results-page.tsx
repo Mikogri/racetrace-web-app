@@ -28,11 +28,14 @@ import {
 import { LiveCourseChart } from "./components/live-course-chart";
 import { LiveChampionship } from "./components/live-championship";
 import styles from "./live-results-page.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 // Keep the championship projection available without mounting it or fetching its data.
 const SHOW_LIVE_CHAMPIONSHIP = false;
 
 export default function LiveResultsPage() {
+  usePageMeta(pageMeta.liveSession);
   useDomainMetadata();
   const sessionId = useRequiredRouteParam("sessionId");
   const [searchParams] = useSearchParams();

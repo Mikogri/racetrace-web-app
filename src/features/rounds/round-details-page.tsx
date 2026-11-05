@@ -40,6 +40,8 @@ import {
 } from "./api/get-round";
 import styles from "./round-details-page.module.css";
 import { RoundAnalysis } from "./components/round-analysis";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 function Podium({ data }: { data: SessionResults | undefined }) {
   const podium = [2, 1, 3].map((position) =>
@@ -97,6 +99,7 @@ function Podium({ data }: { data: SessionResults | undefined }) {
 }
 
 export default function RoundDetailsPage() {
+  usePageMeta(pageMeta.round);
   useDomainMetadata();
   const roundId = useRequiredRouteParam("roundId");
   const [searchParams, setSearchParams] = useSearchParams();

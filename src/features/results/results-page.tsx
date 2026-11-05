@@ -19,6 +19,8 @@ import { LiveStatusBadge } from "../live/components/live-status-badge";
 import roundPlaceholder from "../../assets/round-placeholder.png";
 import { useRounds, type RoundListItem } from "./api/get-rounds";
 import styles from "./results-page.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 function isLiveRound(status: string) {
   return ["live", "active", "running"].includes(status.trim().toLowerCase());
@@ -57,6 +59,7 @@ function RoundImagePlaceholder() {
 }
 
 export default function ResultsPage() {
+  usePageMeta(pageMeta.results);
   useDomainMetadata();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFirstRequest, setIsFirstRequest] = useState(true);

@@ -16,6 +16,8 @@ import { fantasyDate, fantasyMoney, fantasyNumber, fantasyValue, sortFantasyRide
 import { FantasyRulesDialog } from './fantasy-rules-dialog'
 import styles from './fantasy-page.module.css'
 import failedIcon from '../../assets/icons/failed.png'
+import { pageMeta } from '../../config/seo'
+import { usePageMeta } from '../../hooks/use-page-meta'
 
 function FantasyIdentity({ rider, teamNumber }: { rider: FantasyRider; teamNumber?: number }) {
   const warnings = rider.warnings
@@ -47,6 +49,7 @@ function Projection({ rider }: { rider: FantasyRider }) {
 }
 
 export default function FantasyPage() {
+  usePageMeta(pageMeta.fantasy)
   const query = useFantasyCurrent()
   const rulesQuery = useFantasyRules()
   const [activeDialog, setActiveDialog] = useState<'rules' | 'guide' | null>(null)

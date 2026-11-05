@@ -19,8 +19,11 @@ import {
   type HomeSummary,
 } from "./api/get-home-data";
 import styles from "./home-page.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 export default function HomePage() {
+  usePageMeta(pageMeta.home);
   const [searchParams] = useSearchParams();
   const seasonValue = Number(searchParams.get("season"));
   const season =

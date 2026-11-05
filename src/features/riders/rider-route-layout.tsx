@@ -28,6 +28,8 @@ import {
   type RiderTeamHistoryItem,
 } from "./api/team-history-schema";
 import styles from "./rider-route-layout.module.css";
+import { pageMeta } from "../../config/seo";
+import { usePageMeta } from "../../hooks/use-page-meta";
 
 
 const countries: Record<string, { name: string; flag: string }> = {
@@ -167,6 +169,7 @@ function emptyRiderOverview(riderId: string): RiderOverview {
 }
 
 export default function RiderRouteLayout() {
+  usePageMeta(pageMeta.rider);
   const riderId = useRequiredRouteParam("riderId");
   const location = useLocation();
   const riderBase = riderBasePath(location.pathname, riderId);
