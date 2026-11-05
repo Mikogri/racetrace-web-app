@@ -15,7 +15,7 @@
 
 
 .embeddedAnalytics > div:first-child p { text-transform: none; }
-.embeddedAnalytics .homePanel { border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.embeddedAnalytics .homePanel { border: 0; border-radius: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .embeddedAnalytics .speedChartHeader { display: none; }
 .embeddedAnalytics .speedChart,
 .embeddedAnalytics .speedChartSkeleton,

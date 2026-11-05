@@ -5,8 +5,8 @@
   height: var(--layout-menu-height);
   background: rgb(18 18 18 / 40%);
   border-bottom: var(--component-border-width) solid var(--color-border-default);
-  backdrop-filter: var(--component-nav-blur);
   -webkit-backdrop-filter: var(--component-nav-blur);
+  backdrop-filter: var(--component-nav-blur);
   animation: fade-down 600ms var(--component-ease-out) both;
 }
 

@@ -5,8 +5,8 @@
   background: var(--component-frost-surface);
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-panel);
-  backdrop-filter: var(--component-frost-blur);
   -webkit-backdrop-filter: var(--component-frost-blur);
+  backdrop-filter: var(--component-frost-blur);
 }
 
 .tableProgress {
@@ -42,8 +42,8 @@
   background: transparent;
   border: 0;
   border-radius: 0;
-  backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .table {

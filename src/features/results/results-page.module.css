@@ -182,8 +182,8 @@
   border: var(--component-border-width) solid var(--color-border-glass);
   border-radius: var(--radius-panel);
   box-shadow: var(--component-gloss-edge);
-  backdrop-filter: var(--component-frost-blur);
   -webkit-backdrop-filter: var(--component-frost-blur);
+  backdrop-filter: var(--component-frost-blur);
   transition:
     border-color var(--component-transition-standard) ease,
     box-shadow var(--component-transition-standard) ease,

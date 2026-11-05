@@ -9,8 +9,8 @@
   padding-inline: var(--spacing-details-padding-md);
   background: rgb(18 18 18 / 40%);
   border-bottom: var(--component-border-width) solid var(--color-border-default);
-  backdrop-filter: var(--component-nav-blur);
   -webkit-backdrop-filter: var(--component-nav-blur);
+  backdrop-filter: var(--component-nav-blur);
 }
 
 .brand {
@@ -63,8 +63,8 @@
   overflow-y: auto;
   background: rgb(18 18 18 / 55%);
   border-left: var(--component-border-width) solid var(--color-border-default);
-  backdrop-filter: var(--component-nav-blur);
   -webkit-backdrop-filter: var(--component-nav-blur);
+  backdrop-filter: var(--component-nav-blur);
   transform: translateX(100%);
   visibility: hidden;
   transition:
