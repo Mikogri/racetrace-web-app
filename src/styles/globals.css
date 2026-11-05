@@ -74,13 +74,6 @@ input:autofill {
     color 600000s 0s;
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-
 @keyframes fade-down {
   from {
     opacity: 0;

@@ -9,17 +9,6 @@
   border-inline: var(--component-border-width) solid var(--color-border-default);
 }
 
-/* Each page's content arrives one piece after another; :where keeps any own animation of a child in charge. */
-:where(.container > *) {
-  animation: rise var(--component-transition-settle) var(--component-ease-out) backwards;
-}
-
-:where(.container > :nth-child(1)) { animation-delay: 60ms; }
-:where(.container > :nth-child(2)) { animation-delay: 120ms; }
-:where(.container > :nth-child(3)) { animation-delay: 180ms; }
-:where(.container > :nth-child(4)) { animation-delay: 240ms; }
-:where(.container > :nth-child(n + 5)) { animation-delay: 300ms; }
-
 .pageHeader,
 .sectionHeader {
   display: flex;
