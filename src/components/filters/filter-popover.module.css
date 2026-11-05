@@ -51,15 +51,15 @@
   border-radius: var(--radius-pill);
 }
 
+/* Opacity only: a scale or translate here left the text rasterised from the animated layer,
+   so it shifted slightly on the first hover after opening. */
 @keyframes context-menu-open {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(-4px);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 

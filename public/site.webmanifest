@@ -1,7 +1,7 @@
 {
   "name": "Race Trace MTB",
   "short_name": "Race Trace MTB",
-  "description": "UCI MTB downhill results, rankings, live timing and performance analytics.",
+  "description": "MTB downhill results, rankings, live timing and performance analytics.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
