@@ -47,7 +47,7 @@
 }
 
 .captionSlash {
-  color: var(--color-text-tertiary);
+  color: color-mix(in srgb, var(--color-brand-primary) 85%, black);
 }
 
 .actions {

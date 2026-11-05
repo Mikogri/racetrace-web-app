@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { startTransition, useCallback, useEffect, useId, useOptimistic, useRef, useState, type KeyboardEvent } from 'react'
 import type { FilterOption } from '../../types/domain'
 import { FilterButton } from './filter-button'
 import { FilterPopover } from './filter-popover'
@@ -25,6 +25,8 @@ export function MultiSelect({
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false)
   const [draftValues, setDraftValues] = useState(selectedValues)
+  // The committed choice shows at once, while the parent's update (URL, data) runs as a transition.
+  const [committedValues, setCommittedValues] = useOptimistic(selectedValues)
   const [activeIndex, setActiveIndex] = useState(0)
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -32,10 +34,12 @@ export function MultiSelect({
   const listboxId = useId()
 
   const commitDraft = useCallback(() => {
-    const changed = draftValues.length !== selectedValues.length
-      || draftValues.some((value, index) => value !== selectedValues[index])
-    if (changed) onSelectionChange(draftValues)
-  }, [draftValues, onSelectionChange, selectedValues])
+    if (sameValues(draftValues, committedValues)) return
+    startTransition(() => {
+      setCommittedValues(draftValues)
+      onSelectionChange(draftValues)
+    })
+  }, [committedValues, draftValues, onSelectionChange, setCommittedValues])
 
   const closeAndCommit = useCallback(() => {
     commitDraft()
@@ -61,7 +65,10 @@ export function MultiSelect({
       const nextValues = isSelected ? [] : [value]
       setDraftValues(nextValues)
       setOpen(false)
-      onSelectionChange(nextValues)
+      startTransition(() => {
+        setCommittedValues(nextValues)
+        onSelectionChange(nextValues)
+      })
       triggerRef.current?.focus()
       return
     }
@@ -92,7 +99,7 @@ export function MultiSelect({
     }
   }
 
-  const summaryValues = open ? draftValues : selectedValues
+  const summaryValues = open ? draftValues : committedValues
   const summary = summaryValues.length > 0 ? `${label} (${summaryValues.length})` : label
 
   return (
@@ -105,15 +112,15 @@ export function MultiSelect({
         onClick={() => {
           if (open) closeAndCommit()
           else {
-            setDraftValues(selectedValues)
+            setDraftValues(committedValues)
             setOpen(true)
           }
-          setActiveIndex(Math.max(options.findIndex((option) => selectedValues.includes(option.value)), 0))
+          setActiveIndex(Math.max(options.findIndex((option) => committedValues.includes(option.value)), 0))
         }}
         onKeyDown={(event) => {
           if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
             event.preventDefault()
-            setDraftValues(selectedValues)
+            setDraftValues(committedValues)
             setOpen(true)
           }
         }}
@@ -155,4 +162,8 @@ export function MultiSelect({
       ) : null}
     </div>
   )
+}
+
+function sameValues(a: string[], b: string[]) {
+  return a.length === b.length && a.every((value, index) => value === b[index])
 }

@@ -22,8 +22,13 @@
     border-color var(--component-transition-fast) ease;
 }
 
-.option:hover:not(:disabled) {
-  background: var(--color-interaction-subtle-hover-background);
+.option[aria-pressed='false'] {
+  color: var(--color-text-unselected);
+}
+
+.option:hover:not(:disabled):not([aria-pressed='true']) {
+  color: var(--color-text-secondary);
+  background: var(--color-surface-field-hover);
 }
 
 .option:disabled { cursor: default; opacity: 0.5; }

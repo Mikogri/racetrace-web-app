@@ -3,15 +3,15 @@
   --color-surface-panel: #0d0d0d;
   --color-surface-panel-raised: rgb(255 255 255 / 11%);
   --color-surface-overlay: #1a1a1a;
-  --color-surface-field: rgb(255 255 255 / 1.5%);
-  --color-surface-field-hover: rgb(255 255 255 / 4%);
+  --color-surface-field: rgb(0 0 0 / 20%);
+  --color-surface-field-hover: rgb(255 255 255 / 2%);
   --color-surface-glass: rgb(18 18 18 / 72%);
   --color-surface-backdrop: rgb(0 0 0 / 60%);
   --color-surface-grid-line: rgb(255 255 255 / 3%);
   --color-context-scrollbar-thumb: rgb(82 82 82 / 80%);
 
   --color-brand-primary: #cf9345;
-  --color-brand-soft: #b2efcf;
+  --color-brand-soft: color-mix(in srgb, var(--color-brand-primary) 45%, white);
   --color-brand-deep: #11382a;
   --color-brand-deep-hover: #164634;
   --color-brand-border: rgb(69 207 134 / 42%);
@@ -21,9 +21,10 @@
   --color-text-primary: #ededec;
   --color-text-secondary: #8f8f8d;
   --color-text-tertiary: #626260;
+  --color-text-unselected: #7c7c7a;
   --color-text-summary: #c4c4c2;
   --color-text-muted: #626260;
-  --color-text-brand-soft: #b2efcf;
+  --color-text-brand-soft: var(--color-brand-soft);
   --color-text-on-brand: var(--palette-white);
 
   --color-border-subtle: rgb(255 255 255 / 6%);
@@ -34,7 +35,7 @@
 
   --color-interaction-selected-background: rgb(255 255 255 / 8%);
   --color-interaction-hover-background: rgb(255 255 255 / 5%);
-  --color-interaction-subtle-hover-background: rgb(255 255 255 / 5%);
+  --color-interaction-subtle-hover-background: rgb(255 255 255 / 2.5%);
   --color-interaction-focus: var(--color-brand-primary);
   --color-interaction-focus-subtle-border: rgb(255 255 255 / 32%);
   --color-interaction-disabled-background: rgb(22 48 31 / 60%);

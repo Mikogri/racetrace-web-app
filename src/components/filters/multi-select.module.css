@@ -12,6 +12,8 @@
 }
 
 .option {
+  /* The global button hover reads this; menu items need a clearer highlight. */
+  --color-interaction-subtle-hover-background: rgb(255 255 255 / 7%);
   display: flex;
   gap: var(--space-12);
   align-items: center;
@@ -28,9 +30,23 @@
   transition: color var(--component-transition-control), background-color var(--component-transition-control);
 }
 
+.option[aria-selected='false'] {
+  color: var(--color-text-unselected);
+}
+
 .option:hover {
   color: var(--color-text-primary);
   background: var(--color-interaction-subtle-hover-background);
+}
+
+/* In single-choice menus the chosen item stays still on hover. */
+[aria-multiselectable='false'] .option[aria-selected='true'] {
+  --color-interaction-subtle-hover-background: transparent;
+}
+
+[aria-multiselectable='false'] .option[aria-selected='true']:hover {
+  color: var(--color-text-secondary);
+  background: transparent;
 }
 
 .option:focus-visible {

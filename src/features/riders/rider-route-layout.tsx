@@ -329,7 +329,7 @@ export default function RiderRouteLayout() {
           options={riderFilterOptions}
           value={filters}
           onChange={setFilters}
-          disabled={filterOptions.isPending || overviewQuery.isFetching}
+          disabled={filterOptions.isPending}
         />
       </div>
 
