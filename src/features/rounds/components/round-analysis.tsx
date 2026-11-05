@@ -17,7 +17,7 @@ function FieldProgression({ points, fullPosition, loading }: { points: RoundProf
   const lastPosition = points.at(-1)?.position ?? 0;
   const gradientId = useId();
   const description = `Time difference from the previous position threshold, in seconds.${!loading && lastPosition > 0 && fullPosition > lastPosition ? ` Outlying tail hidden: showing through P${lastPosition} of P${fullPosition}.` : ""}`;
-  return <Panel className={sectionStyles.section}>
+  return <Panel bare className={sectionStyles.section}>
     <PanelHeader title="// Field Progression" info={description} />
     {loading ? <div className={sectionStyles.skeleton} role="status" aria-label="Loading Field Progression"><span /></div> : points.length === 0 ? <TableFeedbackState type="empty" compact /> :
       <div ref={chartRef} className={sectionStyles.chart}>

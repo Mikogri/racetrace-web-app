@@ -1,0 +1,32 @@
+/* Fixed behind every page: soft beams of light from the top over a faint grid. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.light {
+  position: absolute;
+  inset: 0;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--color-surface-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-surface-grid-line) 1px, transparent 1px);
+  background-size: var(--component-grid-size) var(--component-grid-size);
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, black, transparent 80%);
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, black, transparent 80%);
+  animation: grid-in 1.2s var(--component-ease-out) both;
+}
+
+@keyframes grid-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}

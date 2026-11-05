@@ -20,20 +20,6 @@
 body {
   min-width: 320px;
   min-height: 100svh;
-  background:
-    radial-gradient(circle at center, var(--color-surface-pattern-dot) 0 var(--component-pattern-dot-size), transparent var(--component-pattern-dot-size)),
-    var(--color-surface-page);
-  background-size:
-    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap))
-    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap));
-}
-
-body::before {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  content: '';
-  background: linear-gradient(90deg, transparent, var(--color-surface-page) 18%, var(--color-surface-page) 82%, transparent);
 }
 
 a {
@@ -73,7 +59,33 @@ button:hover:not(:disabled):not([aria-pressed='true']):not([aria-expanded='true'
 
 ::selection {
   color: var(--color-text-primary);
-  background: var(--color-compare-rider-b-background);
+  background: rgb(69 207 134 / 30%);
+}
+
+/* Browser autofill must not paint its own blue or yellow box inside fields. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:autofill {
+  -webkit-text-fill-color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 #root {

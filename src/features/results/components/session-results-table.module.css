@@ -72,7 +72,7 @@
   height: 22px;
   padding: 3px 5px;
   color: var(--color-text-primary);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-numeric);
   font-size: 12px;
   font-weight: var(--font-weight-text);
   letter-spacing: -0.08em;

@@ -23,10 +23,12 @@
     BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-family-display: var(--font-family-mono);
   --font-family-data: var(--font-family-mono);
+  --font-family-numeric: var(--font-family-data);
   --font-family-body: var(--font-family-sans);
   --font-family-ui: var(--font-family-sans);
   --font-family-rider-display: "Orbitron", var(--font-family-mono);
 
+  --font-size-hero: 46px;
   --font-size-display: 42px;
   --font-size-page-title: 36px;
   --font-size-section-title: 28px;
@@ -45,7 +47,9 @@
   --line-height-tight: 1.1;
   --line-height-heading: 1.2;
   --line-height-body: 1.55;
+  --line-height-relaxed: 1.55;
   --letter-spacing-display: -0.02em;
+  --letter-spacing-tight: normal;
   --letter-spacing-technical: 0.04em;
   --letter-spacing-label: 0.08em;
 }

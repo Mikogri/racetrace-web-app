@@ -8,6 +8,7 @@
   --radius-panel: var(--radius-lg);
   --radius-panel-lg: var(--radius-xl);
   --radius-control: var(--radius-md);
+  --radius-button: var(--radius-control);
   --radius-modal: var(--radius-xl);
   --radius-badge: var(--radius-sm);
   --radius-progress: var(--radius-pill);

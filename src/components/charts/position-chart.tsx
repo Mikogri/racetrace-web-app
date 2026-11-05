@@ -203,6 +203,7 @@ export function PositionChart({
 
   return (
     <Panel
+      bare
       padding="none"
       className={`${styles.chartPanel} ${compact ? styles.compact : ""} ${connectLines ? styles.lineChart : styles.scatterChart} ${className ?? ""}`}
     >

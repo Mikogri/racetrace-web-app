@@ -1,31 +1,43 @@
 :root {
-  --color-surface-page: rgb(12, 12, 12);
-  --color-surface-panel: rgb(24, 24, 25);
-  --color-surface-panel-raised: var(--palette-neutral-800);
-  --color-surface-backdrop: rgb(0 0 0 / 72%);
-  --color-surface-pattern-dot: rgb(100 100 100 / 35%);
+  --color-surface-page: #050505;
+  --color-surface-panel: #0d0d0d;
+  --color-surface-panel-raised: rgb(255 255 255 / 11%);
+  --color-surface-overlay: #1a1a1a;
+  --color-surface-field: rgb(255 255 255 / 1.5%);
+  --color-surface-field-hover: rgb(255 255 255 / 4%);
+  --color-surface-glass: rgb(18 18 18 / 72%);
+  --color-surface-backdrop: rgb(0 0 0 / 60%);
+  --color-surface-grid-line: rgb(255 255 255 / 3%);
   --color-context-scrollbar-thumb: rgb(82 82 82 / 80%);
 
-  --color-brand-primary: var(--palette-olive-500);
-  --color-brand-soft: var(--palette-olive-100);
+  --color-brand-primary: #cf9345;
+  --color-brand-soft: #b2efcf;
+  --color-brand-deep: #11382a;
+  --color-brand-deep-hover: #164634;
+  --color-brand-border: rgb(69 207 134 / 42%);
+  --color-brand-border-hover: rgb(69 207 134 / 60%);
+  --color-text-on-brand-deep: #d9f7e8;
 
-  --color-text-primary: var(--palette-white);
-  --color-text-secondary: var(--palette-neutral-300);
-  --color-text-summary: rgb(200 200 200);
-  --color-text-muted: rgb(165 165 165 / 70%);
-  --color-text-brand-soft: var(--palette-olive-100);
+  --color-text-primary: #ededec;
+  --color-text-secondary: #8f8f8d;
+  --color-text-tertiary: #626260;
+  --color-text-summary: #c4c4c2;
+  --color-text-muted: #626260;
+  --color-text-brand-soft: #b2efcf;
   --color-text-on-brand: var(--palette-white);
 
-  --color-border-default: rgb(100 100 100 / 35%);
-  --color-border-strong: rgb(255 255 255 / 40%);
-  --color-card-hover-border: rgb(255 255 255 / 30%);
+  --color-border-subtle: rgb(255 255 255 / 6%);
+  --color-border-default: rgb(255 255 255 / 10%);
+  --color-border-glass: rgb(255 255 255 / 9%);
+  --color-border-strong: rgb(255 255 255 / 18%);
+  --color-card-hover-border: rgb(255 255 255 / 18%);
 
-  --color-interaction-selected-background: rgb(60 60 60 / 50%);
-  --color-interaction-hover-background: rgb(60 60 60 / 30%);
-  --color-interaction-subtle-hover-background: rgb(60 60 60 / 35%);
-  --color-interaction-focus: var(--palette-olive-500);
-  --color-interaction-focus-subtle-border: color-mix(in srgb, var(--color-brand-primary) 35%, var(--color-border-default));
-  --color-interaction-disabled-background: rgb(106 140 61 / 30%);
+  --color-interaction-selected-background: rgb(255 255 255 / 8%);
+  --color-interaction-hover-background: rgb(255 255 255 / 5%);
+  --color-interaction-subtle-hover-background: rgb(255 255 255 / 5%);
+  --color-interaction-focus: var(--color-brand-primary);
+  --color-interaction-focus-subtle-border: rgb(255 255 255 / 32%);
+  --color-interaction-disabled-background: rgb(22 48 31 / 60%);
   --color-interaction-disabled-text: rgb(255 255 255 / 45%);
 
   --color-rating-low: var(--palette-red-strong);
@@ -83,8 +95,8 @@
   --color-event-class-neutral-text: var(--color-text-secondary);
   --color-event-class-neutral-border: var(--color-border-default);
 
-  --color-compare-rider-a-accent: var(--palette-olive-500);
-  --color-compare-rider-a-background: rgb(106 140 61 / 40%);
+  --color-compare-rider-a-accent: #3dbb79;
+  --color-compare-rider-a-background: rgb(69 207 134 / 22%);
   --color-compare-rider-b-accent: var(--palette-blue-500);
   --color-compare-rider-b-background: rgb(97 134 204 / 40%);
   --color-compare-rider-a-bar: color-mix(in srgb, var(--color-compare-rider-a-accent) 80%, black);
@@ -111,5 +123,5 @@
   --color-live-chart-rider-5: var(--palette-red-soft);
   --color-live-chart-rider-6: #63e8ff;
 
-  --color-shadow-panel: rgb(0 0 0 / 32%);
+  --color-shadow-panel: rgb(0 0 0 / 75%);
 }

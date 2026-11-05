@@ -1,10 +1,5 @@
 .footer {
-  background:
-    radial-gradient(circle at center, var(--color-surface-pattern-dot) 0 var(--component-pattern-dot-size), transparent var(--component-pattern-dot-size)),
-    var(--color-surface-page);
-  background-size:
-    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap))
-    calc(var(--component-pattern-dot-size) * 2 + var(--component-pattern-dot-gap));
+  border-top: var(--component-border-width) solid var(--color-border-default);
 }
 
 .inner {
@@ -13,22 +8,21 @@
   width: min(100%, var(--layout-content-max-width));
   padding: var(--spacing-details-padding-md) var(--spacing-page-padding-x-responsive);
   margin-inline: auto;
-  color: var(--color-text-secondary);
-  background: var(--color-surface-page);
+  color: var(--color-text-tertiary);
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   line-height: 16px;
   min-height: var(--layout-footer-height);
-  border: var(--component-border-width) solid var(--color-border-default);
-  border-bottom: 0;
+  border-inline: var(--component-border-width) solid var(--color-border-default);
 }
 
 .inner a {
   text-decoration: none;
+  transition: color var(--component-transition-fast) ease;
 }
 
 .inner a:hover {
-  color: var(--color-brand-primary);
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 760px) {

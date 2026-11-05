@@ -1,8 +1,21 @@
 .panel {
   overflow: hidden;
-  background: var(--color-surface-panel);
-  border: var(--component-border-width) solid var(--color-border-default);
+  background: var(--component-light-edge), var(--component-gloss), var(--color-surface-glass);
+  border: var(--component-border-width) solid var(--color-border-glass);
   border-radius: var(--radius-panel);
+  box-shadow: var(--component-gloss-edge);
+  backdrop-filter: var(--component-glass-blur);
+  -webkit-backdrop-filter: var(--component-glass-blur);
+}
+
+/* Charts sit straight on the page: no surface, edge or shadow of their own. */
+.bare {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .none {
@@ -64,9 +77,11 @@
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   line-height: 16px;
-  background: var(--color-surface-panel);
+  background: var(--component-banner-surface);
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-panel-sm);
+  backdrop-filter: var(--component-light-blur);
+  -webkit-backdrop-filter: var(--component-light-blur);
 }
 
 .summary > span {

@@ -6,9 +6,19 @@
   min-height: calc(100svh - var(--layout-menu-height));
   padding: var(--spacing-page-padding-y) var(--spacing-page-padding-x-responsive);
   margin-inline: auto;
-  background: var(--color-surface-page);
   border-inline: var(--component-border-width) solid var(--color-border-default);
 }
+
+/* Each page's content arrives one piece after another; :where keeps any own animation of a child in charge. */
+:where(.container > *) {
+  animation: rise var(--component-transition-settle) var(--component-ease-out) backwards;
+}
+
+:where(.container > :nth-child(1)) { animation-delay: 60ms; }
+:where(.container > :nth-child(2)) { animation-delay: 120ms; }
+:where(.container > :nth-child(3)) { animation-delay: 180ms; }
+:where(.container > :nth-child(4)) { animation-delay: 240ms; }
+:where(.container > :nth-child(n + 5)) { animation-delay: 300ms; }
 
 .pageHeader,
 .sectionHeader {
@@ -29,9 +39,9 @@
 
 .description {
   max-width: 465px;
-  color: rgb(165 165 165);
+  color: var(--color-text-secondary);
   font-family: var(--font-family-mono-variable) !important;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 450;
 }
 
@@ -48,7 +58,7 @@
 }
 
 .captionSlash {
-  color: color-mix(in srgb, var(--color-brand-primary) 85%, black);
+  color: var(--color-text-tertiary);
 }
 
 .actions {

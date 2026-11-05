@@ -59,7 +59,7 @@ export function LiveCourseChart({ riders, riderIds }: {
   });
 
   return (
-    <Panel padding="none" className={styles.wrapper}>
+    <Panel bare padding="none" className={styles.wrapper}>
       <div className={styles.header}>
         <PanelHeader title="On Track" description="On track riders compared to leader" />
       </div>

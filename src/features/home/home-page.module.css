@@ -56,12 +56,15 @@
 }
 
 .heroTitle h1 {
-  color: var(--color-text-primary);
-  font-family: var(--font-family-mono);
-  font-size: 46px;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-hero);
   font-weight: var(--font-weight-medium);
   line-height: 1.2;
-  text-transform: uppercase;
+  text-transform: none;
+  background: linear-gradient(180deg, #ffffff 0%, #d6d6d4 50%, #8a8a88 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .heroEyebrow {
@@ -98,7 +101,7 @@
   }
 
   .heroTitle h1 {
-    font-size: clamp(28px, 9vw, 46px);
+    font-size: clamp(28px, 9vw, var(--font-size-hero));
     line-height: 1.2;
   }
 

@@ -59,7 +59,7 @@
 
 a.name:hover,
 a.name:focus-visible {
-  color: var(--color-text-secondary);
+  color: var(--color-text-summary);
 }
 
 a.name:hover::after,

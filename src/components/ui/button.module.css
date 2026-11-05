@@ -1,15 +1,17 @@
 .button,
 .iconButton {
   border: var(--component-border-width) solid var(--color-border-default);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-button);
   color: var(--color-text-primary);
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   font-weight: var(--font-weight-medium);
+  -webkit-tap-highlight-color: transparent;
   transition:
-    background var(--component-transition-control),
-    border-color var(--component-transition-control),
-    color var(--component-transition-control);
+    background-color var(--component-transition-fast) ease,
+    border-color var(--component-transition-fast) ease,
+    color var(--component-transition-fast) ease,
+    box-shadow var(--component-transition-fast) ease;
 }
 
 .button {
@@ -24,26 +26,31 @@
 }
 
 .primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-brand-primary) 85%, black);
+  background: var(--color-brand-deep-hover);
+  border-color: var(--color-brand-border-hover);
 }
 
 .button:disabled,
 .iconButton:disabled {
-  cursor: not-allowed;
+  cursor: default;
+  opacity: 0.45;
 }
 
 .primary {
-  background: var(--color-brand-primary);
-  border-color: var(--color-border-strong);
-}
-
-.primary:disabled {
-  color: var(--color-interaction-disabled-text);
-  background: var(--color-interaction-disabled-background);
+  color: var(--color-text-on-brand-deep);
+  letter-spacing: 0.005em;
+  background: var(--color-brand-deep);
+  border-color: var(--color-brand-border);
 }
 
 .secondary {
   background: var(--color-surface-panel);
+  border-color: var(--color-border-default);
+  box-shadow: var(--component-shadow-sm);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
 }
 
 .ghost {

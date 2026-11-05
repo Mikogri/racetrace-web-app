@@ -9,14 +9,18 @@
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   cursor: pointer;
-  background: transparent;
+  background: var(--color-surface-field);
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-control);
-  transition: color var(--component-transition-control), background-color var(--component-transition-control), border-color var(--component-transition-control);
+  transition:
+    color var(--component-transition-fast) ease,
+    background-color var(--component-transition-fast) ease,
+    border-color var(--component-transition-fast) ease;
 }
 
 .button:hover {
-  background: var(--color-interaction-subtle-hover-background);
+  background: var(--color-surface-field-hover);
+  border-color: var(--color-border-strong);
 }
 
 .button[aria-expanded='true'] {

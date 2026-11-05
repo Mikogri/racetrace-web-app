@@ -49,6 +49,7 @@ export function PerformanceRadar({
 
   return (
     <Panel
+      bare
       padding="none"
       className={`${styles.chartPanel} ${styles.radarChart} ${compact ? styles.compact : ""} ${className ?? ""}`}
     >

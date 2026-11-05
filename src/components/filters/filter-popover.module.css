@@ -5,13 +5,14 @@
   z-index: var(--component-z-popover);
   min-width: var(--component-dropdown-min-width);
   padding: var(--spacing-context-menu-padding);
-  background: var(--color-surface-panel);
+  background: rgb(36 36 37 / 35%);
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-panel);
-  box-shadow: var(--component-shadow-panel);
-  backdrop-filter: blur(var(--spacing-card-padding));
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   transform-origin: top center;
-  animation: context-menu-open var(--component-transition-control) ease-out;
+  animation: context-menu-open var(--component-transition-standard) var(--component-ease-out);
 }
 
 .scrollArea {
@@ -53,7 +54,7 @@
 @keyframes context-menu-open {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.96) translateY(-4px);
   }
 
   to {

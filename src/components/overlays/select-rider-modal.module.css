@@ -1,8 +1,6 @@
 .dialog {
-  width: min(100%, 500px);
-  height: 430px;
-  background: var(--color-surface-page);
-  border-radius: var(--radius-panel);
+  width: min(100%, 450px);
+  height: 440px;
 }
 
 .search {
@@ -19,8 +17,12 @@
   min-height: 0;
   gap: var(--space-8);
   padding: 10px 12px;
-  background: transparent;
+  background: var(--color-surface-field);
   border-radius: var(--radius-control);
+}
+
+.searchInput:focus-within {
+  border-color: var(--color-border-strong);
 }
 
 .searchInput input {
@@ -46,7 +48,7 @@
 .resultsScroll {
   box-sizing: border-box;
   height: 100%;
-  padding: var(--space-5);
+  padding: var(--space-8) var(--space-10);
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
@@ -81,47 +83,53 @@
   border-radius: var(--radius-pill);
 }
 
+/* One rider per row, no frames: name above team, a check mark at the end of the chosen row. */
 .listbox {
   display: grid;
-  gap: var(--space-10);
+  gap: var(--space-3);
 }
 
 .riderOption {
   display: flex;
   width: 100%;
-  min-height: 42px;
-  height: 42px;
-  gap: var(--space-20);
+  min-height: 46px;
+  gap: var(--space-12);
   align-items: center;
-  padding: var(--space-5) var(--space-15);
+  padding: var(--space-6) var(--space-12);
   color: var(--color-text-primary);
   text-align: left;
   cursor: default;
   background: transparent;
   border: 0;
   border-radius: var(--radius-control);
-  transition: background-color var(--component-transition-control);
+  transition:
+    background-color var(--component-transition-fast) ease;
 }
 
 .riderOption:hover,
 .riderOption[aria-selected='true'] {
-  background: var(--color-interaction-selected-background);
+  background: rgb(255 255 255 / 5%);
 }
 
-.riderOption[aria-selected='true'] {
-  background: color-mix(in srgb, var(--color-interaction-selected-background) 50%, transparent);
+.riderOption[aria-selected='true']::after {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  content: '';
+  background: var(--color-text-primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .riderDot {
-  flex: 0 0 var(--space-5);
-  width: var(--space-5);
-  height: var(--space-5);
+  display: none;
 }
 
 .riderText {
   display: grid;
   min-width: 0;
-  gap: 0;
+  gap: var(--space-3);
   font-family: var(--font-family-body);
 }
 
@@ -133,18 +141,17 @@
 }
 
 .riderText strong {
-  color: var(--color-text-primary);
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: var(--font-weight-light);
-  opacity: 0.9;
+  color: inherit;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: var(--font-weight-medium);
 }
 
 .riderText span {
   color: var(--color-text-muted);
   font-size: 10px;
-  line-height: 15px;
-  font-weight: var(--font-weight-medium);
+  line-height: 13px;
+  font-weight: var(--font-weight-regular);
 }
 
 .updateProgress {
@@ -174,13 +181,19 @@
 }
 
 .dialog > footer button:last-child {
-  background: color-mix(in srgb, var(--color-brand-primary) 45%, black);
+  color: var(--color-text-on-brand-deep);
+  background: var(--color-brand-deep);
+  border-color: var(--color-brand-border);
+}
+
+.dialog > footer button:last-child:hover:not(:disabled) {
+  background: var(--color-brand-deep-hover);
+  border-color: var(--color-brand-border-hover);
 }
 
 .dialog > footer button:last-child:disabled {
-  color: color-mix(in srgb, var(--color-text-primary) 65%, transparent);
+  color: var(--color-interaction-disabled-text);
   cursor: default;
-  background: color-mix(in srgb, var(--color-brand-primary) 35%, black);
+  background: rgb(255 255 255 / 3%);
   border-color: var(--color-border-default);
-  opacity: 0.8;
 }

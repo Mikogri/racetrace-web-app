@@ -120,7 +120,7 @@
   fill: var(--color-text-secondary);
   font-size: 8px;
   font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .radarNumber {
@@ -246,7 +246,7 @@
   font-size: 8px;
   font-weight: var(--font-weight-medium);
   line-height: 10px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .radarLabelGroup strong {

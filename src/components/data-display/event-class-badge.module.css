@@ -9,7 +9,7 @@
   font-size: var(--font-size-caption);
   font-weight: var(--font-weight-medium);
   line-height: 13px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal;
   border: var(--component-border-width) solid;
   border-radius: var(--radius-badge);
 }

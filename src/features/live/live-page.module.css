@@ -31,12 +31,14 @@
   padding: 20px;
   color: inherit;
   text-decoration: none;
-  background: var(--color-surface-panel);
-  border: var(--component-border-width) solid var(--color-border-default);
+  background: var(--component-gloss), var(--color-surface-glass);
+  border: var(--component-border-width) solid var(--color-border-glass);
   border-radius: var(--radius-panel);
+  box-shadow: var(--component-gloss-edge);
   transition:
-    border-color 225ms ease,
-    transform 225ms ease;
+    border-color var(--component-transition-standard) ease,
+    box-shadow var(--component-transition-standard) ease,
+    transform var(--component-transition-standard) var(--component-ease-out);
 }
 
 .sessionCard:hover {

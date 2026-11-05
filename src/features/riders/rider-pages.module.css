@@ -40,9 +40,9 @@
   font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   line-height: 13px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal;
   text-overflow: ellipsis;
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -52,7 +52,7 @@
   font-size: 18px;
   font-weight: var(--font-weight-medium);
   line-height: 23px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal;
 }
 
 .positionValue {
@@ -253,7 +253,7 @@
   height: 36px;
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
-  background: var(--color-surface-panel);
+  background: var(--component-banner-surface);
 }
 
 .riderResultsTable td {

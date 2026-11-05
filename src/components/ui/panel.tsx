@@ -8,11 +8,13 @@ import infoIcon from '../../assets/info-hexagon.svg'
 type PanelProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode
   padding?: 'none' | 'compact' | 'default'
+  /** Drops the panel's surface, edge and shadow, e.g. around charts. */
+  bare?: boolean
 }
 
-export function Panel({ children, padding = 'default', className, ...props }: PanelProps) {
+export function Panel({ children, padding = 'default', bare = false, className, ...props }: PanelProps) {
   return (
-    <div className={joinClassNames(styles.panel, styles[padding], className)} {...props}>
+    <div className={joinClassNames(styles.panel, bare && styles.bare, styles[padding], className)} {...props}>
       {children}
     </div>
   )

@@ -8,7 +8,7 @@ import { QualiFinalChart, RoundAnalyticsBars } from "./round-race-charts";
 import styles from "./round-race-sections.module.css";
 
 function AnalyticsSection({ title, description, loading, children }: { title: string; description: string; loading: boolean; children: ReactNode }) {
-  return <Panel className={styles.section}>
+  return <Panel bare className={styles.section}>
     <PanelHeader title={`// ${title}`} info={description} />
     {loading ? <div className={styles.skeleton} role="status" aria-label={`Loading ${title}`}><span /></div> : children}
   </Panel>;

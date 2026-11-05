@@ -23,7 +23,7 @@
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   font-weight: var(--font-weight-regular);
-  text-transform: uppercase;
+  text-transform: none;
   width: 230px;
 }
 
