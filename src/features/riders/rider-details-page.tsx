@@ -27,6 +27,7 @@ import { getCompetitionClassColors } from "../../utils/competition-classes";
 import type { RiderSessionResult } from "./api/rider-session-schema";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
+import { PlotAreaBlur } from "../../components/charts/plot-area-blur";
 
 type StatisticRow = { label: string; value: string };
 
@@ -66,6 +67,7 @@ function PressureDeltaChart({
     <div ref={chartRef} className={styles.pressureDeltaChart}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 8, bottom: 0, left: 0 }} accessibilityLayer={false}>
+          <PlotAreaBlur />
           <CartesianGrid className={styles.pressureChartGrid} />
           <XAxis dataKey="label" height={40} tickLine={false} axisLine={false} tickMargin={12} tick={{ className: styles.pressureChartTick }} />
           <YAxis tickLine={false} axisLine={false} tickMargin={8} width={38} tick={{ className: styles.pressureChartTick }} />

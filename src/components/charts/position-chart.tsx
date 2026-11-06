@@ -15,6 +15,7 @@ import { Panel, PanelHeader } from "../ui/panel";
 import { ChartTooltip, TooltipRows } from "../overlays/tooltip";
 import { positionChartPointKey } from "./chart-data";
 import styles from "./charts.module.css";
+import { PlotAreaBlur } from "./plot-area-blur";
 
 export type PositionChartPoint = {
   label: string;
@@ -242,6 +243,7 @@ export function PositionChart({
                   </linearGradient>
                 ))}
               </defs>
+              <PlotAreaBlur />
               <CartesianGrid className={styles.rechartsGrid} />
               <Tooltip
                 cursor={false}

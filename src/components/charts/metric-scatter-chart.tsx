@@ -13,6 +13,7 @@ import { formatOneDecimal } from "../../utils/formatters";
 import { metricAxisConfiguration } from "./chart-data";
 import styles from "./metric-scatter-chart.module.css";
 import chartStyles from "./charts.module.css";
+import { PlotAreaBlur } from "./plot-area-blur";
 
 export type MetricScatterPoint = {
   id: string;
@@ -54,6 +55,7 @@ export function MetricScatterChart({
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 10, right: 18, bottom: 0, left: 0 }} accessibilityLayer={false}>
+              <PlotAreaBlur />
               <CartesianGrid className={styles.grid} />
               <XAxis
                 type="number"

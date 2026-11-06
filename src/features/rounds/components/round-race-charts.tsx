@@ -4,6 +4,7 @@ import { ChartTooltip } from "../../../components/overlays/tooltip";
 import { normalizeDisplayName } from "../../../utils/display-name";
 import type { RoundRaceAnalytics } from "../api/round-race-analytics-schema";
 import styles from "./round-race-sections.module.css";
+import { PlotAreaBlur } from "../../../components/charts/plot-area-blur";
 
 export type AnalyticsBar = { label: string; value: number; detail: string; color: string };
 
@@ -12,6 +13,7 @@ export function RoundAnalyticsBars({ data, unit, integers = false }: { data: Ana
   return <div className={styles.chart} ref={chartRef} aria-label={unit}>
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data} accessibilityLayer={false} margin={{ top: 16, right: 12, bottom: 12, left: 0 }}>
+        <PlotAreaBlur />
         <CartesianGrid className={styles.grid} />
         <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ className: styles.tick }} tickMargin={10} />
         <YAxis tickLine={false} axisLine={false} allowDecimals={!integers} width={42} tick={{ className: styles.tick }} />
@@ -34,6 +36,7 @@ export function QualiFinalChart({ correlation }: { correlation: RoundRaceAnalyti
   return <div className={styles.chart} ref={chartRef} aria-label="Pre-final position compared with final position">
     <ResponsiveContainer width="100%" height="100%">
       <ScatterChart accessibilityLayer={false} margin={{ top: 16, right: 16, bottom: 12, left: 0 }}>
+        <PlotAreaBlur />
         <CartesianGrid className={styles.grid} />
         <XAxis dataKey="preFinalPosition" type="number" domain={[0, "dataMax + 1"]} allowDecimals={false}
           tickLine={false} axisLine={false} tick={{ className: styles.tick }} tickFormatter={(value: number) => `P${value}`} />

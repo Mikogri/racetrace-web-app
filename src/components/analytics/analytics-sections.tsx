@@ -10,6 +10,7 @@ import type { RoundProfile } from "../../features/analytics/api/get-round-profil
 import { CategorySelector, SectionAction, SectionHeader } from "./section-controls";
 import { classCode } from "./round-label";
 import styles from "./home-sections.module.css";
+import { PlotAreaBlur } from "../charts/plot-area-blur";
 
 type SpeedResult = {
   riderId: string;
@@ -108,6 +109,7 @@ export function SpeedVsRunTimeSection({
           >
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 18, right: 42, bottom: 8, left: 4 }} accessibilityLayer={false}>
+                <PlotAreaBlur />
                 <CartesianGrid className={styles.speedGrid} />
                 <XAxis
                   type="number"
@@ -249,6 +251,7 @@ function AnalyticsBarChart({
           barCategoryGap="38%"
           accessibilityLayer={false}
         >
+          <PlotAreaBlur />
           <CartesianGrid className={styles.analyticsChartGrid} />
           <XAxis type="number" domain={[0, 100]} hide />
           <YAxis

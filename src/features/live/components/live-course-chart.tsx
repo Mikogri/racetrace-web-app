@@ -6,6 +6,7 @@ import { Panel, PanelHeader } from "../../../components/ui/panel";
 import { formatGap } from "../../../utils/formatters";
 import type { LiveCourseRider } from "../api/get-live";
 import styles from "./live-course-chart.module.css";
+import { PlotAreaBlur } from "../../../components/charts/plot-area-blur";
 
 const COURSE_STEPS = 5;
 const COURSE_LABELS = ["S1", "S2", "S3", "S4", "Finish"];
@@ -67,6 +68,7 @@ export function LiveCourseChart({ riders, riderIds }: {
         <div ref={chartRef} className={styles.chart} role="img" aria-label="Live rider gaps across four splits and finish">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 10, right: 40, bottom: 0, left: 0 }} accessibilityLayer={false}>
+              <PlotAreaBlur />
               <CartesianGrid className={styles.grid} />
               <XAxis
                 dataKey="label"

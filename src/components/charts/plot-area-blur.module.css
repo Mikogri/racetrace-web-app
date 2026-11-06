@@ -1,0 +1,13 @@
+.blur {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-backdrop-filter: var(--component-frost-blur);
+  backdrop-filter: var(--component-frost-blur);
+}
+
+/* Keep the chart drawing above the blur layer. */
+:global(.recharts-wrapper) > :global(.recharts-surface) {
+  position: relative;
+  z-index: 1;
+}

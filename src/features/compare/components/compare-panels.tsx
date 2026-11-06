@@ -24,6 +24,7 @@ import { ChartTooltip, TooltipRows } from "../../../components/overlays/tooltip"
 import { formatOneDecimal } from "../../../utils/formatters";
 import type { CompareData, CompareRider } from "../api/get-compare";
 import styles from "./compare-panels.module.css";
+import { PlotAreaBlur } from "../../../components/charts/plot-area-blur";
 
 const riderBarColors = [
   "var(--color-compare-rider-a-bar)",
@@ -103,6 +104,7 @@ function CompareBarsPanel({
       <div ref={chartRef} className={styles.barChart}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 0, bottom: 0, left: 0 }} barCategoryGap="24%" barGap={8} accessibilityLayer={false}>
+            <PlotAreaBlur />
             <CartesianGrid className={styles.chartGrid} />
             <XAxis dataKey="metric" tickLine={false} axisLine={false} tickMargin={12} height={38} tick={{ className: styles.chartTick }} />
             <YAxis domain={[0, chartMaximum]} ticks={yTicks} tickLine={false} axisLine={false} tickMargin={8} width={38} tick={{ className: styles.chartTick }} />

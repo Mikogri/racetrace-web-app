@@ -11,6 +11,7 @@ import chartStyles from "../../../components/analytics/home-sections.module.css"
 import styles from "./round-analysis.module.css";
 import { RoundRaceSections } from "./round-race-sections";
 import sectionStyles from "./round-race-sections.module.css";
+import { PlotAreaBlur } from "../../../components/charts/plot-area-blur";
 
 function FieldProgression({ points, fullPosition, loading }: { points: RoundProfile["trackFingerprint"]["positionSpread"]; fullPosition: number; loading: boolean }) {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,7 @@ function FieldProgression({ points, fullPosition, loading }: { points: RoundProf
               <stop offset="62%" stopColor="var(--color-chart-pre-final)" stopOpacity={0.08} />
               <stop offset="100%" stopColor="var(--color-chart-pre-final)" stopOpacity={0} />
             </linearGradient></defs>
+            <PlotAreaBlur />
             <CartesianGrid className={chartStyles.speedGrid} />
             <XAxis dataKey="position" type="number" domain={["dataMin", "dataMax"]} tickFormatter={(value: number) => `P${value}`} allowDecimals={false} tickLine={false} axisLine={false} tick={{ className: chartStyles.speedTick }} />
             <YAxis domain={[0, "auto"]} tickLine={false} axisLine={false} width={48} tick={{ className: chartStyles.speedTick }} />
