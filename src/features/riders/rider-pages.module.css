@@ -42,7 +42,7 @@
   line-height: 13px;
   letter-spacing: normal;
   text-overflow: ellipsis;
-  text-transform: none;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
