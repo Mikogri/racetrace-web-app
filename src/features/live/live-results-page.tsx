@@ -13,7 +13,10 @@ import { Panel, SummaryBanner } from "../../components/ui/panel";
 import { SegmentedControl } from "../../components/navigation/segmented-control";
 import { routes } from "../../config/routes";
 import { formatCategoryLabel } from "../../utils/categories";
-import { formatLiveSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatLiveSessionLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import { formatCountryName } from "../../utils/countries";
 import {
   SessionResultsTable,
@@ -40,36 +43,46 @@ export default function LiveResultsPage() {
   const sessionId = useRequiredRouteParam("sessionId");
   const [searchParams] = useSearchParams();
   const requestedSeason = Number(searchParams.get("season"));
-  const season = Number.isInteger(requestedSeason) && requestedSeason > 0
-    ? requestedSeason
-    : new Date().getUTCFullYear();
+  const season =
+    Number.isInteger(requestedSeason) && requestedSeason > 0
+      ? requestedSeason
+      : new Date().getUTCFullYear();
   const roundId = searchParams.get("roundId");
   const [sortBy, setSortBy] = useState<ResultSort>("finalTime");
   const [timeView, setTimeView] = useState<"sectors" | "splits">("sectors");
-  const [sortDirection, setSortDirection] =
-    useState<SortDirection>("desc");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const roundQuery = useLiveRound({ season, roundId });
   const catalogQuery = useChronoRaceCatalog(roundQuery.data);
   const session = catalogQuery.data?.find((item) => item.id === sessionId);
   const resultsQuery = useChronoRaceSessionResults(session);
   const results = resultsQuery.data?.results;
   const uciIds = useMemo(
-    () => results?.items.flatMap((item) => item.uciId ? [item.uciId] : []) ?? [],
+    () =>
+      results?.items.flatMap((item) => (item.uciId ? [item.uciId] : [])) ?? [],
     [results],
   );
   const riderIdsQuery = useResolvedLiveRiderIds(uciIds);
-  const hasTeams = results?.items.some((item) => !item.isPerfectRun && Boolean(item.teamName?.trim()));
+  const hasTeams = results?.items.some(
+    (item) => !item.isPerfectRun && Boolean(item.teamName?.trim()),
+  );
   const displayResults = useMemo(
-    () => results ? {
-      ...results,
-      items: results.items.map((item) => ({
-        ...item,
-        riderId: item.uciId ? (riderIdsQuery.data?.get(item.uciId) ?? null) : null,
-        countryCode: null,
-        teamId: null,
-        teamName: hasTeams ? item.teamName?.trim() || null : formatCountryName(item.countryCode),
-      })),
-    } : undefined,
+    () =>
+      results
+        ? {
+            ...results,
+            items: results.items.map((item) => ({
+              ...item,
+              riderId: item.uciId
+                ? (riderIdsQuery.data?.get(item.uciId) ?? null)
+                : null,
+              countryCode: null,
+              teamId: null,
+              teamName: hasTeams
+                ? item.teamName?.trim() || null
+                : formatCountryName(item.countryCode),
+            })),
+          }
+        : undefined,
     [results, riderIdsQuery.data, hasTeams],
   );
   const updateSort = (nextSort: ResultSort) => {
@@ -85,7 +98,8 @@ export default function LiveResultsPage() {
     if (session) void resultsQuery.refetch();
   };
   const initialLoading =
-    roundQuery.isPending || catalogQuery.isPending ||
+    roundQuery.isPending ||
+    catalogQuery.isPending ||
     (Boolean(session) && resultsQuery.isPending);
   const error =
     (!roundQuery.data ? roundQuery.error : null) ??
@@ -108,9 +122,7 @@ export default function LiveResultsPage() {
 
       <Section>
         {initialLoading ? <TableFeedbackState type="loading" /> : null}
-        {error ? (
-          <TableFeedbackState type="error" onRetry={retry} />
-        ) : null}
+        {error ? <TableFeedbackState type="error" onRetry={retry} /> : null}
         {!initialLoading && !error && !session ? (
           <TableFeedbackState
             type="empty"
@@ -130,15 +142,21 @@ export default function LiveResultsPage() {
               riderIds={riderIdsQuery.data}
             />
 
-            {SHOW_LIVE_CHAMPIONSHIP && formatLiveSessionLabel(session, 'code') === 'final' && (
-              <LiveChampionship key={`${session.roundId}:${session.category}`} session={session} catalog={catalogQuery.data ?? []} snapshot={resultsQuery.data!} />
-            )}
+            {SHOW_LIVE_CHAMPIONSHIP &&
+              formatLiveSessionLabel(session, "code") === "final" && (
+                <LiveChampionship
+                  key={`${session.roundId}:${session.category}`}
+                  session={session}
+                  catalog={catalogQuery.data ?? []}
+                  snapshot={resultsQuery.data!}
+                />
+              )}
 
             {displayResults && displayResults.items.length === 0 ? (
-                <TableFeedbackState
-                  type="empty"
-                  label="No data available"
-                  description="There is no data available for this session."
+              <TableFeedbackState
+                type="empty"
+                label="No data available"
+                description="There is no data available for this session."
               />
             ) : (
               <Panel padding="none" className={styles.leaderboard}>
@@ -147,19 +165,27 @@ export default function LiveResultsPage() {
                     <h2>Leaderboard</h2>
                     <p>Rider positions and performance overview</p>
                   </div>
-                  <SegmentedControl label="Timing view" value={timeView} onChange={setTimeView} options={[{ value: "sectors", label: "Sectors" }, { value: "splits", label: "Splits" }]} />
+                  <SegmentedControl
+                    label="Timing view"
+                    value={timeView}
+                    onChange={setTimeView}
+                    options={[
+                      { value: "sectors", label: "Sectors" },
+                      { value: "splits", label: "Splits" },
+                    ]}
+                  />
                 </header>
-              <SessionResultsTable
-                data={displayResults ?? results}
-                category={session.category}
-                sortBy={sortBy}
-                sortDirection={sortDirection}
-                onSort={updateSort}
-                loading={false}
-                liveGrouping
-                timeView={timeView}
-                embedded
-              />
+                <SessionResultsTable
+                  data={displayResults ?? results}
+                  category={session.category}
+                  sortBy={sortBy}
+                  sortDirection={sortDirection}
+                  onSort={updateSort}
+                  loading={false}
+                  liveGrouping
+                  timeView={timeView}
+                  embedded
+                />
               </Panel>
             )}
           </div>

@@ -16,20 +16,41 @@ describe("category registry", () => {
     expect(registry.juniorCategoryForAge(18, null)).toBeNull();
   });
   it("does not discover combined round categories as global categories", () => {
-    observeCategoriesInApiPayload({ categories: ["open_men", "open_women", "Open_U17"] });
-    expect(getKnownCategories().map(item => item.value)).not.toContain("open_men");
-    expect(getKnownCategories().map(item => item.value)).not.toContain("open_women");
-    expect(getKnownCategories().map(item => item.value)).toContain("Open_U17");
+    observeCategoriesInApiPayload({
+      categories: ["open_men", "open_women", "Open_U17"],
+    });
+    expect(getKnownCategories().map((item) => item.value)).not.toContain(
+      "open_men",
+    );
+    expect(getKnownCategories().map((item) => item.value)).not.toContain(
+      "open_women",
+    );
+    expect(getKnownCategories().map((item) => item.value)).toContain(
+      "Open_U17",
+    );
   });
 
   it("ignores combined round categories previously saved in browser storage", async () => {
     const key = "racetrace:known-categories:v1";
     const previous = localStorage.getItem(key);
-    localStorage.setItem(key, JSON.stringify([{ value: "open_men", label: "Open Men", abbreviation: "OM", gender: "male" }]));
+    localStorage.setItem(
+      key,
+      JSON.stringify([
+        {
+          value: "open_men",
+          label: "Open Men",
+          abbreviation: "OM",
+          gender: "male",
+        },
+      ]),
+    );
     vi.resetModules();
     const fresh = await import("./categories");
-    expect(fresh.getKnownCategories().map(item => item.value)).not.toContain("open_men");
-    if (previous === null) localStorage.removeItem(key); else localStorage.setItem(key, previous);
+    expect(fresh.getKnownCategories().map((item) => item.value)).not.toContain(
+      "open_men",
+    );
+    if (previous === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, previous);
   });
   it("always starts with the four standard downhill categories", () => {
     expect(
@@ -59,24 +80,54 @@ describe("category registry", () => {
   });
 
   it("does not lose a discovered name and gender to a later code-only payload", () => {
-    observeCategoriesInApiPayload({ categories: [{ code: "MU19", name: "Men Under 19", gender: "male" }] });
+    observeCategoriesInApiPayload({
+      categories: [{ code: "MU19", name: "Men Under 19", gender: "male" }],
+    });
     observeCategoriesInApiPayload({ category: "MU19" });
-    expect(getKnownCategories().find((category) => category.value === "MU19"))
-      .toMatchObject({ label: "Men Under 19", gender: "male" });
+    expect(
+      getKnownCategories().find((category) => category.value === "MU19"),
+    ).toMatchObject({ label: "Men Under 19", gender: "male" });
   });
 
   it("uses authoritative metadata labels, aliases and order without sparse payload overrides", () => {
     expect(registry.registerCategoryMetadata).toBeTypeOf("function");
     registry.registerCategoryMetadata([
-      { code: "masters_open", name: "Masters Open", shortName: "MO", displayOrder: 1, aliases: ["MO"], gender: "open" },
-      { code: "elite_men", name: "Men Elite Updated", shortName: "MEU", displayOrder: 2, aliases: ["EM"], gender: "male" },
+      {
+        code: "masters_open",
+        name: "Masters Open",
+        shortName: "MO",
+        displayOrder: 1,
+        aliases: ["MO"],
+        gender: "open",
+      },
+      {
+        code: "elite_men",
+        name: "Men Elite Updated",
+        shortName: "MEU",
+        displayOrder: 2,
+        aliases: ["EM"],
+        gender: "male",
+      },
     ]);
     expect(getKnownCategories().slice(0, 2)).toEqual([
-      { value: "masters_open", label: "Masters Open", abbreviation: "MO", gender: "open" },
-      { value: "elite_men", label: "Men Elite Updated", abbreviation: "MEU", gender: "male" },
+      {
+        value: "masters_open",
+        label: "Masters Open",
+        abbreviation: "MO",
+        gender: "open",
+      },
+      {
+        value: "elite_men",
+        label: "Men Elite Updated",
+        abbreviation: "MEU",
+        gender: "male",
+      },
     ]);
     expect(normalizeCategoryValue("MO")).toBe("masters_open");
-    observeCategoriesInApiPayload({ categories: [{ code: "EM", name: "Obsolete label" }], category: "masters_open" });
+    observeCategoriesInApiPayload({
+      categories: [{ code: "EM", name: "Obsolete label" }],
+      category: "masters_open",
+    });
     expect(registry.formatCategoryLabel("EM")).toBe("Men Elite Updated");
     expect(registry.formatCategoryAbbreviation("masters_open")).toBe("MO");
   });

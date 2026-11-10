@@ -111,20 +111,43 @@ function TimeWithGap({
         />
       </span>
       <small className={winner ? styles.winner : gapClass}>
-        <LoadingText value={winner ? winnerLabel : gapLabel} loading={loading} />
+        <LoadingText
+          value={winner ? winnerLabel : gapLabel}
+          loading={loading}
+        />
       </small>
     </div>
   );
 }
 
-function LiveRunClock({ startedAt, gap }: { startedAt: number | undefined; gap: number | null }) {
+function LiveRunClock({
+  startedAt,
+  gap,
+}: {
+  startedAt: number | undefined;
+  gap: number | null;
+}) {
   const [now, setNow] = useState(Date.now);
   useEffect(() => {
     if (startedAt === undefined) return;
     const timer = window.setInterval(() => setNow(Date.now()), 100);
     return () => window.clearInterval(timer);
   }, [startedAt]);
-  return <span className={gap === null || Math.abs(gap) < 0.0005 ? undefined : gap < 0 ? styles.gapAdvantage : styles.gapLoss}>{startedAt === undefined ? "--" : formatRaceTime(Math.max(0, (now - startedAt) / 1000))}</span>;
+  return (
+    <span
+      className={
+        gap === null || Math.abs(gap) < 0.0005
+          ? undefined
+          : gap < 0
+            ? styles.gapAdvantage
+            : styles.gapLoss
+      }
+    >
+      {startedAt === undefined
+        ? "--"
+        : formatRaceTime(Math.max(0, (now - startedAt) / 1000))}
+    </span>
+  );
 }
 
 function RunTime({
@@ -147,10 +170,16 @@ function RunTime({
   winnerLabel: string;
 }) {
   const normalizedStatus = status?.trim().toUpperCase();
-  if (normalizedStatus && ["ON TRACK", "LIVE", "RUNNING"].includes(normalizedStatus)) {
+  if (
+    normalizedStatus &&
+    ["ON TRACK", "LIVE", "RUNNING"].includes(normalizedStatus)
+  ) {
     return <LiveRunClock startedAt={liveStartedAt} gap={gap} />;
   }
-  if (normalizedStatus && ["UPCOMING", "SCHEDULED", "TO START"].includes(normalizedStatus)) {
+  if (
+    normalizedStatus &&
+    ["UPCOMING", "SCHEDULED", "TO START"].includes(normalizedStatus)
+  ) {
     return <LoadingText value={startTime ?? "--"} loading={loading} />;
   }
   if (normalizedStatus && ["DNS", "DNF", "DSQ"].includes(normalizedStatus)) {
@@ -195,25 +224,51 @@ export function SessionResultsTable({
 }) {
   let data = sourceData;
   const sourceItems = data.items;
-  const showSession = !liveGrouping && (data.session.sessionType?.toLowerCase() === "all" || sourceItems.some((row) => row.sessionType));
-  if (liveGrouping && timeView === "splits" && data.session.timeView === "sectors") {
+  const showSession =
+    !liveGrouping &&
+    (data.session.sessionType?.toLowerCase() === "all" ||
+      sourceItems.some((row) => row.sessionType));
+  if (
+    liveGrouping &&
+    timeView === "splits" &&
+    data.session.timeView === "sectors"
+  ) {
     const items = sourceItems.map((row) => {
       let total = 0;
       let previousIndex = 0;
-      return { ...row, times: row.times.filter((timing) => timing.index <= data.session.splitCount).map((timing) => {
-        total = timing.time === null || timing.index !== previousIndex + 1 ? NaN : total + timing.time;
-        previousIndex = timing.index;
-        return { ...timing, time: Number.isFinite(total) ? total : null };
-      }) };
+      return {
+        ...row,
+        times: row.times
+          .filter((timing) => timing.index <= data.session.splitCount)
+          .map((timing) => {
+            total =
+              timing.time === null || timing.index !== previousIndex + 1
+                ? NaN
+                : total + timing.time;
+            previousIndex = timing.index;
+            return { ...timing, time: Number.isFinite(total) ? total : null };
+          }),
+      };
     });
-    for (const row of items) for (const timing of row.times) {
-      const values = items.filter((item) => !item.isPerfectRun).flatMap((item) => {
-        const value = item.times.find((entry) => entry.index === timing.index)?.time;
-        return value == null ? [] : [value];
-      });
-      timing.position = timing.time === null ? null : 1 + values.filter((value) => value < timing.time!).length;
-      timing.gapToBest = timing.time === null || !values.length ? null : timing.time - Math.min(...values);
-    }
+    for (const row of items)
+      for (const timing of row.times) {
+        const values = items
+          .filter((item) => !item.isPerfectRun)
+          .flatMap((item) => {
+            const value = item.times.find(
+              (entry) => entry.index === timing.index,
+            )?.time;
+            return value == null ? [] : [value];
+          });
+        timing.position =
+          timing.time === null
+            ? null
+            : 1 + values.filter((value) => value < timing.time!).length;
+        timing.gapToBest =
+          timing.time === null || !values.length
+            ? null
+            : timing.time - Math.min(...values);
+      }
     data = { ...data, items };
   }
   const [initialReveal, setInitialReveal] = useState(true);
@@ -223,20 +278,29 @@ export function SessionResultsTable({
     return () => window.clearTimeout(timeout);
   }, []);
 
-  const sectorIndexes = liveGrouping && timeView !== "splits" ? [1, 2, 3, 4, 5] : [
-    ...new Set(
-      data.items.flatMap((row) => row.times.map((time) => time.index)),
-    ),
-  ].sort((a, b) => a - b);
+  const sectorIndexes =
+    liveGrouping && timeView !== "splits"
+      ? [1, 2, 3, 4, 5]
+      : [
+          ...new Set(
+            data.items.flatMap((row) => row.times.map((time) => time.index)),
+          ),
+        ].sort((a, b) => a - b);
   const splitSortIndex = sortBy.startsWith("time:")
     ? Number(sortBy.slice(5))
     : null;
   const liveGroup = (row: SessionResults["items"][number]) => {
-    const status = row.status?.trim().toLowerCase().replaceAll(/[_-]/g, " ") ?? "";
-    if (row.isPerfectRun || row.finalTime !== null || /^(dns|dnf|dsq)$/.test(status)) {
+    const status =
+      row.status?.trim().toLowerCase().replaceAll(/[_-]/g, " ") ?? "";
+    if (
+      row.isPerfectRun ||
+      row.finalTime !== null ||
+      /^(dns|dnf|dsq)$/.test(status)
+    ) {
       return "completed";
     }
-    if (/on\s*track|live|running/.test(status) || row.times.length > 0) return "on-track";
+    if (/on\s*track|live|running/.test(status) || row.times.length > 0)
+      return "on-track";
     return "upcoming";
   };
   const orderedRows = [...data.items].sort((left, right) => {
@@ -257,7 +321,8 @@ export function SessionResultsTable({
     if (leftPosition === rightPosition) return 0;
     return (leftPosition - rightPosition) * (sortDirection === "desc" ? 1 : -1);
   });
-  const hasOnTrack = liveGrouping && data.items.some((row) => liveGroup(row) === "on-track");
+  const hasOnTrack =
+    liveGrouping && data.items.some((row) => liveGroup(row) === "on-track");
   const sessionLeader = data.items.find((row) => {
     const status = row.status?.trim().toUpperCase();
     return (
@@ -314,112 +379,155 @@ export function SessionResultsTable({
           };
           const times = new Map(row.times.map((time) => [time.index, time]));
           const group = liveGroup(row);
-          const previousGroup = rowIndex > 0 ? liveGroup(orderedRows[rowIndex - 1]) : null;
-          const showSeparator = liveGrouping && group !== previousGroup && (group === "upcoming" || hasOnTrack);
-          const sourceRow = sourceItems.find((item) => item.resultId === row.resultId && item.fullName === row.fullName);
-          const sourceLeader = sourceItems.find((item) => item === sessionLeader || (!item.isPerfectRun && item.finalGapToBest === 0 && item.finalTime !== null));
-          const latestSplitGap = sourceRow?.times.length && sourceLeader
-            ? sourceRow.times.reduce<number | null>((gap, timing) => {
-                const leaderTiming = sourceLeader.times.find((item) => item.index === timing.index)?.time;
-                if (gap === null || timing.time === null || leaderTiming == null) return null;
-                return gap + timing.time - leaderTiming;
-              }, 0)
-            : null;
+          const previousGroup =
+            rowIndex > 0 ? liveGroup(orderedRows[rowIndex - 1]) : null;
+          const showSeparator =
+            liveGrouping &&
+            group !== previousGroup &&
+            (group === "upcoming" || hasOnTrack);
+          const sourceRow = sourceItems.find(
+            (item) =>
+              item.resultId === row.resultId && item.fullName === row.fullName,
+          );
+          const sourceLeader = sourceItems.find(
+            (item) =>
+              item === sessionLeader ||
+              (!item.isPerfectRun &&
+                item.finalGapToBest === 0 &&
+                item.finalTime !== null),
+          );
+          const latestSplitGap =
+            sourceRow?.times.length && sourceLeader
+              ? sourceRow.times.reduce<number | null>((gap, timing) => {
+                  const leaderTiming = sourceLeader.times.find(
+                    (item) => item.index === timing.index,
+                  )?.time;
+                  if (
+                    gap === null ||
+                    timing.time === null ||
+                    leaderTiming == null
+                  )
+                    return null;
+                  return gap + timing.time - leaderTiming;
+                }, 0)
+              : null;
           const rowKey = row.isPerfectRun
             ? "perfect-run"
-            : (row.resultId ?? `${row.fullName}-${row.position ?? "unclassified"}`);
+            : (row.resultId ??
+              `${row.fullName}-${row.position ?? "unclassified"}`);
           return (
             <Fragment key={rowKey}>
-            {showSeparator ? (
-              <tr className={styles.liveSeparatorRow}>
-                <td colSpan={sectorIndexes.length + 3 + Number(showSession)}>
-                  <span>{group === "on-track" ? "ON TRACK" : group === "completed" ? "RESULTS" : "UPCOMING"}</span>
+              {showSeparator ? (
+                <tr className={styles.liveSeparatorRow}>
+                  <td colSpan={sectorIndexes.length + 3 + Number(showSession)}>
+                    <span>
+                      {group === "on-track"
+                        ? "ON TRACK"
+                        : group === "completed"
+                          ? "RESULTS"
+                          : "UPCOMING"}
+                    </span>
+                  </td>
+                </tr>
+              ) : null}
+              <RiderTableRow
+                riderId={row.isPerfectRun ? null : row.riderId}
+                className={row.isPerfectRun ? styles.perfectRunRow : undefined}
+              >
+                <td>
+                  {row.isPerfectRun ? (
+                    <span
+                      className={styles.perfectRunStar}
+                      aria-label="Perfect Run"
+                    >
+                      ★
+                    </span>
+                  ) : (
+                    <LoadingText
+                      value={row.position?.toString() ?? "--"}
+                      loading={loading}
+                    />
+                  )}
                 </td>
-              </tr>
-            ) : null}
-            <RiderTableRow
-              riderId={row.isPerfectRun ? null : row.riderId}
-              className={row.isPerfectRun ? styles.perfectRunRow : undefined}
-            >
-              <td>
-                {row.isPerfectRun ? (
-                  <span
-                    className={styles.perfectRunStar}
-                    aria-label="Perfect Run"
-                  >
-                    ★
-                  </span>
-                ) : (
-                  <LoadingText
-                    value={row.position?.toString() ?? "--"}
-                    loading={loading}
-                  />
-                )}
-              </td>
-              <td data-column="rider">
-                {row.isPerfectRun ? (
-                  <div className={styles.perfectRunIdentity}>
-                    <strong>
-                      <LoadingText value="Perfect Run" loading={loading} />
-                    </strong>
-                    <small>
-                      <LoadingText
-                        value="Best sector combination"
-                        loading={loading}
+                <td data-column="rider">
+                  {row.isPerfectRun ? (
+                    <div className={styles.perfectRunIdentity}>
+                      <strong>
+                        <LoadingText value="Perfect Run" loading={loading} />
+                      </strong>
+                      <small>
+                        <LoadingText
+                          value="Best sector combination"
+                          loading={loading}
+                        />
+                      </small>
+                    </div>
+                  ) : (
+                    <div>
+                      <RiderCell
+                        rider={rider}
+                        compact
+                        cycling={loading}
+                        linked={row.riderId !== null}
                       />
-                    </small>
-                  </div>
-                ) : (
-                  <div>
-                  <RiderCell
-                    rider={rider}
-                    compact
-                    cycling={loading}
-                    linked={row.riderId !== null}
-                  />
-                  </div>
-                )}
-              </td>
-              {showSession && <td><LoadingText value={row.sessionType ? formatSessionLabel(row.sessionType, "shortName") : "--"} loading={loading} /></td>}
-              {sectorIndexes.map((index) => {
-                const timing = times.get(index);
-                const leaderTime = leaderTimes.get(index);
-                const calculatedGap =
-                  timing?.time !== null &&
-                  timing?.time !== undefined &&
-                  leaderTime !== null &&
-                  leaderTime !== undefined
-                    ? timing.time - leaderTime
-                    : (timing?.gapToBest ?? null);
-                const comparisonGap =
-                  calculatedGap !== null && Math.abs(calculatedGap) < 0.0005
-                    ? 0
-                    : calculatedGap;
-                return (
-                  <td key={index}>
-                    <SectorValue
-                      time={timing?.time ?? null}
-                      gap={comparisonGap}
-                      showTime={isSessionWinner}
-                      bestTimeFractionDigits={3}
+                    </div>
+                  )}
+                </td>
+                {showSession && (
+                  <td>
+                    <LoadingText
+                      value={
+                        row.sessionType
+                          ? formatSessionLabel(row.sessionType, "shortName")
+                          : "--"
+                      }
                       loading={loading}
                     />
                   </td>
-                );
-              })}
-              <td>
-                <RunTime
-                  time={row.finalTime}
-                  gap={liveGrouping && group === "on-track" ? latestSplitGap : row.finalGapToBest}
-                  status={row.status}
-                  startTime={row.startTime}
-                  liveStartedAt={row.liveStartedAt}
-                  loading={loading}
-                  winner={isSessionWinner}
-                  winnerLabel={liveGrouping ? "Leader" : "Winner"}
-                />
-              </td>
-            </RiderTableRow>
+                )}
+                {sectorIndexes.map((index) => {
+                  const timing = times.get(index);
+                  const leaderTime = leaderTimes.get(index);
+                  const calculatedGap =
+                    timing?.time !== null &&
+                    timing?.time !== undefined &&
+                    leaderTime !== null &&
+                    leaderTime !== undefined
+                      ? timing.time - leaderTime
+                      : (timing?.gapToBest ?? null);
+                  const comparisonGap =
+                    calculatedGap !== null && Math.abs(calculatedGap) < 0.0005
+                      ? 0
+                      : calculatedGap;
+                  return (
+                    <td key={index}>
+                      <SectorValue
+                        time={timing?.time ?? null}
+                        gap={comparisonGap}
+                        showTime={isSessionWinner}
+                        bestTimeFractionDigits={3}
+                        loading={loading}
+                      />
+                    </td>
+                  );
+                })}
+                <td>
+                  <RunTime
+                    time={row.finalTime}
+                    gap={
+                      liveGrouping && group === "on-track"
+                        ? latestSplitGap
+                        : row.finalGapToBest
+                    }
+                    status={row.status}
+                    startTime={row.startTime}
+                    liveStartedAt={row.liveStartedAt}
+                    loading={loading}
+                    winner={isSessionWinner}
+                    winnerLabel={liveGrouping ? "Leader" : "Winner"}
+                  />
+                </td>
+              </RiderTableRow>
             </Fragment>
           );
         })}

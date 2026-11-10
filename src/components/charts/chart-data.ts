@@ -9,9 +9,9 @@ export function positionChartPointKey(point: IdentifiableChartPoint) {
 }
 
 export function metricAxisConfiguration(values: number[]) {
-  const finiteValues = values.filter(Number.isFinite).map((value) =>
-    Math.min(100, Math.max(0, value)),
-  );
+  const finiteValues = values
+    .filter(Number.isFinite)
+    .map((value) => Math.min(100, Math.max(0, value)));
   if (finiteValues.length === 0) {
     return {
       domain: [0, 100] as [number, number],
@@ -29,8 +29,10 @@ export function metricAxisConfiguration(values: number[]) {
     maximum = Math.min(100, maximum + 10);
   }
 
-  const ticks = Array.from({ length: 5 }, (_, index) =>
-    Math.round((minimum + ((maximum - minimum) * index) / 4) * 10) / 10,
+  const ticks = Array.from(
+    { length: 5 },
+    (_, index) =>
+      Math.round((minimum + ((maximum - minimum) * index) / 4) * 10) / 10,
   );
   return { domain: [minimum, maximum] as [number, number], ticks };
 }

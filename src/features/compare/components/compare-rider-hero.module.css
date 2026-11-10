@@ -22,8 +22,12 @@
   }
 }
 
-.riderA { --compare-accent: var(--color-compare-rider-a-accent); }
-.riderB { --compare-accent: var(--color-compare-rider-b-accent); }
+.riderA {
+  --compare-accent: var(--color-compare-rider-a-accent);
+}
+.riderB {
+  --compare-accent: var(--color-compare-rider-b-accent);
+}
 
 .visual {
   position: relative;
@@ -58,11 +62,17 @@
   border-radius: var(--radius-control);
   align-items: center;
   justify-content: center;
-  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+  transition:
+    background-color var(--component-transition-control),
+    border-color var(--component-transition-control);
 }
 
-.riderA .changeButton { left: 0; }
-.riderB .changeButton { right: 0; }
+.riderA .changeButton {
+  left: 0;
+}
+.riderB .changeButton {
+  right: 0;
+}
 
 .changeButton:hover {
   background: var(--color-interaction-subtle-hover-background);
@@ -79,7 +89,9 @@
   transition: opacity var(--component-transition-control);
 }
 
-.changeButton:hover img { opacity: 1; }
+.changeButton:hover img {
+  opacity: 1;
+}
 
 .selectArrow {
   width: 12px;
@@ -195,7 +207,9 @@
   background: transparent;
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-lg);
-  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+  transition:
+    background-color var(--component-transition-control),
+    border-color var(--component-transition-control);
 }
 
 .selectButton:hover {
@@ -203,7 +217,14 @@
 }
 
 @media (max-width: 760px) {
-  .card { min-height: 480px; }
-  .visual { height: 380px; }
-  .about p { flex-wrap: wrap; justify-content: center; }
+  .card {
+    min-height: 480px;
+  }
+  .visual {
+    height: 380px;
+  }
+  .about p {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

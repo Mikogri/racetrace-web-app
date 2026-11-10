@@ -1,20 +1,23 @@
 import type { CompareData, CompareRider } from "./api/get-compare";
-import type { PositionChartPoint, PositionChartSeries } from "../../components/charts/position-chart";
+import type {
+  PositionChartPoint,
+  PositionChartSeries,
+} from "../../components/charts/position-chart";
 import { formatSessionLabel } from "../../utils/domain-metadata";
 import { normalizeDisplayName } from "../../utils/display-name";
 import { riderPathForLocation } from "../../components/navigation/rider-navigation-state";
 import { formatOneDecimal } from "../../utils/formatters";
+import { abbreviateRiderName } from "../../utils/rider-name";
 
 export const riderColors = [
   "var(--color-compare-rider-a-accent)",
   "var(--color-compare-rider-b-accent)",
 ];
 
-export const riderName = (rider: CompareRider) => normalizeDisplayName(rider.fullName);
+export const riderName = (rider: CompareRider) =>
+  normalizeDisplayName(rider.fullName);
 export const shortRiderName = (rider: CompareRider) => {
-  const parts = riderName(rider).trim().split(/\s+/);
-  if (parts.length < 2) return parts[0] ?? "--";
-  return `${parts[0][0]}. ${parts.slice(1).join(" ")}`;
+  return abbreviateRiderName(riderName(rider).trim());
 };
 
 export function comparisonResultsSeries(
@@ -33,10 +36,14 @@ export function comparisonResultsSeries(
     href: riderPathForLocation(pathname, rider.riderId),
     averagePosition: rider.resultsAveragePosition,
     points: sessions.map((session) => {
-      const result = session.results.find((item) => item.riderId === rider.riderId);
+      const result = session.results.find(
+        (item) => item.riderId === rider.riderId,
+      );
       const sessionLabel = session.sessionType?.toLowerCase().includes("final")
         ? "FIN"
-        : session.sessionType ? formatSessionLabel(session.sessionType).toUpperCase() : "SESSION";
+        : session.sessionType
+          ? formatSessionLabel(session.sessionType).toUpperCase()
+          : "SESSION";
       return {
         label: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"}`,
         tooltipLabel: `${session.season ?? "----"} · ${session.roundNumber ? `R${session.roundNumber}` : "R--"} · ${session.venueName ?? session.trackName ?? "Unknown venue"} · ${sessionLabel}`,
@@ -48,25 +55,32 @@ export function comparisonResultsSeries(
   }));
 }
 
-export function pointsSeries(data: CompareData, pathname: string): PositionChartSeries[] {
+export function pointsSeries(
+  data: CompareData,
+  pathname: string,
+): PositionChartSeries[] {
   return data.riders.map((rider, riderIndex) => {
-    const roundById = new Map(rider.roundMetrics.map((round) => [round.roundId, round]));
+    const roundById = new Map(
+      rider.roundMetrics.map((round) => [round.roundId, round]),
+    );
     const ordered = [...rider.pointsProgress].sort(
       (left, right) =>
         (left.date ?? "").localeCompare(right.date ?? "") ||
         Number(left.resultId) - Number(right.resultId),
     );
-    const lastByRound = new Map<string, typeof ordered[number]>();
+    const lastByRound = new Map<string, (typeof ordered)[number]>();
     ordered.forEach((point) => lastByRound.set(point.roundId, point));
-    const points: PositionChartPoint[] = [...lastByRound.values()].map((point) => {
-      const round = roundById.get(point.roundId);
-      return {
-        label: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-        tooltipLabel: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`} · ${round?.venueName ?? round?.trackName ?? "Unknown venue"}`,
-        position: point.cumulativePoints,
-        tooltip: `${shortRiderName(rider)} · ${Math.round(point.cumulativePoints)} pts`,
-      };
-    });
+    const points: PositionChartPoint[] = [...lastByRound.values()].map(
+      (point) => {
+        const round = roundById.get(point.roundId);
+        return {
+          label: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+          tooltipLabel: `${round?.season ?? "----"} · ${round?.roundNumber == null ? "R--" : `R${round.roundNumber}`} · ${round?.venueName ?? round?.trackName ?? "Unknown venue"}`,
+          position: point.cumulativePoints,
+          tooltip: `${shortRiderName(rider)} · ${Math.round(point.cumulativePoints)} pts`,
+        };
+      },
+    );
     return {
       id: rider.riderId,
       name: riderName(rider),
@@ -77,15 +91,20 @@ export function pointsSeries(data: CompareData, pathname: string): PositionChart
   });
 }
 
-export function ratingSeries(data: CompareData, pathname: string): PositionChartSeries[] {
+export function ratingSeries(
+  data: CompareData,
+  pathname: string,
+): PositionChartSeries[] {
   return data.riders.map((rider, riderIndex) => ({
     id: rider.riderId,
     name: riderName(rider),
     color: riderColors[riderIndex],
     href: riderPathForLocation(pathname, rider.riderId),
     points: [...rider.roundMetrics]
-      .sort((left, right) =>
-        (left.date ?? "").localeCompare(right.date ?? "") || Number(left.roundId) - Number(right.roundId),
+      .sort(
+        (left, right) =>
+          (left.date ?? "").localeCompare(right.date ?? "") ||
+          Number(left.roundId) - Number(right.roundId),
       )
       .map((round) => ({
         label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,

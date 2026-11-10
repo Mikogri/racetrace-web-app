@@ -2,7 +2,9 @@
   display: grid;
   gap: var(--spacing-empty-state-gap);
   place-items: center;
-  min-height: calc(var(--component-modal-results-height) + var(--spacing-details-padding));
+  min-height: calc(
+    var(--component-modal-results-height) + var(--spacing-details-padding)
+  );
   text-align: center;
 }
 
@@ -126,7 +128,9 @@
   background: transparent;
   border: var(--component-border-width) solid var(--color-border-default);
   border-radius: var(--radius-lg);
-  transition: background-color var(--component-transition-control), border-color var(--component-transition-control);
+  transition:
+    background-color var(--component-transition-control),
+    border-color var(--component-transition-control);
 }
 
 .tableRetry:hover,
@@ -141,8 +145,6 @@
   background: transparent;
   border-color: var(--color-border-default);
 }
-
-
 
 .inlineError {
   color: var(--color-status-error);
@@ -171,14 +173,12 @@
 
 @keyframes warning-glow {
   from {
-    filter:
-      drop-shadow(0 0 3px rgb(255 91 69 / 65%))
+    filter: drop-shadow(0 0 3px rgb(255 91 69 / 65%))
       drop-shadow(0 0 6px rgb(255 91 69 / 35%));
   }
 
   to {
-    filter:
-      drop-shadow(0 0 6px rgb(255 91 69))
+    filter: drop-shadow(0 0 6px rgb(255 91 69))
       drop-shadow(0 0 14px rgb(255 91 69 / 90%));
   }
 }

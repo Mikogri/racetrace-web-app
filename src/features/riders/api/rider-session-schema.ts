@@ -120,8 +120,7 @@ const resultRawSchema = z
     const position = value.position ?? null;
     const category = session.categories ?? session.roundCategories?.categories;
     const condition = session.conditions ?? round.conditions;
-    const competitionClass =
-      round.competitionClass ?? round.competitionLevels;
+    const competitionClass = round.competitionClass ?? round.competitionLevels;
 
     return {
       resultId,
@@ -143,7 +142,10 @@ const resultRawSchema = z
       category: normalizeCategoryValue(category?.code),
       kind,
       sessionType: session.sessionType ?? session.name ?? "Other",
-      abbreviation: formatSessionLabel(session.sessionType ?? session.name ?? "Other", "abbreviation"),
+      abbreviation: formatSessionLabel(
+        session.sessionType ?? session.name ?? "Other",
+        "abbreviation",
+      ),
       sessionOrder: sessionOrder(kind),
       isFinal: kind === "final",
       position,

@@ -79,43 +79,78 @@ export function RequestDetails({ data }: { data: unknown }) {
   const totalResults = getTotalItems(data, counts.results);
   const timings = metadata.serverTimings;
   const phases = [
-    ['filters', 'Filters'],
-    ['sessions', 'Sessions'],
-    ['packages', 'Supabase packages + decoding'],
-    ['metrics', 'Calculations'],
-    ['rows', 'Ranking rows'],
-    ['comparison', 'Position comparison'],
+    ["filters", "Filters"],
+    ["sessions", "Sessions"],
+    ["packages", "Supabase packages + decoding"],
+    ["metrics", "Calculations"],
+    ["rows", "Ranking rows"],
+    ["comparison", "Position comparison"],
   ] as const;
-  const measuredApiMs = phases.reduce((total, [key]) => total + (timings?.[key] ?? 0), 0);
-  const otherApiMs = timings?.api === undefined ? null : Math.max(0, timings.api - measuredApiMs);
-  const transferMs = timings?.api === undefined ? null : Math.max(0, metadata.durationMs - timings.api);
+  const measuredApiMs = phases.reduce(
+    (total, [key]) => total + (timings?.[key] ?? 0),
+    0,
+  );
+  const otherApiMs =
+    timings?.api === undefined
+      ? null
+      : Math.max(0, timings.api - measuredApiMs);
+  const transferMs =
+    timings?.api === undefined
+      ? null
+      : Math.max(0, metadata.durationMs - timings.api);
 
   return (
-    <DetailsDisclosure title={`Request details - ${formatDuration(metadata.durationMs)}`} defaultExpanded>
-          <div className={styles.data}>
-            <span>
-              {formatBytes(metadata.transferredBytes ?? metadata.responseBytes)} Response
-            </span>
-            <span>
-              {formatInteger(counts.results)} / {formatInteger(totalResults)}{" "}
-              Results
-            </span>
-            <span>{formatInteger(counts.objects)} Objects</span>
-          </div>
-          {timings && Object.keys(timings).length > 0 ? (
-            <div className={styles.data}>
-              {timings.cache !== undefined ? <span>Output cache hit</span> : null}
-              {timings.snapshot_cache !== undefined ? <span>Snapshot cache hit</span> : null}
-              {phases.map(([key, label]) => timings[key] === undefined ? null : (
-                <span key={key}>{label}: {formatDuration(timings[key])}</span>
-              ))}
-              {timings.supabase_headers === undefined ? null : <span>Supabase to headers (within stages): {formatDuration(timings.supabase_headers)}</span>}
-              {timings.supabase_io === undefined ? null : <span>Supabase response + parse (within stages): {formatDuration(timings.supabase_io)}</span>}
-              {otherApiMs === null ? null : <span>Other API work: {formatDuration(otherApiMs)}</span>}
-              {transferMs === null ? null : <span>Transfer + browser: {formatDuration(transferMs)}</span>}
-              {timings.api === undefined ? null : <span>API total: {formatDuration(timings.api)}</span>}
-            </div>
+    <DetailsDisclosure
+      title={`Request details - ${formatDuration(metadata.durationMs)}`}
+      defaultExpanded
+    >
+      <div className={styles.data}>
+        <span>
+          {formatBytes(metadata.transferredBytes ?? metadata.responseBytes)}{" "}
+          Response
+        </span>
+        <span>
+          {formatInteger(counts.results)} / {formatInteger(totalResults)}{" "}
+          Results
+        </span>
+        <span>{formatInteger(counts.objects)} Objects</span>
+      </div>
+      {timings && Object.keys(timings).length > 0 ? (
+        <div className={styles.data}>
+          {timings.cache !== undefined ? <span>Output cache hit</span> : null}
+          {timings.snapshot_cache !== undefined ? (
+            <span>Snapshot cache hit</span>
           ) : null}
+          {phases.map(([key, label]) =>
+            timings[key] === undefined ? null : (
+              <span key={key}>
+                {label}: {formatDuration(timings[key])}
+              </span>
+            ),
+          )}
+          {timings.supabase_headers === undefined ? null : (
+            <span>
+              Supabase to headers (within stages):{" "}
+              {formatDuration(timings.supabase_headers)}
+            </span>
+          )}
+          {timings.supabase_io === undefined ? null : (
+            <span>
+              Supabase response + parse (within stages):{" "}
+              {formatDuration(timings.supabase_io)}
+            </span>
+          )}
+          {otherApiMs === null ? null : (
+            <span>Other API work: {formatDuration(otherApiMs)}</span>
+          )}
+          {transferMs === null ? null : (
+            <span>Transfer + browser: {formatDuration(transferMs)}</span>
+          )}
+          {timings.api === undefined ? null : (
+            <span>API total: {formatDuration(timings.api)}</span>
+          )}
+        </div>
+      ) : null}
     </DetailsDisclosure>
   );
 }

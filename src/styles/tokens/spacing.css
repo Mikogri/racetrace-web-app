@@ -22,7 +22,11 @@
   --spacing-page-padding-x: var(--space-40);
   --spacing-page-padding-y: var(--space-46);
   --spacing-page-padding-y-lg: var(--space-70);
-  --spacing-page-padding-x-responsive: clamp(var(--space-15), 3vw, var(--spacing-page-padding-x));
+  --spacing-page-padding-x-responsive: clamp(
+    var(--space-15),
+    3vw,
+    var(--spacing-page-padding-x)
+  );
   --spacing-page-section-gap: var(--space-32);
   --spacing-page-section-gap-lg: var(--space-48);
   --spacing-grid-gap: var(--space-24);

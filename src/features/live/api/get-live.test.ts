@@ -32,12 +32,30 @@ const session = {
 
 describe("ChronoRace live result normalization", () => {
   it("preserves missing checkpoint indexes and the fifth finishing sector", () => {
-    const table = normalizeChronoRacePayload({
-      Results: [{ RaceNr: 1, Position: 1, RaceTime: 100000,
-        Times: [20000, null, 60000, 80000].map((RaceTime) => ({ RaceTime })) }],
-    }, session);
-    expect(table.items.find((row) => !row.isPerfectRun)?.times.map(({ index, time }) => ({ index, time }))).toEqual([
-      { index: 1, time: 20 }, { index: 3, time: 40 }, { index: 4, time: 20 }, { index: 5, time: 20 },
+    const table = normalizeChronoRacePayload(
+      {
+        Results: [
+          {
+            RaceNr: 1,
+            Position: 1,
+            RaceTime: 100000,
+            Times: [20000, null, 60000, 80000].map((RaceTime) => ({
+              RaceTime,
+            })),
+          },
+        ],
+      },
+      session,
+    );
+    expect(
+      table.items
+        .find((row) => !row.isPerfectRun)
+        ?.times.map(({ index, time }) => ({ index, time })),
+    ).toEqual([
+      { index: 1, time: 20 },
+      { index: 3, time: 40 },
+      { index: 4, time: 20 },
+      { index: 5, time: 20 },
     ]);
     expect(table.session.splitCount).toBe(4);
   });
@@ -45,86 +63,179 @@ describe("ChronoRace live result normalization", () => {
   it("retains elapsed on-track clock origin without inventing a finish time", () => {
     const clock = vi.spyOn(Date, "now").mockReturnValue(1_000_000);
     try {
-      const table = normalizeChronoRacePayload({
-        OnTrack: [{ RaceNr: 2, RaceTime: 12000, SortOrder: 1, Times: [] }],
-      }, session);
-      expect(table.items[0]).toMatchObject({ status: "On Track", liveStartedAt: 988000, finalTime: null, position: null });
+      const table = normalizeChronoRacePayload(
+        {
+          OnTrack: [{ RaceNr: 2, RaceTime: 12000, SortOrder: 1, Times: [] }],
+        },
+        session,
+      );
+      expect(table.items[0]).toMatchObject({
+        status: "On Track",
+        liveStartedAt: 988000,
+        finalTime: null,
+        position: null,
+      });
     } finally {
       clock.mockRestore();
     }
   });
 
   it("uses the same checkpoint, shares tied ranks and replaces stale on-track results", () => {
-    const table = normalizeChronoRacePayload({
-      NextToStart: [{ RaceNr: 5 }],
-      Results: [
-        { RaceNr: 1, Position: 1, RaceTime: 100000, Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }] },
-        { RaceNr: 2, Times: [{ RaceTime: 20000 }] },
-      ],
-      OnTrack: [
-        { RaceNr: 2, Times: [{ RaceTime: 31000 }, { RaceTime: 60000 }] },
-        { RaceNr: 3, Times: [{ RaceTime: 30000 }] },
-      ],
-    }, session);
+    const table = normalizeChronoRacePayload(
+      {
+        NextToStart: [{ RaceNr: 5 }],
+        Results: [
+          {
+            RaceNr: 1,
+            Position: 1,
+            RaceTime: 100000,
+            Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }],
+          },
+          { RaceNr: 2, Times: [{ RaceTime: 20000 }] },
+        ],
+        OnTrack: [
+          { RaceNr: 2, Times: [{ RaceTime: 31000 }, { RaceTime: 60000 }] },
+          { RaceNr: 3, Times: [{ RaceTime: 30000 }] },
+        ],
+      },
+      session,
+    );
     const riders = table.items.filter((row) => !row.isPerfectRun);
     expect(riders).toHaveLength(3);
-    expect(riders.find((row) => row.resultId?.endsWith("-2"))?.position).toBe(1);
-    expect(riders.find((row) => row.resultId?.endsWith("-3"))?.position).toBe(1);
-    expect(riders.find((row) => row.resultId?.endsWith("-1"))?.position).toBe(1);
+    expect(riders.find((row) => row.resultId?.endsWith("-2"))?.position).toBe(
+      1,
+    );
+    expect(riders.find((row) => row.resultId?.endsWith("-3"))?.position).toBe(
+      1,
+    );
+    expect(riders.find((row) => row.resultId?.endsWith("-1"))?.position).toBe(
+      1,
+    );
   });
   it("ranks on-track riders against everyone at their latest cumulative split", () => {
-    const table = normalizeChronoRacePayload({
-      NextToStart: [{ RaceNr: 5 }],
-      Results: [{ RaceNr: 1, Position: 1, Status: "Finished", RaceTime: 100000,
-        Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }] }],
-      OnTrack: [
-        { RaceNr: 2, Status: "InRace", Times: [{ RaceTime: 29000 }, { RaceTime: 65000 }] },
-        { RaceNr: 3, Status: "InRace", Times: [{ RaceTime: 32000 }, { RaceTime: 64000 }] },
-        { RaceNr: 4, Status: "InRace", Times: [] },
-      ],
-    }, session);
-    expect(table.items.find((row) => row.resultId?.endsWith("-2"))?.position).toBe(3);
-    expect(table.items.find((row) => row.resultId?.endsWith("-3"))?.position).toBe(2);
-    expect(table.items.find((row) => row.resultId?.endsWith("-4"))?.position).toBeNull();
+    const table = normalizeChronoRacePayload(
+      {
+        NextToStart: [{ RaceNr: 5 }],
+        Results: [
+          {
+            RaceNr: 1,
+            Position: 1,
+            Status: "Finished",
+            RaceTime: 100000,
+            Times: [{ RaceTime: 30000 }, { RaceTime: 60000 }],
+          },
+        ],
+        OnTrack: [
+          {
+            RaceNr: 2,
+            Status: "InRace",
+            Times: [{ RaceTime: 29000 }, { RaceTime: 65000 }],
+          },
+          {
+            RaceNr: 3,
+            Status: "InRace",
+            Times: [{ RaceTime: 32000 }, { RaceTime: 64000 }],
+          },
+          { RaceNr: 4, Status: "InRace", Times: [] },
+        ],
+      },
+      session,
+    );
+    expect(
+      table.items.find((row) => row.resultId?.endsWith("-2"))?.position,
+    ).toBe(3);
+    expect(
+      table.items.find((row) => row.resultId?.endsWith("-3"))?.position,
+    ).toBe(2);
+    expect(
+      table.items.find((row) => row.resultId?.endsWith("-4"))?.position,
+    ).toBeNull();
   });
   it("keeps every on-track rider even before their first split or split position", () => {
     const presentation = liveTimingPresentation({
       NextToStart: [{ RaceNr: 4 }],
-      Results: [{ RaceNr: 1, Position: 1, RaceTime: 100000, Times: [{ RaceTime: 40000, Position: 1 }] }],
+      Results: [
+        {
+          RaceNr: 1,
+          Position: 1,
+          RaceTime: 100000,
+          Times: [{ RaceTime: 40000, Position: 1 }],
+        },
+      ],
       OnTrack: [
         { RaceNr: 2, Status: "InRace", Times: [] },
-        { RaceNr: 3, Status: "InRace", Times: [{ RaceTime: 42000, Position: 0 }] },
+        {
+          RaceNr: 3,
+          Status: "InRace",
+          Times: [{ RaceTime: 42000, Position: 0 }],
+        },
       ],
     });
-    expect(presentation.riders.map((rider) => rider.key)).toEqual(["1", "2", "3"]);
-    expect(presentation.riders[1]).toMatchObject({ position: null, gap: null, points: [] });
+    expect(presentation.riders.map((rider) => rider.key)).toEqual([
+      "1",
+      "2",
+      "3",
+    ]);
+    expect(presentation.riders[1]).toMatchObject({
+      position: null,
+      gap: null,
+      points: [],
+    });
     expect(presentation.riders[2].points).toEqual([{ split: 1, gap: 2 }]);
   });
   it("omits a zero-length sector caused by a duplicated finish measurement", () => {
-    const table = normalizeChronoRacePayload({
-      Results: [{ RaceNr: 1, Status: "Finished", RaceTime: 158317,
-        Times: [47104, 93241, 158317, 158317].map((RaceTime) => ({ RaceTime })) }],
-    }, session);
-    expect(table.items.find((item) => !item.isPerfectRun)?.times.map((time) => time.index)).toEqual([1, 2, 3]);
-  });
-  it.each(["DNF", "DNS", "DSQ"])("does not invent a finishing sector for %s", (status) => {
-    const table = normalizeChronoRacePayload({
-      Riders: {
-        "1": { GivenName: "Joel", FamilyName: "Sutherland" },
-        "2": { GivenName: "Ian", FamilyName: "Gil Gonzalez" },
+    const table = normalizeChronoRacePayload(
+      {
+        Results: [
+          {
+            RaceNr: 1,
+            Status: "Finished",
+            RaceTime: 158317,
+            Times: [47104, 93241, 158317, 158317].map((RaceTime) => ({
+              RaceTime,
+            })),
+          },
+        ],
       },
-      Results: [
-        { RaceNr: 1, Status: status, RaceTime: 78390, Times: [{ RaceTime: 45185 }] },
-        { RaceNr: 2, Status: status, RaceTime: 11139, Times: [] },
-      ],
-    }, session);
-    const riders = table.items.filter((item) => !item.isPerfectRun);
-    expect(riders[0].times).toHaveLength(1);
-    expect(riders[0].times[0].time).toBe(45.185);
-    expect(riders[1].times).toHaveLength(0);
-    expect(riders.every((item) => item.finalTime === null)).toBe(true);
-    expect(table.items.find((item) => item.isPerfectRun)?.times).toHaveLength(1);
+      session,
+    );
+    expect(
+      table.items
+        .find((item) => !item.isPerfectRun)
+        ?.times.map((time) => time.index),
+    ).toEqual([1, 2, 3]);
   });
+  it.each(["DNF", "DNS", "DSQ"])(
+    "does not invent a finishing sector for %s",
+    (status) => {
+      const table = normalizeChronoRacePayload(
+        {
+          Riders: {
+            "1": { GivenName: "Joel", FamilyName: "Sutherland" },
+            "2": { GivenName: "Ian", FamilyName: "Gil Gonzalez" },
+          },
+          Results: [
+            {
+              RaceNr: 1,
+              Status: status,
+              RaceTime: 78390,
+              Times: [{ RaceTime: 45185 }],
+            },
+            { RaceNr: 2, Status: status, RaceTime: 11139, Times: [] },
+          ],
+        },
+        session,
+      );
+      const riders = table.items.filter((item) => !item.isPerfectRun);
+      expect(riders[0].times).toHaveLength(1);
+      expect(riders[0].times[0].time).toBe(45.185);
+      expect(riders[1].times).toHaveLength(0);
+      expect(riders.every((item) => item.finalTime === null)).toBe(true);
+      expect(table.items.find((item) => item.isPerfectRun)?.times).toHaveLength(
+        1,
+      );
+    },
+  );
   it("accepts every active round status emitted by the API", () => {
     expect(isLiveRoundStatus("live")).toBe(true);
     expect(isLiveRoundStatus("ACTIVE")).toBe(true);
@@ -203,9 +314,9 @@ describe("ChronoRace live result normalization", () => {
         NextToStart: {},
       }),
     ).toBe("live");
-    expect(
-      resolveChronoRaceSessionStatus({ Riders: {}, Results: [{}] }),
-    ).toBe("completed");
+    expect(resolveChronoRaceSessionStatus({ Riders: {}, Results: [{}] })).toBe(
+      "completed",
+    );
     expect(
       resolveChronoRaceSessionStatus({
         Riders: {},
@@ -275,25 +386,29 @@ describe("ChronoRace live result normalization", () => {
         "1": { RaceNr: 1, GivenName: "LEADER", FamilyName: "RIDER" },
         "2": { RaceNr: 2, GivenName: "LIVE", FamilyName: "RIDER" },
       },
-      Results: [{
-        RaceNr: 1,
-        Position: 1,
-        RaceTime: 210_000,
-        Times: [
-          { RaceTime: 50_000, Position: 1 },
-          { RaceTime: 100_000, Position: 1 },
-        ],
-      }],
-      OnTrack: [{
-        RaceNr: 2,
-        Position: 2,
-        RaceTime: 211_000,
-        ExpectedStartTime: 45_000_000,
-        Times: [
-          { RaceTime: 49_000, Position: 1 },
-          { RaceTime: 101_000, Position: 2 },
-        ],
-      }],
+      Results: [
+        {
+          RaceNr: 1,
+          Position: 1,
+          RaceTime: 210_000,
+          Times: [
+            { RaceTime: 50_000, Position: 1 },
+            { RaceTime: 100_000, Position: 1 },
+          ],
+        },
+      ],
+      OnTrack: [
+        {
+          RaceNr: 2,
+          Position: 2,
+          RaceTime: 211_000,
+          ExpectedStartTime: 45_000_000,
+          Times: [
+            { RaceTime: 49_000, Position: 1 },
+            { RaceTime: 101_000, Position: 2 },
+          ],
+        },
+      ],
     });
 
     const leader = presentation.riders.find((rider) => rider.key === "1");
@@ -349,15 +464,40 @@ describe("ChronoRace live result normalization", () => {
 
   it("adds riders from the Tissot start list without duplicating existing results", () => {
     const normalized = normalizeTissotLivePayload({
-      results: [{
-        rider: { key: "1", name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" },
-        rank: 1,
-        time: "3:30.000",
-      }],
+      results: [
+        {
+          rider: {
+            key: "1",
+            name: "BRUNI Loic",
+            nation: "FRA",
+            uciRiderId: "1001",
+          },
+          rank: 1,
+          time: "3:30.000",
+        },
+      ],
       startList: {
         results: [
-          { rider: { key: "1", name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" }, rank: 1, value: "11:00:00" },
-          { rider: { key: "2", name: "PIERRON Amaury", nation: "FRA", uciRiderId: "1002" }, rank: 2, value: "11:00:30" },
+          {
+            rider: {
+              key: "1",
+              name: "BRUNI Loic",
+              nation: "FRA",
+              uciRiderId: "1001",
+            },
+            rank: 1,
+            value: "11:00:00",
+          },
+          {
+            rider: {
+              key: "2",
+              name: "PIERRON Amaury",
+              nation: "FRA",
+              uciRiderId: "1002",
+            },
+            rank: 2,
+            value: "11:00:30",
+          },
         ],
       },
     });
@@ -374,15 +514,43 @@ describe("ChronoRace live result normalization", () => {
 
   it("does not duplicate Tissot start-list riders during table normalization", () => {
     const tissotPayload = normalizeTissotLivePayload({
-      results: [{
-        rider: { key: "1", bib: 1, name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" },
-        rank: 1,
-        time: "3:30.000",
-      }],
+      results: [
+        {
+          rider: {
+            key: "1",
+            bib: 1,
+            name: "BRUNI Loic",
+            nation: "FRA",
+            uciRiderId: "1001",
+          },
+          rank: 1,
+          time: "3:30.000",
+        },
+      ],
       startList: {
         results: [
-          { rider: { key: "1", bib: 1, name: "BRUNI Loic", nation: "FRA", uciRiderId: "1001" }, rank: 1, value: "11:00:00" },
-          { rider: { key: "2", bib: 22, name: "PIERRON Amaury", nation: "FRA", uciRiderId: "1002" }, rank: 2, value: "11:00:30" },
+          {
+            rider: {
+              key: "1",
+              bib: 1,
+              name: "BRUNI Loic",
+              nation: "FRA",
+              uciRiderId: "1001",
+            },
+            rank: 1,
+            value: "11:00:00",
+          },
+          {
+            rider: {
+              key: "2",
+              bib: 22,
+              name: "PIERRON Amaury",
+              nation: "FRA",
+              uciRiderId: "1002",
+            },
+            rank: 2,
+            value: "11:00:30",
+          },
         ],
       },
     });
@@ -390,7 +558,11 @@ describe("ChronoRace live result normalization", () => {
     const table = normalizeChronoRacePayload(tissotPayload, session);
 
     expect(table.items.filter((item) => !item.isPerfectRun)).toHaveLength(2);
-    expect(table.items.filter((item) => item.fullName === "Amaury Pierron")).toHaveLength(1);
-    expect(table.items.find((item) => item.fullName === "Amaury Pierron")?.startTime).toBe("11:00:30");
+    expect(
+      table.items.filter((item) => item.fullName === "Amaury Pierron"),
+    ).toHaveLength(1);
+    expect(
+      table.items.find((item) => item.fullName === "Amaury Pierron")?.startTime,
+    ).toBe("11:00:30");
   });
 });

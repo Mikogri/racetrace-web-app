@@ -29,14 +29,14 @@ export function RouteLoadingPage() {
           ? "compare"
           : pathname === routes.fantasy
             ? "fantasy"
-          : pathname === routes.about || pathname === routes.privacyPolicy
-            ? "info"
-            : /^\/results\/[^/]+/.test(pathname) ||
-                pathname.startsWith("/live/results/")
-              ? "roundDetails"
-              : pathname.startsWith("/riders/")
-                ? "details"
-                : "table";
+            : pathname === routes.about || pathname === routes.privacyPolicy
+              ? "info"
+              : /^\/results\/[^/]+/.test(pathname) ||
+                  pathname.startsWith("/live/results/")
+                ? "roundDetails"
+                : pathname.startsWith("/riders/")
+                  ? "details"
+                  : "table";
 
   return (
     <PageContainer
@@ -67,7 +67,12 @@ export function RouteLoadingPage() {
         {layout === "home" ? <HomeSkeleton /> : null}
         {layout === "cards" ? <CardsSkeleton /> : null}
         {layout === "compare" ? <CompareSkeleton /> : null}
-        {layout === "fantasy" ? <><PanelSkeleton compact /><TableSkeleton /></> : null}
+        {layout === "fantasy" ? (
+          <>
+            <PanelSkeleton compact />
+            <TableSkeleton />
+          </>
+        ) : null}
         {layout === "info" ? <InfoSkeleton /> : null}
         {layout === "roundDetails" ? <RoundDetailsSkeleton /> : null}
         {layout === "details" ? <DetailsSkeleton /> : null}

@@ -1,17 +1,34 @@
 import type { LiveSession } from "./live-models";
 import { tissotCatalogSchema } from "./live-models";
-import { asRecord, numberValue, stringValue, identifierValue, displayCase } from "./live-values";
+import {
+  asRecord,
+  numberValue,
+  stringValue,
+  identifierValue,
+  displayCase,
+} from "./live-values";
 import { getExternalJson, TISSOT_API_ROOT } from "./live-transport";
 
 function containsText(value: unknown, fragment: string) {
-  return stringValue(value)?.toLocaleLowerCase().includes(fragment.toLocaleLowerCase()) === true;
+  return (
+    stringValue(value)
+      ?.toLocaleLowerCase()
+      .includes(fragment.toLocaleLowerCase()) === true
+  );
 }
 
 function tissotCategory(value: unknown) {
-  if (containsText(value, "women junior") || containsText(value, "junior women")) return "junior_women";
-  if (containsText(value, "men junior") || containsText(value, "junior men")) return "junior_men";
-  if (containsText(value, "women elite") || containsText(value, "elite women")) return "elite_women";
-  if (containsText(value, "men elite") || containsText(value, "elite men")) return "elite_men";
+  if (
+    containsText(value, "women junior") ||
+    containsText(value, "junior women")
+  )
+    return "junior_women";
+  if (containsText(value, "men junior") || containsText(value, "junior men"))
+    return "junior_men";
+  if (containsText(value, "women elite") || containsText(value, "elite women"))
+    return "elite_women";
+  if (containsText(value, "men elite") || containsText(value, "elite men"))
+    return "elite_men";
   return null;
 }
 
@@ -28,20 +45,26 @@ function tissotSessionName(value: string) {
   return value.trim();
 }
 
-export async function getDirectTissotCatalog(season: number, signal: AbortSignal) {
+export async function getDirectTissotCatalog(
+  season: number,
+  signal: AbortSignal,
+) {
   const competitionsPayload = await getExternalJson(
     `${TISSOT_API_ROOT}/competitions?year=${season}`,
     signal,
   );
-  const competitions = (Array.isArray(competitionsPayload) ? competitionsPayload : [])
+  const competitions = (
+    Array.isArray(competitionsPayload) ? competitionsPayload : []
+  )
     .map(asRecord)
     .filter((item): item is Record<string, unknown> => item !== null)
-    .filter((item) =>
-      stringValue(item.sport)?.toLocaleUpperCase() === "MTB" &&
-      containsText(item.name, "world championship") &&
-      (containsText(item.name, "downhill") ||
-        containsText(item.code, "dhi") ||
-        stringValue(item.code)?.toLocaleLowerCase() === "mtbwch"),
+    .filter(
+      (item) =>
+        stringValue(item.sport)?.toLocaleUpperCase() === "MTB" &&
+        containsText(item.name, "world championship") &&
+        (containsText(item.name, "downhill") ||
+          containsText(item.code, "dhi") ||
+          stringValue(item.code)?.toLocaleLowerCase() === "mtbwch"),
     );
 
   for (const competition of competitions) {
@@ -49,15 +72,25 @@ export async function getDirectTissotCatalog(season: number, signal: AbortSignal
     if (!code || !/^[a-z0-9_-]+$/i.test(code)) continue;
     const competitionKey = `${code}${season}`;
     const [eventsPayload, schedulePayload] = await Promise.all([
-      getExternalJson(`${TISSOT_API_ROOT}/competitions/${competitionKey}/events`, signal, true),
-      getExternalJson(`${TISSOT_API_ROOT}/competitions/${competitionKey}/schedule`, signal, true),
+      getExternalJson(
+        `${TISSOT_API_ROOT}/competitions/${competitionKey}/events`,
+        signal,
+        true,
+      ),
+      getExternalJson(
+        `${TISSOT_API_ROOT}/competitions/${competitionKey}/schedule`,
+        signal,
+        true,
+      ),
     ]);
     const events = (Array.isArray(eventsPayload) ? eventsPayload : [])
       .map(asRecord)
       .filter((item): item is Record<string, unknown> => item !== null)
       .flatMap((event) => {
         const category = tissotCategory(event.name);
-        return category && (containsText(event.name, "downhill") || containsText(competition.name, "downhill"))
+        return category &&
+          (containsText(event.name, "downhill") ||
+            containsText(competition.name, "downhill"))
           ? [{ event, category }]
           : [];
       });
@@ -66,41 +99,56 @@ export async function getDirectTissotCatalog(season: number, signal: AbortSignal
     const scheduleItems = (Array.isArray(schedule?.items) ? schedule.items : [])
       .map(asRecord)
       .filter((item): item is Record<string, unknown> => item !== null);
-    const sessions = (await Promise.all(events.map(async ({ event, category }) => {
-      const eventNumber = numberValue(event.number);
-      if (!eventNumber) return [];
-      const phasesPayload = await getExternalJson(
-        `${TISSOT_API_ROOT}/competitions/${competitionKey}/events/${eventNumber}/phases`,
-        signal,
-        true,
-      );
-      const phases = (Array.isArray(phasesPayload) ? phasesPayload : [])
-        .map(asRecord)
-        .filter((item): item is Record<string, unknown> => item !== null);
-      return phases.flatMap((phase) => {
-        const phaseNumber = numberValue(phase.number);
-        if (!phaseNumber) return [];
-        const scheduled = scheduleItems.find((item) =>
-          numberValue(item.eventId) === eventNumber && numberValue(item.phaseId) === phaseNumber,
-        );
-        const phaseName = stringValue(phase.name) ?? stringValue(scheduled?.name) ?? "Session";
-        return [{
-          id: `tissot-${competitionKey}-${eventNumber}-${phaseNumber}`,
-          provider: "tissot" as const,
-          competitionCode: code,
-          eventNumber,
-          phaseNumber,
-          name: tissotSessionName(phaseName),
-          sessionType: tissotSessionType(phaseName),
-          category,
-          status: scheduled?.isLive === true
-            ? "live"
-            : scheduled?.hasResult === true ? "completed" : "scheduled",
-          sessionDate: stringValue(scheduled?.date) ?? stringValue(phase.start),
-          riderCount: null,
-        }];
-      });
-    }))).flat();
+    const sessions = (
+      await Promise.all(
+        events.map(async ({ event, category }) => {
+          const eventNumber = numberValue(event.number);
+          if (!eventNumber) return [];
+          const phasesPayload = await getExternalJson(
+            `${TISSOT_API_ROOT}/competitions/${competitionKey}/events/${eventNumber}/phases`,
+            signal,
+            true,
+          );
+          const phases = (Array.isArray(phasesPayload) ? phasesPayload : [])
+            .map(asRecord)
+            .filter((item): item is Record<string, unknown> => item !== null);
+          return phases.flatMap((phase) => {
+            const phaseNumber = numberValue(phase.number);
+            if (!phaseNumber) return [];
+            const scheduled = scheduleItems.find(
+              (item) =>
+                numberValue(item.eventId) === eventNumber &&
+                numberValue(item.phaseId) === phaseNumber,
+            );
+            const phaseName =
+              stringValue(phase.name) ??
+              stringValue(scheduled?.name) ??
+              "Session";
+            return [
+              {
+                id: `tissot-${competitionKey}-${eventNumber}-${phaseNumber}`,
+                provider: "tissot" as const,
+                competitionCode: code,
+                eventNumber,
+                phaseNumber,
+                name: tissotSessionName(phaseName),
+                sessionType: tissotSessionType(phaseName),
+                category,
+                status:
+                  scheduled?.isLive === true
+                    ? "live"
+                    : scheduled?.hasResult === true
+                      ? "completed"
+                      : "scheduled",
+                sessionDate:
+                  stringValue(scheduled?.date) ?? stringValue(phase.start),
+                riderCount: null,
+              },
+            ];
+          });
+        }),
+      )
+    ).flat();
     return tissotCatalogSchema.parse({
       provider: "tissot",
       season,
@@ -119,7 +167,10 @@ export async function getDirectTissotCatalog(season: number, signal: AbortSignal
   });
 }
 
-export async function getDirectTissotResults(session: LiveSession, signal: AbortSignal) {
+export async function getDirectTissotResults(
+  session: LiveSession,
+  signal: AbortSignal,
+) {
   const competitionKey = `${session.competitionCode?.toLocaleLowerCase()}${session.season}`;
   const phaseUrl = `${TISSOT_API_ROOT}/competitions/${encodeURIComponent(competitionKey)}/events/${session.eventNumber}/phases/${session.phaseNumber}`;
   const [resultsPayload, startList] = await Promise.all([
@@ -163,7 +214,9 @@ export function normalizeTissotLivePayload(payload: unknown) {
     .map(asRecord)
     .filter((item): item is Record<string, unknown> => item !== null);
   const startListRoot = asRecord(root.startList);
-  const sourceStartList = (Array.isArray(startListRoot?.results) ? startListRoot.results : [])
+  const sourceStartList = (
+    Array.isArray(startListRoot?.results) ? startListRoot.results : []
+  )
     .map(asRecord)
     .filter((item): item is Record<string, unknown> => item !== null);
   const leader = sourceResults.find((result) => numberValue(result.rank) === 1);
@@ -174,7 +227,10 @@ export function normalizeTissotLivePayload(payload: unknown) {
 
   sourceResults.forEach((result, index) => {
     const rider = asRecord(result.rider) ?? {};
-    const key = identifierValue(rider.uciRiderId) ?? identifierValue(rider.key) ?? String(index + 1);
+    const key =
+      identifierValue(rider.uciRiderId) ??
+      identifierValue(rider.key) ??
+      String(index + 1);
     const names = splitTissotName(stringValue(rider.name));
     riders[key] = {
       RaceNr: numberValue(rider.bib),
@@ -185,19 +241,24 @@ export function normalizeTissotLivePayload(payload: unknown) {
     };
     const rawTime = stringValue(result.time) ?? stringValue(result.value);
     const parsedTime = tissotMilliseconds(rawTime);
-    const finishTime = rawTime?.startsWith("+") && leaderTime !== null && parsedTime !== null
-      ? leaderTime + parsedTime
-      : parsedTime;
+    const finishTime =
+      rawTime?.startsWith("+") && leaderTime !== null && parsedTime !== null
+        ? leaderTime + parsedTime
+        : parsedTime;
     const rawSplits = Array.isArray(result.splits) ? result.splits : [];
     const times = rawSplits.flatMap((rawSplit) => {
       const split = asRecord(rawSplit);
       const time = tissotMilliseconds(split?.value);
-      return time === null ? [] : [{ RaceTime: time, Position: numberValue(split?.rank) }];
+      return time === null
+        ? []
+        : [{ RaceTime: time, Position: numberValue(split?.rank) }];
     });
     const statusValue = stringValue(result.value)?.toUpperCase();
     const status = ["DNF", "DNS", "DSQ"].includes(statusValue ?? "")
       ? statusValue
-      : finishTime !== null ? "Finished" : "On Track";
+      : finishTime !== null
+        ? "Finished"
+        : "On Track";
     const normalized = {
       RaceNr: key,
       Position: numberValue(result.rank),
@@ -208,7 +269,11 @@ export function normalizeTissotLivePayload(payload: unknown) {
       Times: times,
     };
     results.push(normalized);
-    if ((result.approaching === true || (numberValue(result.progression) ?? 0) > 0) && finishTime === null) {
+    if (
+      (result.approaching === true ||
+        (numberValue(result.progression) ?? 0) > 0) &&
+      finishTime === null
+    ) {
       onTrack.push({ ...normalized, SortOrder: index + 1 });
     }
   });
@@ -216,7 +281,10 @@ export function normalizeTissotLivePayload(payload: unknown) {
   const resultRiderKeys = new Set(Object.keys(riders));
   sourceStartList.forEach((entry, index) => {
     const rider = asRecord(entry.rider) ?? {};
-    const key = identifierValue(rider.uciRiderId) ?? identifierValue(rider.key) ?? `start-${index + 1}`;
+    const key =
+      identifierValue(rider.uciRiderId) ??
+      identifierValue(rider.key) ??
+      `start-${index + 1}`;
     if (resultRiderKeys.has(key)) return;
     const names = splitTissotName(stringValue(rider.name));
     riders[key] = {

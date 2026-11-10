@@ -1,20 +1,20 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { joinClassNames } from '../../utils/join-class-names'
-import styles from './button.module.css'
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { joinClassNames } from "../../utils/join-class-names";
+import styles from "./button.module.css";
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant
-  fullWidth?: boolean
-  children: ReactNode
-}
+  variant?: ButtonVariant;
+  fullWidth?: boolean;
+  children: ReactNode;
+};
 
 export function Button({
-  variant = 'secondary',
+  variant = "secondary",
   fullWidth = false,
   className,
-  type = 'button',
+  type = "button",
   children,
   ...props
 }: ButtonProps) {
@@ -22,25 +22,30 @@ export function Button({
     <button
       type={type}
       data-button-variant={variant}
-      className={joinClassNames(styles.button, styles[variant], fullWidth && styles.fullWidth, className)}
+      className={joinClassNames(
+        styles.button,
+        styles[variant],
+        fullWidth && styles.fullWidth,
+        className,
+      )}
       {...props}
     >
       {children}
     </button>
-  )
+  );
 }
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  label: string
-  children: ReactNode
-  size?: 'small' | 'medium'
-}
+  label: string;
+  children: ReactNode;
+  size?: "small" | "medium";
+};
 
 export function IconButton({
   label,
-  size = 'medium',
+  size = "medium",
   className,
-  type = 'button',
+  type = "button",
   children,
   ...props
 }: IconButtonProps) {
@@ -53,5 +58,5 @@ export function IconButton({
     >
       {children}
     </button>
-  )
+  );
 }

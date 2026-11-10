@@ -16,11 +16,27 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, var(--color-surface-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-surface-grid-line) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      var(--color-surface-grid-line) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      var(--color-surface-grid-line) 1px,
+      transparent 1px
+    );
   background-size: var(--component-grid-size) var(--component-grid-size);
-  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, black, transparent 80%);
-  mask-image: radial-gradient(ellipse 60% 55% at 50% 35%, black, transparent 80%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 60% 55% at 50% 35%,
+    black,
+    transparent 80%
+  );
+  mask-image: radial-gradient(
+    ellipse 60% 55% at 50% 35%,
+    black,
+    transparent 80%
+  );
   animation: grid-in 1.2s var(--component-ease-out) both;
 }
 

@@ -1,33 +1,31 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
-import { joinClassNames } from '../../utils/join-class-names'
-import styles from './typography.module.css'
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import { joinClassNames } from "../../utils/join-class-names";
+import styles from "./typography.module.css";
 
 type TypographyVariant =
-  | 'pageTitle'
-  | 'sectionTitle'
-  | 'panelTitle'
-  | 'body'
-  | 'data'
-  | 'caption'
+  "pageTitle" | "sectionTitle" | "panelTitle" | "body" | "data" | "caption";
 
 type TypographyProps<T extends ElementType> = {
-  as?: T
-  variant?: TypographyVariant
-  children: ReactNode
-  className?: string
-} & Omit<ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>
+  as?: T;
+  variant?: TypographyVariant;
+  children: ReactNode;
+  className?: string;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
 
-export function Typography<T extends ElementType = 'p'>({
+export function Typography<T extends ElementType = "p">({
   as,
-  variant = 'body',
+  variant = "body",
   children,
   className,
   ...props
 }: TypographyProps<T>) {
-  const Component = as ?? 'p'
+  const Component = as ?? "p";
   return (
-    <Component className={joinClassNames(styles.base, styles[variant], className)} {...props}>
+    <Component
+      className={joinClassNames(styles.base, styles[variant], className)}
+      {...props}
+    >
       {children}
     </Component>
-  )
+  );
 }

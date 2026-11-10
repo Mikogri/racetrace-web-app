@@ -2,18 +2,29 @@
 
 Frontend Race Trace MTB do analizy wyników downhill: ranking, profile zawodników, wyniki i Analytics rund, porównania, Live Timing oraz Fantasy. React 19 i TypeScript działają na Vite; TanStack Query obsługuje zapytania, Zod waliduje odpowiedzi, a Recharts rysuje wykresy. Obliczenia sportowe wykonuje sąsiednie API .NET, nie interfejs.
 
+## Code formatting
+
+Prettier is installed locally and pinned to an exact version in `package.json` and package-lock.json. Its default rules are authoritative; ESLint checks code quality, not competing formatting rules.
+
+```sh
+npm run format
+npm run format:check
+```
+
+The recommended VS Code extension formats on save using the repository configuration. `.prettierignore` excludes generated contracts, dependencies, build outputs, migrations and local analysis artifacts. CI checks formatting without changing files.
+
 ## Praca lokalna
 
-Wymagane są Node zgodny z wersją Vite oraz pnpm. Z katalogu repozytorium:
+Wymagane są Node zgodny z wersją Vite oraz npm. Z katalogu repozytorium:
 
 ```powershell
-pnpm install --frozen-lockfile
-pnpm dev
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm audit
+npm ci
+npm run dev
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm audit
 ```
 
 Uruchom również `racetrace-api` na porcie 5017 albo ustaw serwerowy `API_PROXY_TARGET`. Proxy Vite pobiera lokalny sekret API z .NET User Secrets (`racetrace-api-2026`) lub `API_READ_SECRET` i dodaje go do żądań `/api`. Nie umieszczaj sekretów w zmiennych `VITE_*`: są publiczne. `VITE_API_BASE_URL` ustawia bazowy adres, a `VITE_API_TIMEOUT_MS` limit czasu (domyślnie 12 s). Serwer deweloperski nie jest hostingiem produkcyjnym.
@@ -24,9 +35,9 @@ Connect this repository to **Pages**, production branch `main`, repository root 
 
 Runtime bindings for production:
 
-| Binding | Value |
-| --- | --- |
-| `API_ORIGIN` | Defined in `wrangler.jsonc`: `https://api.racetracemtb.com` |
+| Binding           | Value                                                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `API_ORIGIN`      | Defined in `wrangler.jsonc`: `https://api.racetracemtb.com`                                                |
 | `API_READ_SECRET` | Encrypted Secret in Cloudflare, identical to Railway's read secret; never add its value to Wrangler or Git |
 
 Wrangler is the source of truth for plain runtime `vars`. Change `API_ORIGIN` in the file, not a competing production dashboard variable; existing deployments require a new deployment to receive the change. There are no environment overrides in this repository, so the top-level origin also applies to local Pages runs and previews. Do not bind production read credentials to untrusted previews. Vite development still uses `API_PROXY_TARGET`, independently of Pages runtime bindings. `VITE_API_BASE_URL` must remain empty so browser requests use the same-origin gateway, rather than bypassing it and hitting Railway without authorization. Dashboard Secret bindings remain separate from the plain `vars` map.
@@ -45,9 +56,9 @@ GitHub Actions runs installation, lint, types, tests, the gateway checks (`node 
 
 `public/sitemap.xml` lists the eight main public routes on the current `https://racetrace-web-app.pages.dev` origin; `public/robots.txt` advertises it. Vite copies both files to `dist`, outside the `/api` Function routes. The sitemap excludes filter URLs, navigation aliases and dynamic rider/round/session detail pages; it does not query the API during builds. Update both files when assigning a custom canonical domain or adding a main route. A sitemap helps discovery but does not guarantee indexing of client-rendered content.
 
-API i frontend używają `camelCase`. Po zmianie API uruchom `pnpm contracts:export`, `pnpm contracts:generate`, `pnpm contracts:check` i `pnpm contracts:test`; nie edytuj ręcznie wygenerowanych typów. Komendy wymagają sąsiedniego repozytorium API i .NET.
+API i frontend używają `camelCase`. Po zmianie API uruchom `npm run contracts:export`, `npm run contracts:generate`, `npm run contracts:check` i `npm run contracts:test`; nie edytuj ręcznie wygenerowanych typów. Komendy wymagają sąsiedniego repozytorium API i .NET.
 
-Przed wydaniem sprawdź cały graf zależności, nie tylko `pnpm audit --prod`: narzędzia testowe i deweloperski serwer również przetwarzają nieufne wejścia. Aktualizacje bezpieczeństwa powinny przejść testy, lint, build i kontrolę kontraktów. Podstawowy workflow używa pnpm; zachowany `package-lock.json` umożliwia też instalację npm i przy zmianie zależności powinien pozostać zgodny z manifestem. Znane ostrzeżenie peer `openapi-typescript@7.13.0` o TypeScript `^5.x` przy projekcie na TypeScript 6 jest ograniczeniem deklaracji narzędzia; zgodność eksportu i typów sprawdza `contracts:check`, a nie sam brak ostrzeżenia instalatora.
+Przed wydaniem sprawdź cały graf zależności, nie tylko `npm audit --omit=dev`: narzędzia testowe i deweloperski serwer również przetwarzają nieufne wejścia. Aktualizacje bezpieczeństwa powinny przejść testy, lint, build i kontrolę kontraktów. Jedynym menedżerem pakietów jest npm, a `package-lock.json` jest wspólnym źródłem wersji dla pracy lokalnej, CI i Cloudflare. Znane ostrzeżenie peer `openapi-typescript@7.13.0` o TypeScript `^5.x` przy projekcie na TypeScript 6 jest ograniczeniem deklaracji narzędzia; zgodność eksportu i typów sprawdza `contracts:check`, a nie sam brak ostrzeżenia instalatora.
 
 Wspólna dokumentacja jest utrzymywana w repozytorium backendu:
 

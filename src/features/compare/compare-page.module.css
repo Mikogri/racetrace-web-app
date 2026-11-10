@@ -65,8 +65,12 @@
 }
 
 @keyframes compare-data-enter {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .updateProgress {
@@ -89,8 +93,12 @@
 }
 
 @keyframes compare-progress {
-  from { transform: translateX(-110%); }
-  to { transform: translateX(420%); }
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(420%);
+  }
 }
 
 .skeletonChart,
@@ -123,21 +131,32 @@
   border-radius: var(--radius-panel);
 }
 
-.skeletonTable > span { height: 42px; }
-.skeletonWide > span { height: 349px; }
+.skeletonTable > span {
+  height: 42px;
+}
+.skeletonWide > span {
+  height: 349px;
+}
 
 .skeleton i::after,
 .skeletonTable span::after {
   position: absolute;
   inset: 0;
   content: "";
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 7%), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 7%),
+    transparent
+  );
   transform: translateX(-100%);
   animation: compare-shimmer 1.2s ease-in-out infinite;
 }
 
 @keyframes compare-shimmer {
-  to { transform: translateX(100%); }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .dataRow {
@@ -165,12 +184,18 @@
   transform: translateX(-50%);
 }
 
-.historyRow { position: relative; }
+.historyRow {
+  position: relative;
+}
 
 @media (max-width: 900px) {
-  .twoColumns { grid-template-columns: 1fr; }
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
   .twoColumns::after,
-  .historyRow::after { display: none; }
+  .historyRow::after {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
@@ -179,7 +204,9 @@
     padding-inline: var(--spacing-page-padding-x-responsive);
   }
 
-  .riders { grid-template-columns: 1fr; }
+  .riders {
+    grid-template-columns: 1fr;
+  }
 
   .versus {
     min-height: 29px;
@@ -192,5 +219,7 @@
     height: 1px;
   }
 
-  .dataRow { padding: var(--spacing-page-padding-x-responsive); }
+  .dataRow {
+    padding: var(--spacing-page-padding-x-responsive);
+  }
 }

@@ -9,8 +9,7 @@
   font-weight: var(--font-weight-regular);
   background: transparent;
   border: 0;
-  transition:
-    color var(--component-transition-control);
+  transition: color var(--component-transition-control);
 }
 
 .backButton:hover,

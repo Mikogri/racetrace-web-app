@@ -15,11 +15,23 @@
   min-width: 0;
 }
 
-.sections > * { border-top: 1px solid var(--color-border-default); }
-.sections > :nth-child(even) { border-left: 1px solid var(--color-border-default); }
-.sections h2 { color: var(--color-text-secondary); font-family: var(--font-family-data); font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 18px; }
+.sections > * {
+  border-top: 1px solid var(--color-border-default);
+}
+.sections > :nth-child(even) {
+  border-left: 1px solid var(--color-border-default);
+}
+.sections h2 {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-data);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+}
 
-.section > div:first-child p { text-transform: none; }
+.section > div:first-child p {
+  text-transform: none;
+}
 
 .chart {
   position: relative;
@@ -35,27 +47,98 @@
   stroke-dasharray: 1.5 3;
 }
 
-.tick, .axisUnit, .summary, .metrics, .score, .note {
+.tick,
+.axisUnit,
+.summary,
+.metrics,
+.score,
+.note {
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);
   color: var(--color-text-secondary);
 }
 
-.tick { fill: var(--color-text-secondary); }
-.axisUnit { position: absolute; bottom: 0; right: 0; }
-.note { margin: 0; line-height: 1.6; }
-.summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-12); }
-.summary strong { color: var(--color-text-primary); font-weight: 500; }
-.score { display: flex; gap: var(--space-12); align-items: baseline; }
-.score strong { color: var(--color-text-primary); font-size: 24px; font-weight: 500; }
-.metrics { display: grid; margin: 0; }
-.metrics > div { display: flex; justify-content: space-between; gap: var(--space-12); padding-block: var(--space-12); border-bottom: 1px solid var(--color-border-default); }
-.metrics dd { color: var(--color-text-primary); margin: 0; }
-.skeleton { height: 275px; position: relative; overflow: hidden; }
-.skeleton span { position: absolute; inset: 24px 0; background: repeating-linear-gradient(to bottom, var(--color-border-default) 0 2px, transparent 2px 48px); opacity: 0.35; animation: analytics-skeleton 1.5s ease-in-out infinite alternate; }
-@keyframes analytics-skeleton { to { opacity: 0.8; } }
-@media (max-width: 760px) { .sections { grid-template-columns: minmax(0, 1fr); } .sections > :nth-child(even) { border-left: 0; } }
-@media (prefers-reduced-motion: reduce) { .skeleton span { animation: none; } }
+.tick {
+  fill: var(--color-text-secondary);
+}
+.axisUnit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.note {
+  margin: 0;
+  line-height: 1.6;
+}
+.summary {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+.summary strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+.score {
+  display: flex;
+  gap: var(--space-12);
+  align-items: baseline;
+}
+.score strong {
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-weight: 500;
+}
+.metrics {
+  display: grid;
+  margin: 0;
+}
+.metrics > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding-block: var(--space-12);
+  border-bottom: 1px solid var(--color-border-default);
+}
+.metrics dd {
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.skeleton {
+  height: 275px;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton span {
+  position: absolute;
+  inset: 24px 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-border-default) 0 2px,
+    transparent 2px 48px
+  );
+  opacity: 0.35;
+  animation: analytics-skeleton 1.5s ease-in-out infinite alternate;
+}
+@keyframes analytics-skeleton {
+  to {
+    opacity: 0.8;
+  }
+}
+@media (max-width: 760px) {
+  .sections {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sections > :nth-child(even) {
+    border-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton span {
+    animation: none;
+  }
+}
 .efficiencyValue {
   display: flex;
   flex-direction: column;

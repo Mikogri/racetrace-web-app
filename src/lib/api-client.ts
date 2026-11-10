@@ -1,7 +1,10 @@
 import type { z } from "zod";
 import { env } from "../config/env";
 import { ApiError } from "../types/api";
-import { measureResponseBody, recordApiResponseDiagnostics } from "./api-request-diagnostics";
+import {
+  measureResponseBody,
+  recordApiResponseDiagnostics,
+} from "./api-request-diagnostics";
 import { observeCategoriesInApiPayload } from "../utils/categories";
 
 type RequestOptions<TSchema extends z.ZodType> = Omit<RequestInit, "body"> & {
@@ -97,7 +100,12 @@ async function request<TSchema extends z.ZodType>({
 
     observeCategoriesInApiPayload(payload);
 
-    recordApiResponseDiagnostics(parsed.data, requestStartedAt, response.headers, bodyMeasurement);
+    recordApiResponseDiagnostics(
+      parsed.data,
+      requestStartedAt,
+      response.headers,
+      bodyMeasurement,
+    );
     return parsed.data;
   } catch (error) {
     if (error instanceof ApiError) throw error;

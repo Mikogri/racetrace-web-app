@@ -1,10 +1,14 @@
-import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { z } from 'zod'
-import { apiClient } from '../../../lib/api-client'
-import { entityIdSchema, nullableNumberSchema, nullableStringSchema } from '../../../lib/validation'
-import { roundRaceAnalyticsSchema } from '../../rounds/api/round-race-analytics-schema'
-import { roundProfileQueryKey } from './analytics-query-keys'
+import type { ApiSchema, AssertApiContract } from "../../../types/api-contract";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { z } from "zod";
+import { apiClient } from "../../../lib/api-client";
+import {
+  entityIdSchema,
+  nullableNumberSchema,
+  nullableStringSchema,
+} from "../../../lib/validation";
+import { roundRaceAnalyticsSchema } from "../../rounds/api/round-race-analytics-schema";
+import { roundProfileQueryKey } from "./analytics-query-keys";
 
 export const riderIdentitySchema = z.object({
   position: z.number().int(),
@@ -18,7 +22,11 @@ export const riderIdentitySchema = z.object({
 export const roundSummarySchema = z.object({
   roundId: entityIdSchema,
   season: z.number().int(),
-  roundNumber: z.number().int().nullish().transform((value) => value ?? null),
+  roundNumber: z
+    .number()
+    .int()
+    .nullish()
+    .transform((value) => value ?? null),
   startDate: nullableStringSchema,
   endDate: nullableStringSchema,
   status: z.string(),
@@ -28,11 +36,19 @@ export const roundSummarySchema = z.object({
   countryCode: nullableStringSchema,
   trackLengthMeters: nullableNumberSchema,
   averageSlope: nullableNumberSchema,
-  competitionClassId: entityIdSchema.nullish().transform((value) => value ?? null),
+  competitionClassId: entityIdSchema
+    .nullish()
+    .transform((value) => value ?? null),
   competitionClassCode: nullableStringSchema,
   competitionClassName: nullableStringSchema,
-  competitionClassAbbreviation: nullableStringSchema.optional().transform((value) => value ?? null),
-  competitionClassPriority: z.number().int().nullish().transform((value) => value ?? null),
+  competitionClassAbbreviation: nullableStringSchema
+    .optional()
+    .transform((value) => value ?? null),
+  competitionClassPriority: z
+    .number()
+    .int()
+    .nullish()
+    .transform((value) => value ?? null),
 });
 
 const roundProfileResultSchema = riderIdentitySchema.extend({
@@ -53,7 +69,9 @@ const spreadPointSchema = z.object({
 });
 
 const roundProfileSchema = z.object({
-  analytics: roundRaceAnalyticsSchema.nullish().transform((value) => value ?? null),
+  analytics: roundRaceAnalyticsSchema
+    .nullish()
+    .transform((value) => value ?? null),
   season: z.number().int(),
   category: z.string(),
   round: roundSummarySchema.nullable(),
@@ -69,29 +87,41 @@ const roundProfileSchema = z.object({
     positionSpread: z.array(spreadPointSchema).default([]),
     positionSpreadFullPosition: z.number().int().optional(),
     mostDecisiveSector: z.number().int().nullable(),
-    sectors: z.array(z.object({
-      sectorIndex: z.number().int(),
-      label: z.string(),
-      ridersCount: z.number().int(),
-      scoreSpread: z.number(),
-      decisiveness: z.number(),
-      relativeImpact: z.number(),
-    })),
+    sectors: z.array(
+      z.object({
+        sectorIndex: z.number().int(),
+        label: z.string(),
+        ridersCount: z.number().int(),
+        scoreSpread: z.number(),
+        decisiveness: z.number(),
+        relativeImpact: z.number(),
+      }),
+    ),
   }),
 });
 
 export type RoundProfile = z.infer<typeof roundProfileSchema>;
 
-export function useRoundProfile(season: number, category: string, roundId?: string) {
+export function useRoundProfile(
+  season: number,
+  category: string,
+  roundId?: string,
+) {
   return useQuery({
     queryKey: roundProfileQueryKey(season, category, roundId),
-    queryFn: ({ signal }) => apiClient.get(
-      "/api/v1/analytics/round-profile",
-      roundProfileSchema,
-      { signal, query: { season, category, roundId } },
-    ),
+    queryFn: ({ signal }) =>
+      apiClient.get("/api/v1/analytics/round-profile", roundProfileSchema, {
+        signal,
+        query: { season, category, roundId },
+      }),
     ...(roundId ? { placeholderData: keepPreviousData } : {}),
   });
 }
 
-export type RoundProfileWireContract = AssertApiContract<ApiSchema<'RoundProfileResponseDto'> extends z.input<typeof roundProfileSchema> ? true : false>
+export type RoundProfileWireContract = AssertApiContract<
+  ApiSchema<"RoundProfileResponseDto"> extends z.input<
+    typeof roundProfileSchema
+  >
+    ? true
+    : false
+>;

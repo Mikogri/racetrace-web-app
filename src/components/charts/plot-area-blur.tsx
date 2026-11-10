@@ -10,7 +10,11 @@ import styles from "./plot-area-blur.module.css";
 export function PlotAreaBlur() {
   const plotArea = usePlotArea();
   const [wrapper, setWrapper] = useState<Element | null>(null);
-  const anchorRef = useCallback((node: SVGGElement | null) => setWrapper(node?.closest(".recharts-wrapper") ?? null), []);
+  const anchorRef = useCallback(
+    (node: SVGGElement | null) =>
+      setWrapper(node?.closest(".recharts-wrapper") ?? null),
+    [],
+  );
 
   return (
     <g ref={anchorRef} aria-hidden="true">
@@ -18,7 +22,12 @@ export function PlotAreaBlur() {
         ? createPortal(
             <div
               className={styles.blur}
-              style={{ left: plotArea.x, top: plotArea.y, width: plotArea.width, height: plotArea.height }}
+              style={{
+                left: plotArea.x,
+                top: plotArea.y,
+                width: plotArea.width,
+                height: plotArea.height,
+              }}
             />,
             wrapper,
           )

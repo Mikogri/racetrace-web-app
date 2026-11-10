@@ -6,7 +6,8 @@
   display: flex;
   gap: var(--spacing-details-gap);
   width: min(100%, var(--layout-content-max-width));
-  padding: var(--spacing-details-padding-md) var(--spacing-page-padding-x-responsive);
+  padding: var(--spacing-details-padding-md)
+    var(--spacing-page-padding-x-responsive);
   margin-inline: auto;
   color: var(--color-text-tertiary);
   font-family: var(--font-family-data);

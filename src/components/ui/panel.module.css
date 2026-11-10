@@ -1,6 +1,8 @@
 .panel {
   overflow: hidden;
-  background: var(--component-light-edge), var(--component-gloss), var(--color-surface-glass);
+  background:
+    var(--component-light-edge), var(--component-gloss),
+    var(--color-surface-glass);
   border: var(--component-border-width) solid var(--color-border-glass);
   border-radius: var(--radius-panel);
   box-shadow: var(--component-gloss-edge);
@@ -39,8 +41,13 @@
   color: var(--color-brand-primary);
 }
 
-.headerWithInfo { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
-.headerWithInfo > p { grid-column: 1 / -1; }
+.headerWithInfo {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+.headerWithInfo > p {
+  grid-column: 1 / -1;
+}
 .info {
   --color-interaction-subtle-hover-background: transparent;
   display: inline-flex;
@@ -57,14 +64,19 @@
   opacity: 0.3;
   transition: opacity var(--component-transition-standard);
 }
-.info:hover { opacity: 0.55; background: transparent; cursor: default; }
-.info img { display: block; }
+.info:hover {
+  opacity: 0.55;
+  background: transparent;
+  cursor: default;
+}
+.info img {
+  display: block;
+}
 
 .headerDescription {
   font-family: var(--font-family-mono-variable);
   font-weight: 450;
 }
-
 
 .summary {
   display: flex;

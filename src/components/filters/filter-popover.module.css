@@ -12,11 +12,15 @@
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   transform-origin: top center;
-  animation: context-menu-open var(--component-transition-standard) var(--component-ease-out);
+  animation: context-menu-open var(--component-transition-standard)
+    var(--component-ease-out);
 }
 
 .scrollArea {
-  max-height: calc(var(--component-dropdown-max-height) - 2 * var(--spacing-context-menu-padding));
+  max-height: calc(
+    var(--component-dropdown-max-height) - 2 *
+      var(--spacing-context-menu-padding)
+  );
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;

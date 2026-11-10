@@ -54,19 +54,23 @@
   --color-status-success: var(--palette-olive-300);
   --color-status-success-background: rgb(196 255 118 / 30%);
   --color-status-info: var(--palette-blue-500);
-  --color-status-success-label-text: #EFFFD9;
-  --color-status-success-label-background: #43552B;
-  --color-status-error-label-text: #FFD2D2;
-  --color-status-error-label-background: #521F1F;
-  --color-status-warning-label-text: #EAE5D2;
-  --color-status-warning-label-background: #504B36;
-  --color-status-neutral-label-text: #C8C8C8;
+  --color-status-success-label-text: #efffd9;
+  --color-status-success-label-background: #43552b;
+  --color-status-error-label-text: #ffd2d2;
+  --color-status-error-label-background: #521f1f;
+  --color-status-warning-label-text: #eae5d2;
+  --color-status-warning-label-background: #504b36;
+  --color-status-neutral-label-text: #c8c8c8;
 
   --color-result-winner-text: var(--palette-gold-500);
   --color-result-winner-accent: #ffa600;
   --color-highlight-top-rider-background: rgb(255 192 89 / 5%);
 
-  --color-chart-pre-final: color-mix(in srgb, var(--palette-blue-500) 85%, black);
+  --color-chart-pre-final: color-mix(
+    in srgb,
+    var(--palette-blue-500) 85%,
+    black
+  );
   --color-chart-final: color-mix(in srgb, var(--palette-purple-500) 85%, black);
   --color-chart-points: color-mix(in srgb, var(--palette-gold-500) 75%, black);
   --color-chart-rating: var(--color-chart-final);
@@ -100,8 +104,16 @@
   --color-compare-rider-a-background: rgb(69 207 134 / 22%);
   --color-compare-rider-b-accent: var(--palette-blue-500);
   --color-compare-rider-b-background: rgb(97 134 204 / 40%);
-  --color-compare-rider-a-bar: color-mix(in srgb, var(--color-compare-rider-a-accent) 80%, black);
-  --color-compare-rider-b-bar: color-mix(in srgb, var(--color-compare-rider-b-accent) 80%, black);
+  --color-compare-rider-a-bar: color-mix(
+    in srgb,
+    var(--color-compare-rider-a-accent) 80%,
+    black
+  );
+  --color-compare-rider-b-bar: color-mix(
+    in srgb,
+    var(--color-compare-rider-b-accent) 80%,
+    black
+  );
 
   --color-sector-gain-background: rgb(172 201 130 / 35%);
   --color-sector-loss-background: rgb(200 117 117 / 35%);
@@ -111,8 +123,16 @@
   --color-sector-neutral-text: var(--palette-neutral-300);
 
   --color-live-indicator: var(--palette-red-strong);
-  --color-live-background: color-mix(in srgb, var(--palette-red-strong) 55%, black);
-  --color-live-background-muted: color-mix(in srgb, var(--palette-red-strong) 25%, transparent);
+  --color-live-background: color-mix(
+    in srgb,
+    var(--palette-red-strong) 55%,
+    black
+  );
+  --color-live-background-muted: color-mix(
+    in srgb,
+    var(--palette-red-strong) 25%,
+    transparent
+  );
   --color-live-session-completed-background: rgb(196 255 118 / 30%);
   --color-live-session-live-background: #9a3d3d;
   --color-live-session-upcoming-background: rgb(255 255 255 / 12%);

@@ -1,4 +1,4 @@
-import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
+import type { ApiSchema, AssertApiContract } from "../../../types/api-contract";
 import { metricsApiQuery } from "../../../utils/metrics-api-query";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -181,49 +181,63 @@ const trackStatisticsSchema = z.object({
  * accepting that snapshot by filling them with safe empty values. The detail
  * page can still render statistics, round results and track statistics.
  */
-const riderOverviewSchema = z.preprocess((value) => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+const riderOverviewSchema = z.preprocess(
+  (value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value))
+      return value;
 
-  const payload = { ...(value as Record<string, unknown>) };
-  const statistics = payload.statistics;
-  const riderId =
-    statistics && typeof statistics === "object" && !Array.isArray(statistics)
-      ? (statistics as Record<string, unknown>).riderId
-      : null;
+    const payload = { ...(value as Record<string, unknown>) };
+    const statistics = payload.statistics;
+    const riderId =
+      statistics && typeof statistics === "object" && !Array.isArray(statistics)
+        ? (statistics as Record<string, unknown>).riderId
+        : null;
 
-  payload.sessionResults ??= [];
-  payload.teamHistory ??= [];
-  payload.pressurePerformance ??= {
-    riderId,
-    pressurePerformance: null,
-    pressureTrend: "unavailable",
-    sampleCount: 0,
-    evidence: "unavailable",
-    summary: {
-      qualifyingPace: null,
-      finalPace: null,
-      delta: null,
-      tendency: "unavailable",
-      pairedRounds: 0,
-    },
-    points: [],
-  };
+    payload.sessionResults ??= [];
+    payload.teamHistory ??= [];
+    payload.pressurePerformance ??= {
+      riderId,
+      pressurePerformance: null,
+      pressureTrend: "unavailable",
+      sampleCount: 0,
+      evidence: "unavailable",
+      summary: {
+        qualifyingPace: null,
+        finalPace: null,
+        delta: null,
+        tendency: "unavailable",
+        pairedRounds: 0,
+      },
+      points: [],
+    };
 
-  return payload;
-}, z.object({
-  statistics: statisticsSchema,
-  roundResults: z.array(roundResultSchema),
-  trackStatistics: z.array(trackStatisticsSchema),
-  sessionResults: riderSessionResultsSchema,
-  pressurePerformance: pressurePerformanceSchema,
-  teamHistory: riderTeamHistorySchema,
-  chartStatistics: z.object({
-    resultsAveragePosition: nullableNumberSchema,
-    cumulativePointsByRound: z.record(z.string(), z.number()),
-    preFinalAverageByTrack: z.record(z.string(), z.number().nullable()),
-    cumulativeRatingByRound: z.record(z.string(), z.number().nullable()).default({}),
-  }).optional().default({ resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {}, cumulativeRatingByRound: {} }),
-}));
+    return payload;
+  },
+  z.object({
+    statistics: statisticsSchema,
+    roundResults: z.array(roundResultSchema),
+    trackStatistics: z.array(trackStatisticsSchema),
+    sessionResults: riderSessionResultsSchema,
+    pressurePerformance: pressurePerformanceSchema,
+    teamHistory: riderTeamHistorySchema,
+    chartStatistics: z
+      .object({
+        resultsAveragePosition: nullableNumberSchema,
+        cumulativePointsByRound: z.record(z.string(), z.number()),
+        preFinalAverageByTrack: z.record(z.string(), z.number().nullable()),
+        cumulativeRatingByRound: z
+          .record(z.string(), z.number().nullable())
+          .default({}),
+      })
+      .optional()
+      .default({
+        resultsAveragePosition: null,
+        cumulativePointsByRound: {},
+        preFinalAverageByTrack: {},
+        cumulativeRatingByRound: {},
+      }),
+  }),
+);
 
 export type RiderOverview = z.infer<typeof riderOverviewSchema>;
 
@@ -243,6 +257,20 @@ export function useRiderOverview(riderId: string, filters: MetricsFilters) {
     structuralSharing: false,
   });
 }
-export type RiderStatisticsWireContract = AssertApiContract<ApiSchema<'RiderStatisticsDto'> extends z.input<typeof statisticsSchema> ? true : false>
-export type RiderRoundWireContract = AssertApiContract<ApiSchema<'RiderRoundResultDto'> extends z.input<typeof roundResultSchema> ? true : false>
-export type RiderTrackWireContract = AssertApiContract<ApiSchema<'RiderTrackStatisticsDto'> extends z.input<typeof trackStatisticsSchema> ? true : false>
+export type RiderStatisticsWireContract = AssertApiContract<
+  ApiSchema<"RiderStatisticsDto"> extends z.input<typeof statisticsSchema>
+    ? true
+    : false
+>;
+export type RiderRoundWireContract = AssertApiContract<
+  ApiSchema<"RiderRoundResultDto"> extends z.input<typeof roundResultSchema>
+    ? true
+    : false
+>;
+export type RiderTrackWireContract = AssertApiContract<
+  ApiSchema<"RiderTrackStatisticsDto"> extends z.input<
+    typeof trackStatisticsSchema
+  >
+    ? true
+    : false
+>;

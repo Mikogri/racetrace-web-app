@@ -13,7 +13,10 @@ import { routes } from "../../config/routes";
 import { useClientTable } from "../../hooks/use-client-table";
 import { formatCompetitionClassAbbreviation } from "../../utils/competition-classes";
 import { EventClassBadge } from "../../components/data-display/event-class-badge";
-import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatSessionLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import type { RiderSessionResult } from "./api/rider-session-schema";
 import type { RiderOutletContext } from "./rider-route-layout";
 import styles from "./rider-pages.module.css";
@@ -67,8 +70,14 @@ function formatSessionResult(result: RiderSessionResult | undefined) {
 function fallbackPreFinal(row: OverviewRow): SessionEntry[] {
   return [
     [formatSessionLabel("qualifying", "abbreviation"), row.qualifyingPosition],
-    [formatSessionLabel("qualifying_1", "abbreviation"), row.qualifying1Position],
-    [formatSessionLabel("qualifying_2", "abbreviation"), row.qualifying2Position],
+    [
+      formatSessionLabel("qualifying_1", "abbreviation"),
+      row.qualifying1Position,
+    ],
+    [
+      formatSessionLabel("qualifying_2", "abbreviation"),
+      row.qualifying2Position,
+    ],
     [formatSessionLabel("semi_final", "abbreviation"), row.semiFinalPosition],
   ]
     .filter((entry): entry is [string, number] => entry[1] !== null)
@@ -108,10 +117,22 @@ function formatResultDate(value: string | null) {
   ].join(".");
 }
 
-function SessionSequence({ entries, cycling = false }: { entries: SessionEntry[]; cycling?: boolean }) {
+function SessionSequence({
+  entries,
+  cycling = false,
+}: {
+  entries: SessionEntry[];
+  cycling?: boolean;
+}) {
   if (entries.length === 0) return <span>--</span>;
   if (cycling)
-    return <CyclingText value={entries.map((entry) => `${entry.label}: ${entry.value}`).join(" → ")} />;
+    return (
+      <CyclingText
+        value={entries
+          .map((entry) => `${entry.label}: ${entry.value}`)
+          .join(" → ")}
+      />
+    );
   return (
     <span className={styles.sessionSequence}>
       {entries.map((entry, index) => (
@@ -173,7 +194,11 @@ export default function RiderResultsPage() {
   };
 
   return (
-    <RiderTableContent hasDataError={hasDataError} isEmpty={rows.length === 0} onRetry={retryData}>
+    <RiderTableContent
+      hasDataError={hasDataError}
+      isEmpty={rows.length === 0}
+      onRetry={retryData}
+    >
       <div className={styles.riderResultsFit}>
         <table className={styles.riderResultsTable}>
           <thead>
@@ -239,7 +264,11 @@ export default function RiderResultsPage() {
           </thead>
           <tbody>
             {table.items.map((row, index) => {
-              const classLabel = formatCompetitionClassAbbreviation({ code: row.competitionClassCode, name: row.competitionClassName, abbreviation: row.competitionClassAbbreviation });
+              const classLabel = formatCompetitionClassAbbreviation({
+                code: row.competitionClassCode,
+                name: row.competitionClassName,
+                abbreviation: row.competitionClassAbbreviation,
+              });
               return (
                 <tr
                   className={styles.riderResultRow}
@@ -256,41 +285,91 @@ export default function RiderResultsPage() {
                 >
                   <td>
                     {isUpdating ? (
-                      <AnimatedNumber value={(table.page - 1) * table.pageSize + index + 1} duration={400} loop />
+                      <AnimatedNumber
+                        value={(table.page - 1) * table.pageSize + index + 1}
+                        duration={400}
+                        loop
+                      />
                     ) : (
                       (table.page - 1) * table.pageSize + index + 1
                     )}
                   </td>
                   <td>
-                    <AppTooltip content={`${row.venueName ?? row.trackName ?? "--"} (${row.countryCode ?? "---"})`}>
+                    <AppTooltip
+                      content={`${row.venueName ?? row.trackName ?? "--"} (${row.countryCode ?? "---"})`}
+                    >
                       <span className={styles.resultPrimaryText}>
                         {isUpdating ? (
-                          <CyclingText value={`${row.venueName ?? row.trackName ?? "--"} (${row.countryCode?.toUpperCase() ?? "---"})`} />
+                          <CyclingText
+                            value={`${row.venueName ?? row.trackName ?? "--"} (${row.countryCode?.toUpperCase() ?? "---"})`}
+                          />
                         ) : (
-                          <>{row.venueName ?? row.trackName ?? "--"}{" "}<span className={styles.resultCountryCode}>({row.countryCode?.toUpperCase() ?? "---"})</span></>
+                          <>
+                            {row.venueName ?? row.trackName ?? "--"}{" "}
+                            <span className={styles.resultCountryCode}>
+                              ({row.countryCode?.toUpperCase() ?? "---"})
+                            </span>
+                          </>
                         )}
                       </span>
                     </AppTooltip>
                   </td>
-                  <td>{isUpdating ? <CyclingText value={formatResultDate(row.roundStartDate)} /> : formatResultDate(row.roundStartDate)}</td>
                   <td>
-                    <EventClassBadge code={row.competitionClassCode} name={row.competitionClassName} abbreviation={row.competitionClassAbbreviation}>
-                      {isUpdating ? <CyclingText value={classLabel} /> : classLabel}
+                    {isUpdating ? (
+                      <CyclingText
+                        value={formatResultDate(row.roundStartDate)}
+                      />
+                    ) : (
+                      formatResultDate(row.roundStartDate)
+                    )}
+                  </td>
+                  <td>
+                    <EventClassBadge
+                      code={row.competitionClassCode}
+                      name={row.competitionClassName}
+                      abbreviation={row.competitionClassAbbreviation}
+                    >
+                      {isUpdating ? (
+                        <CyclingText value={classLabel} />
+                      ) : (
+                        classLabel
+                      )}
                     </EventClassBadge>
                   </td>
                   <td>
-                    <RatingValue value={row.rating} animate={isUpdating} animationLoop />
+                    <RatingValue
+                      value={row.rating}
+                      animate={isUpdating}
+                      animationLoop
+                    />
                   </td>
                   <td>
-                    <PerformanceValue value={row.pace} animate={isUpdating} animationLoop />
+                    <PerformanceValue
+                      value={row.pace}
+                      animate={isUpdating}
+                      animationLoop
+                    />
                   </td>
                   <td>
-                    <PerformanceValue value={row.consistency} animate={isUpdating} animationLoop />
+                    <PerformanceValue
+                      value={row.consistency}
+                      animate={isUpdating}
+                      animationLoop
+                    />
                   </td>
                   <td>
-                    <SessionSequence entries={preFinalEntries(row)} cycling={isUpdating} />
+                    <SessionSequence
+                      entries={preFinalEntries(row)}
+                      cycling={isUpdating}
+                    />
                   </td>
-                  <td>{isUpdating ? <CyclingText value={String(formatFinal(row))} /> : formatFinal(row)}</td>
+                  <td>
+                    {isUpdating ? (
+                      <CyclingText value={String(formatFinal(row))} />
+                    ) : (
+                      formatFinal(row)
+                    )}
+                  </td>
                 </tr>
               );
             })}

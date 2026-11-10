@@ -28,10 +28,7 @@ import { useDebouncedValue } from "../../hooks/use-debounced-value";
 import { useMetricsFilters } from "../../hooks/use-metrics-filters";
 import type { MetricsFilters, RiderSummary } from "../../types/domain";
 import { formatCategoryLabel } from "../../utils/categories";
-import {
-  useRanking,
-  type RankingSort,
-} from "./api/get-ranking";
+import { useRanking, type RankingSort } from "./api/get-ranking";
 import styles from "./ranking-page.module.css";
 import { UpdateProgress } from "../../components/feedback/update-progress";
 import { pageMeta } from "../../config/seo";
@@ -130,9 +127,7 @@ export default function RankingPage() {
     requestedDirection === "asc" || requestedDirection === "desc"
       ? requestedDirection
       : defaultDirection;
-  const filterSignature = rankingFilterSignature(
-    appliedFilters,
-  );
+  const filterSignature = rankingFilterSignature(appliedFilters);
   const hasNarrowingFilters =
     appliedFilters.tracks.length > 0 ||
     appliedFilters.conditions.length > 0 ||
@@ -231,10 +226,10 @@ export default function RankingPage() {
     setComparisonFilters(
       contextChanged
         ? null
-        : lastSettledFilters.current ?? {
+        : (lastSettledFilters.current ?? {
             filters: appliedFilters,
             search: debouncedSearch,
-          },
+          }),
     );
     setFilters(nextFilters);
   };
@@ -442,18 +437,16 @@ export default function RankingPage() {
                             riderId={row.riderId}
                           >
                             <td>
-                              <ValueWithChange
-                                change={visiblePositionChange}
-                              >
-                              {rankingUpdating ? (
-                                <AnimatedNumber
-                                  value={row.position}
-                                  duration={400}
-                                  loop
-                                />
-                              ) : (
-                                row.position
-                              )}
+                              <ValueWithChange change={visiblePositionChange}>
+                                {rankingUpdating ? (
+                                  <AnimatedNumber
+                                    value={row.position}
+                                    duration={400}
+                                    loop
+                                  />
+                                ) : (
+                                  row.position
+                                )}
                               </ValueWithChange>
                             </td>
                             <td data-column="rider">

@@ -29,7 +29,13 @@ export function SectionHeader({
   );
 }
 
-export function SectionAction({ to, children }: { to: string; children: ReactNode }) {
+export function SectionAction({
+  to,
+  children,
+}: {
+  to: string;
+  children: ReactNode;
+}) {
   return (
     <Link className={styles.sectionAction} to={to}>
       <span>{children}</span>

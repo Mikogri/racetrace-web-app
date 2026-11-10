@@ -28,7 +28,11 @@
 }
 
 .sectionTitle {
-  font-size: clamp(var(--font-size-panel-title), 3vw, var(--font-size-section-title));
+  font-size: clamp(
+    var(--font-size-panel-title),
+    3vw,
+    var(--font-size-section-title)
+  );
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-heading);
 }

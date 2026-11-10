@@ -17,7 +17,9 @@
 }
 
 @keyframes season-skeleton {
-  to { opacity: 0.4; }
+  to {
+    opacity: 0.4;
+  }
 }
 
 .feedbackSection {

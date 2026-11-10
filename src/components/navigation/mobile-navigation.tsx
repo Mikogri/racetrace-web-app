@@ -62,10 +62,7 @@ export function MobileNavigation() {
             <Link
               key={item.to}
               to={item.to}
-              className={joinClassNames(
-                styles.link,
-                isActive && styles.active,
-              )}
+              className={joinClassNames(styles.link, isActive && styles.active)}
               aria-current={isActive ? "page" : undefined}
               onClick={() => setOpen(false)}
             >

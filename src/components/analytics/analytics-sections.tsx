@@ -1,5 +1,16 @@
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { TableFeedbackState } from "../feedback/states";
 import { ChartTooltip } from "../overlays/tooltip";
 import { Panel, PanelHeader } from "../ui/panel";
@@ -7,7 +18,11 @@ import { routes } from "../../config/routes";
 import { normalizeDisplayName } from "../../utils/display-name";
 import { formatOneDecimal, formatRaceTime } from "../../utils/formatters";
 import type { RoundProfile } from "../../features/analytics/api/get-round-profile";
-import { CategorySelector, SectionAction, SectionHeader } from "./section-controls";
+import {
+  CategorySelector,
+  SectionAction,
+  SectionHeader,
+} from "./section-controls";
 import { classCode } from "./round-label";
 import styles from "./home-sections.module.css";
 import { PlotAreaBlur } from "../charts/plot-area-blur";
@@ -51,13 +66,15 @@ export function SpeedVsRunTimeSection({
       result.finalTime > 0 &&
       result.topSpeed !== null &&
       result.topSpeed > 0
-        ? [{
-            riderId: result.riderId,
-            name: normalizeDisplayName(result.fullName),
-            position: result.position,
-            time: result.finalTime,
-            topSpeed: result.topSpeed,
-          }]
+        ? [
+            {
+              riderId: result.riderId,
+              name: normalizeDisplayName(result.fullName),
+              position: result.position,
+              time: result.finalTime,
+              topSpeed: result.topSpeed,
+            },
+          ]
         : [],
     )
     .sort((left, right) => left.time - right.time)
@@ -72,34 +89,50 @@ export function SpeedVsRunTimeSection({
   const timeTicks = Array.from(
     { length: 5 },
     (_, index) =>
-      timeDomainMinimum +
-      ((timeDomainMaximum - timeDomainMinimum) * index) / 4,
+      timeDomainMinimum + ((timeDomainMaximum - timeDomainMinimum) * index) / 4,
   );
   const minimumSpeed = speeds.length > 0 ? Math.min(...speeds) : 0;
   const maximumSpeed = speeds.length > 0 ? Math.max(...speeds) : 100;
   const speedPadding = Math.max((maximumSpeed - minimumSpeed) * 0.12, 1);
 
   return (
-    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
-      {embedded ? <PanelHeader title="// Top Speed vs Run Time" info="Final run time compared with top speed. Faster runs appear further to the right." /> : <SectionHeader
-        title="Top Speed vs Run Time"
-        meta={[
-          classCode(round),
-          `Round ${round?.roundNumber ?? "--"}`,
-          `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`,
-        ]}
-        description="Final run time compared with each rider's top speed"
-      />}
-      <Panel padding="none" className={`${styles.homePanel} ${styles.speedPanel}`}>
+    <div
+      className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}
+    >
+      {embedded ? (
+        <PanelHeader
+          title="// Top Speed vs Run Time"
+          info="Final run time compared with top speed. Faster runs appear further to the right."
+        />
+      ) : (
+        <SectionHeader
+          title="Top Speed vs Run Time"
+          meta={[
+            classCode(round),
+            `Round ${round?.roundNumber ?? "--"}`,
+            `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`,
+          ]}
+          description="Final run time compared with each rider's top speed"
+        />
+      )}
+      <Panel
+        padding="none"
+        className={`${styles.homePanel} ${styles.speedPanel}`}
+      >
         <div className={styles.speedChartHeader}>
           <div>
             <strong>Final Performance</strong>
             <span>Shorter run times are shown further to the right</span>
           </div>
-          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
+          {!embedded && (
+            <CategorySelector value={category} onChange={onCategoryChange} />
+          )}
         </div>
         {loading ? (
-          <div className={styles.speedChartSkeleton} aria-label="Loading final performance chart">
+          <div
+            className={styles.speedChartSkeleton}
+            aria-label="Loading final performance chart"
+          >
             <span aria-hidden="true" />
           </div>
         ) : (
@@ -108,7 +141,10 @@ export function SpeedVsRunTimeSection({
             className={`${styles.speedChart} ${updating ? styles.speedChartUpdating : ""}`}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 18, right: 42, bottom: 8, left: 4 }} accessibilityLayer={false}>
+              <ScatterChart
+                margin={{ top: 18, right: 42, bottom: 8, left: 4 }}
+                accessibilityLayer={false}
+              >
                 <PlotAreaBlur />
                 <CartesianGrid className={styles.speedGrid} />
                 <XAxis
@@ -128,7 +164,10 @@ export function SpeedVsRunTimeSection({
                 <YAxis
                   type="number"
                   dataKey="topSpeed"
-                  domain={[minimumSpeed - speedPadding, maximumSpeed + speedPadding]}
+                  domain={[
+                    minimumSpeed - speedPadding,
+                    maximumSpeed + speedPadding,
+                  ]}
                   tickFormatter={(value: number) => formatOneDecimal(value)}
                   tickLine={false}
                   axisLine={false}
@@ -141,7 +180,8 @@ export function SpeedVsRunTimeSection({
                   cursor={false}
                   isAnimationActive={false}
                   content={({ active, payload, coordinate }) => {
-                    const point = payload?.[0]?.payload as (typeof points)[number] | undefined;
+                    const point = payload?.[0]?.payload as
+                      (typeof points)[number] | undefined;
                     if (!active || !point) return null;
                     return (
                       <ChartTooltip
@@ -157,10 +197,15 @@ export function SpeedVsRunTimeSection({
                 <Scatter
                   data={points}
                   shape={(properties) => {
-                    const item = properties as { cx?: number; cy?: number; payload?: (typeof points)[number] };
-                    const color = item.payload?.position === 1
-                      ? "var(--color-rating-top)"
-                      : "var(--color-chart-pre-final)";
+                    const item = properties as {
+                      cx?: number;
+                      cy?: number;
+                      payload?: (typeof points)[number];
+                    };
+                    const color =
+                      item.payload?.position === 1
+                        ? "var(--color-rating-top)"
+                        : "var(--color-chart-pre-final)";
                     return (
                       <circle
                         cx={item.cx}
@@ -174,10 +219,15 @@ export function SpeedVsRunTimeSection({
                     );
                   }}
                   activeShape={(properties) => {
-                    const item = properties as { cx?: number; cy?: number; payload?: (typeof points)[number] };
-                    const color = item.payload?.position === 1
-                      ? "var(--color-rating-top)"
-                      : "var(--color-chart-pre-final)";
+                    const item = properties as {
+                      cx?: number;
+                      cy?: number;
+                      payload?: (typeof points)[number];
+                    };
+                    const color =
+                      item.payload?.position === 1
+                        ? "var(--color-rating-top)"
+                        : "var(--color-chart-pre-final)";
                     return (
                       <circle
                         cx={item.cx}
@@ -188,7 +238,9 @@ export function SpeedVsRunTimeSection({
                         stroke={color}
                         strokeWidth={1}
                         className={styles.speedActivePoint}
-                        style={{ "--speed-point-color": color } as CSSProperties}
+                        style={
+                          { "--speed-point-color": color } as CSSProperties
+                        }
                       />
                     );
                   }}
@@ -196,9 +248,10 @@ export function SpeedVsRunTimeSection({
                   animationDuration={300}
                 >
                   {points.map((point, index) => {
-                    const color = point.position === 1
-                      ? "var(--color-rating-top)"
-                      : "var(--color-chart-pre-final)";
+                    const color =
+                      point.position === 1
+                        ? "var(--color-rating-top)"
+                        : "var(--color-chart-pre-final)";
                     return (
                       <Cell
                         key={`${point.riderId ?? "rider"}-${index}`}
@@ -213,14 +266,24 @@ export function SpeedVsRunTimeSection({
           </div>
         )}
       </Panel>
-      {!embedded && <SectionAction to={round ? routes.round(round.roundId) : routes.results}>
-        See Round Details
-      </SectionAction>}
+      {!embedded && (
+        <SectionAction
+          to={round ? routes.round(round.roundId) : routes.results}
+        >
+          See Round Details
+        </SectionAction>
+      )}
     </div>
   );
 }
 
-function AnalyticsBarChartSkeleton({ rows, label }: { rows: number; label: string }) {
+function AnalyticsBarChartSkeleton({
+  rows,
+  label,
+}: {
+  rows: number;
+  label: string;
+}) {
   return (
     <div className={styles.analyticsChart} role="status" aria-label={label}>
       <div className={styles.analyticsSkeletonRows} aria-hidden="true">
@@ -238,7 +301,12 @@ function AnalyticsBarChartSkeleton({ rows, label }: { rows: number; label: strin
 function AnalyticsBarChart({
   points,
 }: {
-  points: Array<{ label: string; value: number; detail: string; color: string }>;
+  points: Array<{
+    label: string;
+    value: number;
+    detail: string;
+    color: string;
+  }>;
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
   return (
@@ -266,7 +334,8 @@ function AnalyticsBarChart({
             cursor={false}
             isAnimationActive={false}
             content={({ active, payload, coordinate }) => {
-              const point = payload?.[0]?.payload as { label: string; detail: string } | undefined;
+              const point = payload?.[0]?.payload as
+                { label: string; detail: string } | undefined;
               return active && point ? (
                 <ChartTooltip
                   active
@@ -320,32 +389,68 @@ export function TrackFingerprintSection({
   const fingerprint = profile?.trackFingerprint.sectors ?? [];
   const round = profile?.round;
   return (
-    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
-      {embedded ? <PanelHeader title="// Track Fingerprint" info="How strongly each sector separated the field in the final." /> : <SectionHeader
-        title="Track Fingerprint"
-        meta={[classCode(round), `Round ${round?.roundNumber ?? "--"}`, `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`]}
-        description="How strongly each sector separated the field in the final"
-      />}
-      <Panel padding="none" className={`${styles.homePanel} ${styles.analyticsPanel}`}>
+    <div
+      className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}
+    >
+      {embedded ? (
+        <PanelHeader
+          title="// Track Fingerprint"
+          info="How strongly each sector separated the field in the final."
+        />
+      ) : (
+        <SectionHeader
+          title="Track Fingerprint"
+          meta={[
+            classCode(round),
+            `Round ${round?.roundNumber ?? "--"}`,
+            `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`,
+          ]}
+          description="How strongly each sector separated the field in the final"
+        />
+      )}
+      <Panel
+        padding="none"
+        className={`${styles.homePanel} ${styles.analyticsPanel}`}
+      >
         <div className={styles.speedChartHeader}>
-          <div><strong>Sector Impact</strong><span>Relative influence on the final result</span></div>
-          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
+          <div>
+            <strong>Sector Impact</strong>
+            <span>Relative influence on the final result</span>
+          </div>
+          {!embedded && (
+            <CategorySelector value={category} onChange={onCategoryChange} />
+          )}
         </div>
         {loading ? (
-          <AnalyticsBarChartSkeleton rows={fingerprint.length || 5} label="Loading Track Fingerprint" />
+          <AnalyticsBarChartSkeleton
+            rows={fingerprint.length || 5}
+            label="Loading Track Fingerprint"
+          />
         ) : error || fingerprint.length === 0 ? (
           <TableFeedbackState type={error ? "error" : "empty"} />
         ) : (
-          <AnalyticsBarChart points={fingerprint.map((sector) => ({
-            label: sector.label,
-            value: sector.decisiveness,
-            detail: `${formatOneDecimal(sector.relativeImpact)}% relative impact · ${sector.ridersCount} riders`,
-            color: "var(--color-brand-primary)",
-          }))} />
+          <AnalyticsBarChart
+            points={fingerprint.map((sector) => ({
+              label: sector.label,
+              value: sector.decisiveness,
+              detail: `${formatOneDecimal(sector.relativeImpact)}% relative impact · ${sector.ridersCount} riders`,
+              color: "var(--color-brand-primary)",
+            }))}
+          />
         )}
       </Panel>
       {children}
-      {!embedded && <SectionAction to={round ? `${routes.round(round.roundId)}?tab=analyze` : routes.results}>Explore Round Analysis</SectionAction>}
+      {!embedded && (
+        <SectionAction
+          to={
+            round
+              ? `${routes.round(round.roundId)}?tab=analyze`
+              : routes.results
+          }
+        >
+          Explore Round Analysis
+        </SectionAction>
+      )}
     </div>
   );
 }
@@ -361,31 +466,72 @@ export function FieldSpreadSection({
   const spread = profile?.fieldSpread;
   const round = profile?.round;
   return (
-    <div className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}>
-      {embedded ? <PanelHeader title="// Field Spread" info="Time differences between consecutive thresholds: podium P3, then approximately 16.7%, 33.3% and 66.7% of classified finishers. Duplicate and podium-level thresholds are omitted." /> : <SectionHeader
-        title="Field Spread"
-        meta={[classCode(round), `Round ${round?.roundNumber ?? "--"}`, `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`]}
-        description="Time differences between consecutive position thresholds in the final"
-      />}
-      <Panel padding="none" className={`${styles.homePanel} ${styles.analyticsPanel}`}>
+    <div
+      className={`${styles.sectionBlock} ${embedded ? styles.embeddedAnalytics : ""}`}
+    >
+      {embedded ? (
+        <PanelHeader
+          title="// Field Spread"
+          info="Time differences between consecutive thresholds: podium P3, then approximately 16.7%, 33.3% and 66.7% of classified finishers. Duplicate and podium-level thresholds are omitted."
+        />
+      ) : (
+        <SectionHeader
+          title="Field Spread"
+          meta={[
+            classCode(round),
+            `Round ${round?.roundNumber ?? "--"}`,
+            `${round?.venueName ?? round?.trackName ?? "--"}, ${round?.countryCode ?? "--"}`,
+          ]}
+          description="Time differences between consecutive position thresholds in the final"
+        />
+      )}
+      <Panel
+        padding="none"
+        className={`${styles.homePanel} ${styles.analyticsPanel}`}
+      >
         <div className={styles.speedChartHeader}>
-          <div><strong>Race Gaps</strong><span>Each bar shows the gap from the previous position threshold</span></div>
-          {!embedded && <CategorySelector value={category} onChange={onCategoryChange} />}
+          <div>
+            <strong>Race Gaps</strong>
+            <span>
+              Each bar shows the gap from the previous position threshold
+            </span>
+          </div>
+          {!embedded && (
+            <CategorySelector value={category} onChange={onCategoryChange} />
+          )}
         </div>
         {loading ? (
           <AnalyticsBarChartSkeleton rows={4} label="Loading Field Spread" />
         ) : error || !spread || spread.points.length === 0 ? (
           <TableFeedbackState type={error ? "error" : "empty"} />
         ) : (
-          <AnalyticsBarChart points={spread.points.filter((point) => point.incrementalSpread != null && point.incrementalSpreadPercent != null).map((point) => ({
-            label: `P${point.position}`,
-            value: Math.min(100, point.incrementalSpreadPercent! * 12),
-            detail: `${point.previousPosition === 1 ? "Winner" : `P${point.previousPosition}`} → P${point.position}: ${point.incrementalSpread!.toFixed(3)} s`,
-            color: "var(--color-chart-pre-final)",
-          }))} />
+          <AnalyticsBarChart
+            points={spread.points
+              .filter(
+                (point) =>
+                  point.incrementalSpread != null &&
+                  point.incrementalSpreadPercent != null,
+              )
+              .map((point) => ({
+                label: `P${point.position}`,
+                value: Math.min(100, point.incrementalSpreadPercent! * 12),
+                detail: `${point.previousPosition === 1 ? "Winner" : `P${point.previousPosition}`} → P${point.position}: ${point.incrementalSpread!.toFixed(3)} s`,
+                color: "var(--color-chart-pre-final)",
+              }))}
+          />
         )}
       </Panel>
-      {!embedded && <SectionAction to={round ? `${routes.round(round.roundId)}?tab=analyze` : routes.results}>Explore Round Analysis</SectionAction>}
+      {!embedded && (
+        <SectionAction
+          to={
+            round
+              ? `${routes.round(round.roundId)}?tab=analyze`
+              : routes.results
+          }
+        >
+          Explore Round Analysis
+        </SectionAction>
+      )}
     </div>
   );
 }

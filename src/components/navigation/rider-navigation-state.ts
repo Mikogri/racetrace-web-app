@@ -33,7 +33,9 @@ export function riderPathForLocation(pathname: string, riderId: string) {
 export function riderBasePath(pathname: string, riderId: string) {
   const suffix = `/riders/${encodeURIComponent(riderId)}`;
   const index = pathname.indexOf(suffix);
-  return index >= 0 ? pathname.slice(0, index + suffix.length) : routes.rider(riderId);
+  return index >= 0
+    ? pathname.slice(0, index + suffix.length)
+    : routes.rider(riderId);
 }
 
 export function getRiderNavigationState(
@@ -55,8 +57,7 @@ export function isNavigationSectionActive(
   const contextualSection = sectionForPath(pathname);
   const isDetailPath =
     pathname.includes("/riders/") || pathname.startsWith("/results/rounds/");
-  if (isDetailPath && contextualSection)
-    return contextualSection === itemPath;
+  if (isDetailPath && contextualSection) return contextualSection === itemPath;
   if (isDetailPath && riderSourceSection)
     return riderSourceSection === itemPath;
   return itemPath === routes.home

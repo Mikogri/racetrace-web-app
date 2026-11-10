@@ -48,13 +48,18 @@ export function MetricScatterChart({
   const yAxis = metricAxisConfiguration(points.map((point) => point.y));
   return (
     <div className={styles.panel}>
-      <h2><span>//</span> {title}</h2>
+      <h2>
+        <span>//</span> {title}
+      </h2>
       <div ref={chartRef} className={styles.chart} style={{ height }}>
         {points.length === 0 && emptyMode === "message" ? (
           <div className={styles.empty}>No comparable data</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 10, right: 18, bottom: 0, left: 0 }} accessibilityLayer={false}>
+            <ScatterChart
+              margin={{ top: 10, right: 18, bottom: 0, left: 0 }}
+              accessibilityLayer={false}
+            >
               <PlotAreaBlur />
               <CartesianGrid className={styles.grid} />
               <XAxis
@@ -67,9 +72,16 @@ export function MetricScatterChart({
                 tickLine={false}
                 axisLine={false}
                 tick={{ className: styles.tick }}
-                {...(showAxisLabels ? {
-                  label: { value: xLabel, position: "insideBottomRight" as const, offset: -8, className: styles.axisLabel },
-                } : {})}
+                {...(showAxisLabels
+                  ? {
+                      label: {
+                        value: xLabel,
+                        position: "insideBottomRight" as const,
+                        offset: -8,
+                        className: styles.axisLabel,
+                      },
+                    }
+                  : {})}
               />
               <YAxis
                 type="number"
@@ -81,15 +93,23 @@ export function MetricScatterChart({
                 axisLine={false}
                 width={36}
                 tick={{ className: styles.tick }}
-                {...(showAxisLabels ? {
-                  label: { value: yLabel, angle: -90, position: "insideLeft" as const, className: styles.axisLabel },
-                } : {})}
+                {...(showAxisLabels
+                  ? {
+                      label: {
+                        value: yLabel,
+                        angle: -90,
+                        position: "insideLeft" as const,
+                        className: styles.axisLabel,
+                      },
+                    }
+                  : {})}
               />
               <Tooltip
                 cursor={false}
                 isAnimationActive={false}
                 content={({ active, payload, coordinate }) => {
-                  const point = payload?.[0]?.payload as MetricScatterPoint | undefined;
+                  const point = payload?.[0]?.payload as
+                    MetricScatterPoint | undefined;
                   if (!active || !point) return null;
                   return (
                     <ChartTooltip
@@ -97,7 +117,10 @@ export function MetricScatterChart({
                       coordinate={coordinate}
                       containerRef={chartRef}
                       label={point.label}
-                      content={point.detail ?? `${xLabel}: ${formatOneDecimal(point.x)} · ${yLabel}: ${formatOneDecimal(point.y)}`}
+                      content={
+                        point.detail ??
+                        `${xLabel}: ${formatOneDecimal(point.x)} · ${yLabel}: ${formatOneDecimal(point.y)}`
+                      }
                     />
                   );
                 }}
@@ -107,8 +130,13 @@ export function MetricScatterChart({
                 isAnimationActive
                 animationDuration={300}
                 activeShape={(properties) => {
-                  const item = properties as { cx?: number; cy?: number; payload?: MetricScatterPoint };
-                  const color = item.payload?.color ?? "var(--color-brand-primary)";
+                  const item = properties as {
+                    cx?: number;
+                    cy?: number;
+                    payload?: MetricScatterPoint;
+                  };
+                  const color =
+                    item.payload?.color ?? "var(--color-brand-primary)";
                   return (
                     <circle
                       cx={item.cx}
@@ -124,9 +152,24 @@ export function MetricScatterChart({
                   );
                 }}
                 shape={(properties) => {
-                  const item = properties as { cx?: number; cy?: number; payload?: MetricScatterPoint };
-                  const color = item.payload?.color ?? "var(--color-brand-primary)";
-                  return <circle cx={item.cx} cy={item.cy} r={4} fill={color} fillOpacity={0.4} stroke={color} strokeWidth={1} />;
+                  const item = properties as {
+                    cx?: number;
+                    cy?: number;
+                    payload?: MetricScatterPoint;
+                  };
+                  const color =
+                    item.payload?.color ?? "var(--color-brand-primary)";
+                  return (
+                    <circle
+                      cx={item.cx}
+                      cy={item.cy}
+                      r={4}
+                      fill={color}
+                      fillOpacity={0.4}
+                      stroke={color}
+                      strokeWidth={1}
+                    />
+                  );
                 }}
               />
             </ScatterChart>

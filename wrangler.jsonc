@@ -3,6 +3,6 @@
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-10-19",
   "vars": {
-    "API_ORIGIN": "https://api.racetracemtb.com"
-  }
+    "API_ORIGIN": "https://api.racetracemtb.com",
+  },
 }

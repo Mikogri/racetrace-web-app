@@ -15,10 +15,14 @@ export function RiderTableContent({
 }) {
   let content = children;
   if (hasDataError) {
-    content = <TableFeedbackState type="error" onRetry={onRetry} animate={false} />;
+    content = (
+      <TableFeedbackState type="error" onRetry={onRetry} animate={false} />
+    );
   } else if (isEmpty) {
     content = <TableFeedbackState type="empty" animate={false} />;
   }
 
-  return <div className={`${styles.content} ${styles.resultsPage}`}>{content}</div>;
+  return (
+    <div className={`${styles.content} ${styles.resultsPage}`}>{content}</div>
+  );
 }

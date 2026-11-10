@@ -1,6 +1,13 @@
-import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
-import { metricsApiQuery, serializeFilterValues as csv } from "../../../utils/metrics-api-query";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ApiSchema, AssertApiContract } from "../../../types/api-contract";
+import {
+  metricsApiQuery,
+  serializeFilterValues as csv,
+} from "../../../utils/metrics-api-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRef } from "react";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -31,7 +38,12 @@ const rankingRiderSchema = z.object({
   finalsCount: z.number().int(),
   qualifyingRate: z.number(),
   profileImageUrl: nullableStringSchema,
-  positionChange: z.number().int().nullable().optional().transform((value) => value ?? null),
+  positionChange: z
+    .number()
+    .int()
+    .nullable()
+    .optional()
+    .transform((value) => value ?? null),
 });
 
 export const rankingResponseSchema = z.object({
@@ -79,7 +91,6 @@ type RankingParams = {
   };
 };
 
-
 export function useRanking(params: RankingParams) {
   const queryClient = useQueryClient();
   const refreshNextRequest = useRef(false);
@@ -91,34 +102,49 @@ export function useRanking(params: RankingParams) {
       const refresh = refreshNextRequest.current;
       refreshNextRequest.current = false;
       return apiClient.get("/api/v1/ranking", rankingResponseSchema, {
-            signal,
-            query: {
-              refresh: refresh ? 1 : undefined,
-              ...metricsApiQuery(params.filters),
-              category: params.filters.categories[0] ?? "elite_men",
-              search: params.search,
-              page: params.page,
-              pageSize: params.pageSize ?? GLOBAL_PAGE_SIZE,
-              sortBy: params.sortBy,
-              sortDirection: params.sortDirection,
-              comparison: params.comparison,
-              comparisonSeason: csv(params.comparisonFilters?.filters.seasons ?? []),
-              comparisonTrackId: csv(params.comparisonFilters?.filters.tracks ?? []),
-              comparisonConditionId: csv(params.comparisonFilters?.filters.conditions ?? []),
-              comparisonCompetitionClassId: csv(params.comparisonFilters?.filters.classes ?? []),
-              comparisonCategory: params.comparisonFilters?.filters.categories[0],
-              comparisonSearch: params.comparisonFilters?.search,
-            },
-          });
+        signal,
+        query: {
+          refresh: refresh ? 1 : undefined,
+          ...metricsApiQuery(params.filters),
+          category: params.filters.categories[0] ?? "elite_men",
+          search: params.search,
+          page: params.page,
+          pageSize: params.pageSize ?? GLOBAL_PAGE_SIZE,
+          sortBy: params.sortBy,
+          sortDirection: params.sortDirection,
+          comparison: params.comparison,
+          comparisonSeason: csv(
+            params.comparisonFilters?.filters.seasons ?? [],
+          ),
+          comparisonTrackId: csv(
+            params.comparisonFilters?.filters.tracks ?? [],
+          ),
+          comparisonConditionId: csv(
+            params.comparisonFilters?.filters.conditions ?? [],
+          ),
+          comparisonCompetitionClassId: csv(
+            params.comparisonFilters?.filters.classes ?? [],
+          ),
+          comparisonCategory: params.comparisonFilters?.filters.categories[0],
+          comparisonSearch: params.comparisonFilters?.search,
+        },
+      });
     },
   });
   return {
     ...query,
     clearCache: () => {
-      queryClient.removeQueries({ queryKey: rankingQueryKeys.lists(), type: "inactive" });
+      queryClient.removeQueries({
+        queryKey: rankingQueryKeys.lists(),
+        type: "inactive",
+      });
       refreshNextRequest.current = true;
       return query.refetch();
     },
   };
 }
-export type RankingWireContract = AssertApiContract<ApiSchema<'RankingResponseDto'> extends z.input<typeof rankingResponseSchema> ? true : false>
+export type RankingWireContract = AssertApiContract<
+  ApiSchema<"RankingResponseDto"> extends z.input<typeof rankingResponseSchema>
+    ? true
+    : false
+>;

@@ -6,9 +6,13 @@
   gap: var(--space-24);
 }
 
-.tablePanel { height: 100%; }
+.tablePanel {
+  height: 100%;
+}
 
-.tablePanel > :nth-child(2) { flex: 1; }
+.tablePanel > :nth-child(2) {
+  flex: 1;
+}
 
 .sectionTitle,
 .historyChart h2,
@@ -23,7 +27,9 @@
   line-height: 18px;
 }
 
-.sectionTitle > span { color: var(--color-brand-primary); }
+.sectionTitle > span {
+  color: var(--color-brand-primary);
+}
 
 .barChart {
   width: 100%;
@@ -67,10 +73,14 @@
 }
 
 .comparisonTable th:first-child,
-.comparisonTable td:first-child { width: 26%; }
+.comparisonTable td:first-child {
+  width: 26%;
+}
 
 .tablePanel th:not(:first-child),
-.tablePanel td:not(:first-child) { text-align: center; }
+.tablePanel td:not(:first-child) {
+  text-align: center;
+}
 
 .riderLink {
   color: var(--color-text-secondary);
@@ -101,12 +111,22 @@
   border-radius: 1px;
 }
 
-.sectorBest { background: var(--color-sector-gain-background); }
-.sectorLoss { background: var(--color-sector-loss-background); }
+.sectorBest {
+  background: var(--color-sector-gain-background);
+}
+.sectorLoss {
+  background: var(--color-sector-loss-background);
+}
 
-.better { color: var(--color-sector-gain-text); }
-.worse { color: var(--color-sector-loss-text); }
-.tie { color: var(--color-text-primary); }
+.better {
+  color: var(--color-sector-gain-text);
+}
+.worse {
+  color: var(--color-sector-loss-text);
+}
+.tie {
+  color: var(--color-text-primary);
+}
 
 .note {
   margin: 0;
@@ -129,13 +149,18 @@
   border-radius: 0;
 }
 
-.resultsChart { overflow: visible; }
-
+.resultsChart {
+  overflow: visible;
+}
 
 @media (max-width: 900px) {
-  .historyGrid { grid-template-columns: 1fr; }
+  .historyGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 620px) {
-  .barChart { height: 240px; }
+  .barChart {
+    height: 240px;
+  }
 }

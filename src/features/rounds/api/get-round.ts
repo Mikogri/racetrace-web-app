@@ -1,4 +1,4 @@
-import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
+import type { ApiSchema, AssertApiContract } from "../../../types/api-contract";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "../../../lib/api-client";
@@ -118,15 +118,18 @@ export function useRoundSessions(roundId: string) {
   });
 }
 
-export function useRoundResults(params: {
-  roundId: string;
-  category: string;
-  sessionType: string;
-  page: number;
-  timeView: "sectors" | "splits";
-  sortBy: "finalTime" | `time:${number}`;
-  sortDirection: "asc" | "desc";
-}, enabled = true) {
+export function useRoundResults(
+  params: {
+    roundId: string;
+    category: string;
+    sessionType: string;
+    page: number;
+    timeView: "sectors" | "splits";
+    sortBy: "finalTime" | `time:${number}`;
+    sortDirection: "asc" | "desc";
+  },
+  enabled = true,
+) {
   return useQuery({
     queryKey: roundQueryKeys.results(params.roundId, params),
     queryFn: ({ signal }) =>
@@ -154,4 +157,10 @@ export function useRoundResults(params: {
     placeholderData: keepPreviousData,
   });
 }
-export type RoundSessionsWireContract = AssertApiContract<ApiSchema<'PublicPagedResponseOfCommonSessionDto'> extends z.input<typeof sessionsResponseSchema> ? true : false>
+export type RoundSessionsWireContract = AssertApiContract<
+  ApiSchema<"PublicPagedResponseOfCommonSessionDto"> extends z.input<
+    typeof sessionsResponseSchema
+  >
+    ? true
+    : false
+>;

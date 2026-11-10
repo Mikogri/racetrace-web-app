@@ -127,7 +127,6 @@ export function TableFeedbackState({
   );
 }
 
-
 export function ErrorState({
   onRetry,
 }: {

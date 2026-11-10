@@ -1,7 +1,13 @@
 import styles from "./live-status-badge.module.css";
-import { formatDomainLabel, useDomainMetadata } from "../../../utils/domain-metadata";
+import {
+  formatDomainLabel,
+  useDomainMetadata,
+} from "../../../utils/domain-metadata";
 
-export function LiveStatusBadge({ status, domain = "sessionStatuses" }: {
+export function LiveStatusBadge({
+  status,
+  domain = "sessionStatuses",
+}: {
   status: string | null | undefined;
   domain?: "roundStatuses" | "sessionStatuses";
 }) {
@@ -9,8 +15,16 @@ export function LiveStatusBadge({ status, domain = "sessionStatuses" }: {
   const normalized = status?.trim().toLowerCase() ?? "unknown";
   const isLive = ["live", "active", "running"].includes(normalized);
   const isCompleted = ["completed", "finished", "final"].includes(normalized);
-  const isUpcoming = ["scheduled", "upcoming", "confirmed"].includes(normalized);
-  const label = isLive ? "Live" : isCompleted ? "Completed" : isUpcoming ? "Upcoming" : normalized || "Unknown";
+  const isUpcoming = ["scheduled", "upcoming", "confirmed"].includes(
+    normalized,
+  );
+  const label = isLive
+    ? "Live"
+    : isCompleted
+      ? "Completed"
+      : isUpcoming
+        ? "Upcoming"
+        : normalized || "Unknown";
 
   return (
     <span

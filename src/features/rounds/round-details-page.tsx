@@ -4,7 +4,10 @@ import { useRequiredRouteParam } from "../../app/routes/use-required-route-param
 import { RouteLoadingPage } from "../../app/routes/route-states";
 import type { SortDirection } from "../../components/data-display/data-table";
 import { normalizeDisplayName } from "../../utils/display-name";
-import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatSessionLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import {
   ErrorState,
   LoadingState,
@@ -117,47 +120,69 @@ export default function RoundDetailsPage() {
   const categories = sortCategoryValues(
     (sessionsQuery.data?.items ?? [])
       .map((item) => item.category)
-      .filter((item): item is string => Boolean(item) && !isCombinedRoundCategory(item!)),
+      .filter(
+        (item): item is string =>
+          Boolean(item) && !isCombinedRoundCategory(item!),
+      ),
   );
-  if (categories.some((value) => value === "elite_men" || value === "junior_men")) categories.push("open_men");
-  if (categories.some((value) => value === "elite_women" || value === "junior_women")) categories.push("open_women");
+  if (
+    categories.some((value) => value === "elite_men" || value === "junior_men")
+  )
+    categories.push("open_men");
+  if (
+    categories.some(
+      (value) => value === "elite_women" || value === "junior_women",
+    )
+  )
+    categories.push("open_women");
   const selectedCategory = categories.includes(category)
     ? category
     : (categories.find((item) => item === "elite_men") ?? categories[0] ?? "");
   const sessionTypes = [
-      "all",
-      ...new Set(
-        [...(sessionsQuery.data?.items ?? [])
-          .filter((item) => selectedCategory === "open_men"
+    "all",
+    ...new Set([
+      ...(sessionsQuery.data?.items ?? [])
+        .filter((item) =>
+          selectedCategory === "open_men"
             ? item.category === "elite_men" || item.category === "junior_men"
-            : selectedCategory === "open_women" ? item.category === "elite_women" || item.category === "junior_women"
-            : item.category === selectedCategory)
-          .map((item) => item.sessionType)
-          .filter((item): item is string => Boolean(item)), ...(sessionType && sessionType !== "all" ? [sessionType] : [])],
-      ),
+            : selectedCategory === "open_women"
+              ? item.category === "elite_women" ||
+                item.category === "junior_women"
+              : item.category === selectedCategory,
+        )
+        .map((item) => item.sessionType)
+        .filter((item): item is string => Boolean(item)),
+      ...(sessionType && sessionType !== "all" ? [sessionType] : []),
+    ]),
   ];
   const selectedSessionType = sessionTypes.includes(sessionType)
     ? sessionType
     : (sessionTypes.find((item) => item === "final") ?? sessionTypes[0] ?? "");
 
-  const resultsQuery = useRoundResults({
-    roundId,
-    category: selectedCategory,
-    sessionType: selectedSessionType,
-    page,
-    timeView,
-    sortBy,
-    sortDirection,
-  }, tab === "results");
-  const podiumQuery = useRoundResults({
-    roundId,
-    category: selectedCategory,
-    sessionType: selectedSessionType,
-    page: 1,
-    timeView,
-    sortBy: "finalTime",
-    sortDirection: "desc",
-  }, tab === "results");
+  const resultsQuery = useRoundResults(
+    {
+      roundId,
+      category: selectedCategory,
+      sessionType: selectedSessionType,
+      page,
+      timeView,
+      sortBy,
+      sortDirection,
+    },
+    tab === "results",
+  );
+  const podiumQuery = useRoundResults(
+    {
+      roundId,
+      category: selectedCategory,
+      sessionType: selectedSessionType,
+      page: 1,
+      timeView,
+      sortBy: "finalTime",
+      sortDirection: "desc",
+    },
+    tab === "results",
+  );
   const loadingPage = roundQuery.isPending || sessionsQuery.isPending;
   const pageError = roundQuery.error ?? sessionsQuery.error;
   const round = roundQuery.data;
@@ -174,7 +199,9 @@ export default function RoundDetailsPage() {
   if (loadingPage) return <RouteLoadingPage />;
 
   return (
-    <PageContainer className={tab === "analyze" ? styles.analyticsPage : undefined}>
+    <PageContainer
+      className={tab === "analyze" ? styles.analyticsPage : undefined}
+    >
       <div className={styles.pageHeaderStack}>
         <BackButton fallback={routes.results} />
         <PageHeader
@@ -207,20 +234,33 @@ export default function RoundDetailsPage() {
               <SegmentedControl
                 label="Round view"
                 value={tab}
-                options={[{ value: "results", label: "Results" }, { value: "analyze", label: "Analytics" }]}
-                onChange={(value) => setSearchParams((current) => {
-                  const next = new URLSearchParams(current);
-                  if (value === "results") next.delete("tab");
-                  else next.set("tab", value);
-                  return next;
-                }, { replace: true, preventScrollReset: true })}
+                options={[
+                  { value: "results", label: "Results" },
+                  { value: "analyze", label: "Analytics" },
+                ]}
+                onChange={(value) =>
+                  setSearchParams(
+                    (current) => {
+                      const next = new URLSearchParams(current);
+                      if (value === "results") next.delete("tab");
+                      else next.set("tab", value);
+                      return next;
+                    },
+                    { replace: true, preventScrollReset: true },
+                  )
+                }
               />
               <span className={styles.filterDot} aria-hidden="true" />
               <SegmentedControl
                 label="Category"
                 options={categories.map((value) => ({
                   value,
-                  label: value === "open_men" ? "OM" : value === "open_women" ? "OW" : formatCategoryAbbreviation(value),
+                  label:
+                    value === "open_men"
+                      ? "OM"
+                      : value === "open_women"
+                        ? "OW"
+                        : formatCategoryAbbreviation(value),
                   tooltip: formatCategoryLabel(value),
                 }))}
                 value={selectedCategory}
@@ -244,8 +284,14 @@ export default function RoundDetailsPage() {
                 disabled={tab === "analyze"}
                 options={sessionTypes.map((value) => ({
                   value,
-                  label: value === "all" ? "All" : formatSessionLabel(value, "shortName"),
-                  tooltip: value === "all" ? "Best completed run per rider across all sessions" : formatSessionLabel(value),
+                  label:
+                    value === "all"
+                      ? "All"
+                      : formatSessionLabel(value, "shortName"),
+                  tooltip:
+                    value === "all"
+                      ? "Best completed run per rider across all sessions"
+                      : formatSessionLabel(value),
                 }))}
                 value={tab === "analyze" ? "all" : selectedSessionType}
                 onChange={(value) => {
@@ -255,69 +301,83 @@ export default function RoundDetailsPage() {
               />
             </div>
 
-            {tab === "results" && <SummaryBanner loading={resultsQuery.isFetching}>
-              {`${formatCategoryLabel(selectedCategory)} · ${results?.session.completedRidersCount ?? "--"} Finishes · ${results ? (timeView === "splits" ? results.session.splitCount : results.session.sectorCount) : "--"} ${timeView === "splits" ? "Splits" : "Sectors"} · ${round.conditionName ?? "Condition unknown"}`}
-            </SummaryBanner>}
+            {tab === "results" && (
+              <SummaryBanner loading={resultsQuery.isFetching}>
+                {`${formatCategoryLabel(selectedCategory)} · ${results?.session.completedRidersCount ?? "--"} Finishes · ${results ? (timeView === "splits" ? results.session.splitCount : results.session.sectorCount) : "--"} ${timeView === "splits" ? "Splits" : "Sectors"} · ${round.conditionName ?? "Condition unknown"}`}
+              </SummaryBanner>
+            )}
 
-            {tab === "analyze" ? <RoundAnalysis roundId={roundId} season={round.season!} category={selectedCategory} onCategoryChange={setCategory} conditionName={round.conditionName} /> : <>
-            <Podium data={podiumQuery.data} />
-
-            <section
-              className={styles.leaderboard}
-              aria-labelledby="round-leaderboard-title"
-            >
-              <header className={styles.leaderboardHeader}>
-                <div>
-                  <h2 id="round-leaderboard-title">Leaderboard</h2>
-                  <p>Rider positions and performance overview</p>
-                </div>
-                <SegmentedControl
-                  label="Timing view"
-                  options={[
-                    { value: "sectors", label: "Sectors" },
-                    { value: "splits", label: "Splits" },
-                  ]}
-                  value={timeView}
-                  onChange={(value) => {
-                    setTimeView(value);
-                    setPage(1);
-                  }}
-                />
-              </header>
-
-              {resultsQuery.isPending ? <LoadingState /> : null}
-              {resultsQuery.isError ? (
-                <ErrorState
-                  message={resultsQuery.error.message}
-                  onRetry={() => void resultsQuery.refetch()}
-                />
-              ) : null}
-              {results ? (
-                results.items.length === 0 ? (
-                  <TableFeedbackState type="empty" />
-                ) : (
-                  <SessionResultsTable
-                    data={results}
-                    category={selectedCategory}
-                    sortBy={sortBy}
-                    sortDirection={sortDirection}
-                    onSort={updateSort}
-                    loading={resultsQuery.isFetching && !resultsQuery.isPending}
-                    embedded
-                  />
-                )
-              ) : null}
-            </section>
-
-            {results && results.items.length > 0 ? (
-              <Pagination
-                page={results.page}
-                totalPages={results.totalPages}
-                pageSize={results.pageSize}
-                onPageChange={setPage}
+            {tab === "analyze" ? (
+              <RoundAnalysis
+                roundId={roundId}
+                season={round.season!}
+                category={selectedCategory}
+                onCategoryChange={setCategory}
+                conditionName={round.conditionName}
               />
-            ) : null}
-            </>}
+            ) : (
+              <>
+                <Podium data={podiumQuery.data} />
+
+                <section
+                  className={styles.leaderboard}
+                  aria-labelledby="round-leaderboard-title"
+                >
+                  <header className={styles.leaderboardHeader}>
+                    <div>
+                      <h2 id="round-leaderboard-title">Leaderboard</h2>
+                      <p>Rider positions and performance overview</p>
+                    </div>
+                    <SegmentedControl
+                      label="Timing view"
+                      options={[
+                        { value: "sectors", label: "Sectors" },
+                        { value: "splits", label: "Splits" },
+                      ]}
+                      value={timeView}
+                      onChange={(value) => {
+                        setTimeView(value);
+                        setPage(1);
+                      }}
+                    />
+                  </header>
+
+                  {resultsQuery.isPending ? <LoadingState /> : null}
+                  {resultsQuery.isError ? (
+                    <ErrorState
+                      message={resultsQuery.error.message}
+                      onRetry={() => void resultsQuery.refetch()}
+                    />
+                  ) : null}
+                  {results ? (
+                    results.items.length === 0 ? (
+                      <TableFeedbackState type="empty" />
+                    ) : (
+                      <SessionResultsTable
+                        data={results}
+                        category={selectedCategory}
+                        sortBy={sortBy}
+                        sortDirection={sortDirection}
+                        onSort={updateSort}
+                        loading={
+                          resultsQuery.isFetching && !resultsQuery.isPending
+                        }
+                        embedded
+                      />
+                    )
+                  ) : null}
+                </section>
+
+                {results && results.items.length > 0 ? (
+                  <Pagination
+                    page={results.page}
+                    totalPages={results.totalPages}
+                    pageSize={results.pageSize}
+                    onPageChange={setPage}
+                  />
+                ) : null}
+              </>
+            )}
           </>
         )
       ) : null}

@@ -56,22 +56,19 @@
 }
 
 .activeScatterPoint {
-  filter:
-    drop-shadow(0 0 3px var(--active-point-color))
+  filter: drop-shadow(0 0 3px var(--active-point-color))
     drop-shadow(0 0 8px var(--active-point-color));
   animation: active-point-glow 1200ms ease-in-out infinite alternate;
 }
 
 @keyframes active-point-glow {
   from {
-    filter:
-      drop-shadow(0 0 2px var(--active-point-color))
+    filter: drop-shadow(0 0 2px var(--active-point-color))
       drop-shadow(0 0 5px var(--active-point-color));
   }
 
   to {
-    filter:
-      drop-shadow(0 0 5px var(--active-point-color))
+    filter: drop-shadow(0 0 5px var(--active-point-color))
       drop-shadow(0 0 12px var(--active-point-color));
   }
 }

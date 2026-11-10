@@ -27,10 +27,12 @@
   background: transparent;
   border: 0;
   border-radius: var(--radius-control);
-  transition: color var(--component-transition-control), background-color var(--component-transition-control);
+  transition:
+    color var(--component-transition-control),
+    background-color var(--component-transition-control);
 }
 
-.option[aria-selected='false'] {
+.option[aria-selected="false"] {
   color: var(--color-text-unselected);
 }
 
@@ -40,11 +42,11 @@
 }
 
 /* In single-choice menus the chosen item stays still on hover. */
-[aria-multiselectable='false'] .option[aria-selected='true'] {
+[aria-multiselectable="false"] .option[aria-selected="true"] {
   --color-interaction-subtle-hover-background: transparent;
 }
 
-[aria-multiselectable='false'] .option[aria-selected='true']:hover {
+[aria-multiselectable="false"] .option[aria-selected="true"]:hover {
   color: var(--color-text-secondary);
   background: transparent;
 }

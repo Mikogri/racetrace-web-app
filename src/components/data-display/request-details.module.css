@@ -30,7 +30,7 @@
   color: var(--color-text-primary);
 }
 
-.details .header:hover:not(:disabled):not([aria-expanded='true']) {
+.details .header:hover:not(:disabled):not([aria-expanded="true"]) {
   background-color: transparent;
 }
 

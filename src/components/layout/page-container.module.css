@@ -4,7 +4,8 @@
   align-content: start;
   width: min(100%, var(--layout-content-max-width));
   min-height: calc(100svh - var(--layout-menu-height));
-  padding: var(--spacing-page-padding-y) var(--spacing-page-padding-x-responsive);
+  padding: var(--spacing-page-padding-y)
+    var(--spacing-page-padding-x-responsive);
   margin-inline: auto;
   border-inline: var(--component-border-width) solid var(--color-border-default);
 }

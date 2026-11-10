@@ -1,2 +1,1 @@
-export const GLOBAL_PAGE_SIZE = 30
-
+export const GLOBAL_PAGE_SIZE = 30;

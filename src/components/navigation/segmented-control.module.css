@@ -22,18 +22,21 @@
     border-color var(--component-transition-fast) ease;
 }
 
-.option[aria-pressed='false'] {
+.option[aria-pressed="false"] {
   color: var(--color-text-unselected);
 }
 
-.option:hover:not(:disabled):not([aria-pressed='true']) {
+.option:hover:not(:disabled):not([aria-pressed="true"]) {
   color: var(--color-text-secondary);
   background: var(--color-surface-field-hover);
 }
 
-.option:disabled { cursor: default; opacity: 0.5; }
+.option:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
 
-.option[aria-pressed='true'] {
+.option[aria-pressed="true"] {
   color: var(--color-text-primary);
   background: var(--color-surface-overlay);
   border-color: var(--color-border-strong);

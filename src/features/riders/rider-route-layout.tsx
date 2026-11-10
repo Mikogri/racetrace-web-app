@@ -21,16 +21,11 @@ import {
 } from "../../utils/categories";
 import { riderImageFromId } from "../../utils/rider-image";
 import { useRiderOverview, type RiderOverview } from "./api/get-rider-overview";
-import {
-  type RiderSessionResult,
-} from "./api/rider-session-schema";
-import {
-  type RiderTeamHistoryItem,
-} from "./api/team-history-schema";
+import { type RiderSessionResult } from "./api/rider-session-schema";
+import { type RiderTeamHistoryItem } from "./api/team-history-schema";
 import styles from "./rider-route-layout.module.css";
 import { pageMeta } from "../../config/seo";
 import { usePageMeta } from "../../hooks/use-page-meta";
-
 
 const countries: Record<string, { name: string; flag: string }> = {
   AND: { name: "Andorra", flag: "🇦🇩" },
@@ -101,7 +96,12 @@ export type RiderOutletContext = {
 
 function emptyRiderOverview(riderId: string): RiderOverview {
   return {
-    chartStatistics: { resultsAveragePosition: null, cumulativePointsByRound: {}, preFinalAverageByTrack: {}, cumulativeRatingByRound: {} },
+    chartStatistics: {
+      resultsAveragePosition: null,
+      cumulativePointsByRound: {},
+      preFinalAverageByTrack: {},
+      cumulativeRatingByRound: {},
+    },
     statistics: {
       riderId,
       uciId: null,
@@ -173,15 +173,12 @@ export default function RiderRouteLayout() {
   const riderId = useRequiredRouteParam("riderId");
   const location = useLocation();
   const riderBase = riderBasePath(location.pathname, riderId);
-  const tabPaths = [
-    riderBase,
-    `${riderBase}/results`,
-    `${riderBase}/tracks`,
-  ];
+  const tabPaths = [riderBase, `${riderBase}/results`, `${riderBase}/tracks`];
   const activeTabIndex = Math.max(
     0,
     tabPaths.findIndex(
-      (path) => path.replace(/\/$/, "") === location.pathname.replace(/\/$/, ""),
+      (path) =>
+        path.replace(/\/$/, "") === location.pathname.replace(/\/$/, ""),
     ),
   );
   const previousTabIndex = useRef(activeTabIndex);
@@ -201,9 +198,7 @@ export default function RiderRouteLayout() {
   );
   const overviewQuery = useRiderOverview(riderId, appliedFilters);
   const isInitialLoading = overviewQuery.isPending && !overviewQuery.data;
-  const isUpdating =
-    !isInitialLoading &&
-    overviewQuery.isFetching;
+  const isUpdating = !isInitialLoading && overviewQuery.isFetching;
   const hasDataError = overviewQuery.isError && !overviewQuery.data;
   const overview = overviewQuery.data ?? emptyRiderOverview(riderId);
   const sessionResults = overview.sessionResults;
@@ -213,9 +208,7 @@ export default function RiderRouteLayout() {
     statistics?.fullName,
   );
   const country = countryDetails(statistics?.countryCode ?? null);
-  const riderGender =
-    statistics?.gender ??
-    statistics?.sex;
+  const riderGender = statistics?.gender ?? statistics?.sex;
   const riderFilterOptions = useMemo(
     () => ({
       ...filterOptions.options,
@@ -233,7 +226,11 @@ export default function RiderRouteLayout() {
     if (initializedCategoryRider.current !== riderId) {
       initializedCategoryRider.current = riderId;
       const juniorCategory = juniorCategoryForAge(statistics.age, riderGender);
-      if (juniorCategory && (filters.categories.length !== 1 || filters.categories[0] !== juniorCategory)) {
+      if (
+        juniorCategory &&
+        (filters.categories.length !== 1 ||
+          filters.categories[0] !== juniorCategory)
+      ) {
         setFilters({ ...filters, categories: [juniorCategory] });
         return;
       }
@@ -250,7 +247,15 @@ export default function RiderRouteLayout() {
           : [],
       });
     }
-  }, [filters, riderFilterOptions.categories, riderGender, setFilters, statistics, overviewQuery.isPlaceholderData, riderId]);
+  }, [
+    filters,
+    riderFilterOptions.categories,
+    riderGender,
+    setFilters,
+    statistics,
+    overviewQuery.isPlaceholderData,
+    riderId,
+  ]);
 
   useEffect(() => {
     previousTabIndex.current = activeTabIndex;
@@ -287,9 +292,7 @@ export default function RiderRouteLayout() {
                 {country.name} ({statistics?.countryCode ?? "---"})
               </span>
             </div>
-            <h1 className={styles.riderName}>
-              {statistics?.fullName ?? "--"}
-            </h1>
+            <h1 className={styles.riderName}>{statistics?.fullName ?? "--"}</h1>
             <div className={styles.team}>
               <span className={styles.teamName}>
                 {statistics?.teamName

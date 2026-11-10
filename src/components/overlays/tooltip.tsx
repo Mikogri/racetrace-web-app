@@ -1,4 +1,9 @@
-import { useLayoutEffect, useState, type ReactNode, type RefObject } from "react";
+import {
+  useLayoutEffect,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import {
   FloatingPortal,
   autoUpdate,
@@ -110,9 +115,7 @@ export function ChartTooltip({
   label?: ReactNode;
 }) {
   const open = Boolean(
-    active &&
-    Number.isFinite(coordinate?.x) &&
-    Number.isFinite(coordinate?.y),
+    active && Number.isFinite(coordinate?.x) && Number.isFinite(coordinate?.y),
   );
   const {
     refs: { setReference, setFloating },
@@ -139,7 +142,12 @@ export function ChartTooltip({
       contextElement: container,
       getBoundingClientRect() {
         const bounds = container.getBoundingClientRect();
-        return new DOMRect(bounds.left + Number(x), bounds.top + Number(y), 0, 0);
+        return new DOMRect(
+          bounds.left + Number(x),
+          bounds.top + Number(y),
+          0,
+          0,
+        );
       },
     });
 

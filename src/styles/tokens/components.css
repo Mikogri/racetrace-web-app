@@ -32,20 +32,35 @@
   --component-transition-press: 140ms;
   --component-transition-settle: 520ms;
   --component-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --component-shadow-panel: 0 1px 0 rgb(255 255 255 / 5%) inset, 0 24px 64px -16px var(--color-shadow-panel);
-  --component-shadow-sm: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 2px rgb(0 0 0 / 40%);
+  --component-shadow-panel:
+    0 1px 0 rgb(255 255 255 / 5%) inset,
+    0 24px 64px -16px var(--color-shadow-panel);
+  --component-shadow-sm:
+    0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 2px rgb(0 0 0 / 40%);
   --component-glass-blur: blur(20px) saturate(120%);
-  --component-gloss: linear-gradient(180deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 1.5%) 38%, transparent 70%);
+  --component-gloss: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 7%),
+    rgb(255 255 255 / 1.5%) 38%,
+    transparent 70%
+  );
   --component-gloss-edge: inset 0 1px 0 rgb(255 255 255 / 9%);
-  --component-light-edge: linear-gradient(90deg, transparent, rgb(255 255 255 / 55%), transparent) top left 12% / 76% 1px no-repeat;
+  --component-light-edge: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 55%),
+      transparent
+    )
+    top left 12% / 76% 1px no-repeat;
   --component-frost-surface: rgb(13 13 13 / 55%);
   --component-banner-surface: rgb(18 18 18 / 40%);
   --component-light-blur: blur(3px);
   --component-nav-blur: blur(12px);
   --component-frost-blur: blur(8px);
-  --component-glass-surface: var(--component-light-edge), var(--component-gloss), var(--color-surface-glass);
+  --component-glass-surface:
+    var(--component-light-edge), var(--component-gloss),
+    var(--color-surface-glass);
   --component-glass-shadow:
-    var(--component-gloss-edge),
-    0 -20px 80px -30px rgb(255 255 255 / 12%),
+    var(--component-gloss-edge), 0 -20px 80px -30px rgb(255 255 255 / 12%),
     0 40px 90px -30px rgb(0 0 0 / 90%);
 }

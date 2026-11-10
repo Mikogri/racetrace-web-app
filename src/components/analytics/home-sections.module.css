@@ -13,20 +13,44 @@
   border-radius: 0;
 }
 
-
-.embeddedAnalytics > div:first-child p { text-transform: none; }
-.embeddedAnalytics .homePanel { border: 0; border-radius: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
-.embeddedAnalytics .speedChartHeader { display: none; }
+.embeddedAnalytics > div:first-child p {
+  text-transform: none;
+}
+.embeddedAnalytics .homePanel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.embeddedAnalytics .speedChartHeader {
+  display: none;
+}
 .embeddedAnalytics .speedChart,
 .embeddedAnalytics .speedChartSkeleton,
-.embeddedAnalytics .analyticsChart { height: 275px; padding: 0; }
-.embeddedAnalytics .analyticsPanel { min-height: 0; }
-.embeddedAnalytics > div:first-child { width: 100%; }
-.embeddedAnalytics .analyticsSkeletonRows { border: 0; border-radius: 0; }
+.embeddedAnalytics .analyticsChart {
+  height: 275px;
+  padding: 0;
+}
+.embeddedAnalytics .analyticsPanel {
+  min-height: 0;
+}
+.embeddedAnalytics > div:first-child {
+  width: 100%;
+}
+.embeddedAnalytics .analyticsSkeletonRows {
+  border: 0;
+  border-radius: 0;
+}
 .embeddedAnalytics .speedChartSkeleton > span {
   border: 0;
   border-radius: 0;
-  background: repeating-linear-gradient(to bottom, transparent 0 46px, var(--color-border-default) 46px 48px);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 46px,
+    var(--color-border-default) 46px 48px
+  );
 }
 
 .sectionHeader {
@@ -239,8 +263,7 @@
 }
 
 .speedActivePoint {
-  filter:
-    drop-shadow(0 0 3px var(--speed-point-color))
+  filter: drop-shadow(0 0 3px var(--speed-point-color))
     drop-shadow(0 0 8px var(--speed-point-color));
 }
 
@@ -553,7 +576,6 @@
   line-height: 16px;
 }
 
-
 .podiumPredictorPanel {
   display: flex;
   flex-direction: column;
@@ -614,8 +636,7 @@
   line-height: 15px;
   text-decoration: none;
   text-overflow: ellipsis;
-  transition:
-    color var(--component-transition-control);
+  transition: color var(--component-transition-control);
   white-space: nowrap;
 }
 

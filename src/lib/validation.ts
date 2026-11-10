@@ -1,6 +1,8 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-export const entityIdSchema = z.union([z.string(), z.number()]).transform(String)
+export const entityIdSchema = z
+  .union([z.string(), z.number()])
+  .transform(String);
 
 export const paginationSchema = z
   .object({
@@ -16,7 +18,13 @@ export const paginationSchema = z
     pageSize: value.pageSize ?? value.limit ?? 30,
     totalItems: value.totalItems ?? value.total ?? 0,
     totalPages: value.totalPages,
-  }))
+  }));
 
-export const nullableStringSchema = z.string().nullish().transform((value) => value ?? null)
-export const nullableNumberSchema = z.number().nullish().transform((value) => value ?? null)
+export const nullableStringSchema = z
+  .string()
+  .nullish()
+  .transform((value) => value ?? null);
+export const nullableNumberSchema = z
+  .number()
+  .nullish()
+  .transform((value) => value ?? null);

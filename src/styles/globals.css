@@ -1,11 +1,11 @@
-@import './tokens/primitives.css';
-@import './tokens/colors.css';
-@import './tokens/typography.css';
-@import './tokens/spacing.css';
-@import './tokens/radii.css';
-@import './tokens/layout.css';
-@import './tokens/components.css';
-@import './reset.css';
+@import "./tokens/primitives.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/radii.css";
+@import "./tokens/layout.css";
+@import "./tokens/components.css";
+@import "./reset.css";
 
 :root {
   font-family: var(--font-family-body);
@@ -31,7 +31,9 @@ b {
   font-weight: var(--font-weight-semibold);
 }
 
-button:hover:not(:disabled):not([aria-pressed='true']):not([aria-expanded='true']):not([data-button-variant='primary']) {
+button:hover:not(:disabled):not([aria-pressed="true"]):not(
+    [aria-expanded="true"]
+  ):not([data-button-variant="primary"]) {
   background-color: var(--color-interaction-subtle-hover-background);
 }
 

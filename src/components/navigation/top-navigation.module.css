@@ -22,7 +22,9 @@
 .brand {
   position: absolute;
   top: 50%;
-  left: calc((var(--layout-menu-height) - var(--component-logo-mark-height)) / 2);
+  left: calc(
+    (var(--layout-menu-height) - var(--component-logo-mark-height)) / 2
+  );
   width: fit-content;
   transform: translateY(-50%);
 }
@@ -48,7 +50,8 @@
 }
 
 .link {
-  padding: var(--spacing-icon-button-sm-padding-y) var(--spacing-icon-button-sm-padding-x);
+  padding: var(--spacing-icon-button-sm-padding-y)
+    var(--spacing-icon-button-sm-padding-x);
   color: var(--color-text-secondary);
   font-family: var(--font-family-data);
   font-size: var(--font-size-control);

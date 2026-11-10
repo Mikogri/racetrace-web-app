@@ -22,7 +22,10 @@ import { RatingValue } from "../../components/data-display/rating-value";
 import { riderBasePath } from "../../components/navigation/rider-navigation-state";
 import { ChartTooltip, TooltipRows } from "../../components/overlays/tooltip";
 import { formatOneDecimal } from "../../utils/formatters";
-import { formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatSessionLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import { getCompetitionClassColors } from "../../utils/competition-classes";
 import type { RiderSessionResult } from "./api/rider-session-schema";
 import type { RiderOutletContext } from "./rider-route-layout";
@@ -55,53 +58,92 @@ function PressureDeltaChart({
 }) {
   const chartRef = useRef<HTMLDivElement>(null);
   const data = points.map((point, index) => ({
-      ...point,
-      label: String(point.roundNumber ?? index + 1),
-      delta: point.preFinalPace == null || point.finalPace == null
+    ...point,
+    label: String(point.roundNumber ?? index + 1),
+    delta:
+      point.preFinalPace == null || point.finalPace == null
         ? null
         : point.finalPace - point.preFinalPace,
-    }));
+  }));
   const maximumBarSize = Math.max(7, Math.min(24, 180 / data.length));
 
   return (
     <div ref={chartRef} className={styles.pressureDeltaChart}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 10, right: 8, bottom: 0, left: 0 }} accessibilityLayer={false}>
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 8, bottom: 0, left: 0 }}
+          accessibilityLayer={false}
+        >
           <PlotAreaBlur />
           <CartesianGrid className={styles.pressureChartGrid} />
-          <XAxis dataKey="label" height={40} tickLine={false} axisLine={false} tickMargin={12} tick={{ className: styles.pressureChartTick }} />
-          <YAxis tickLine={false} axisLine={false} tickMargin={8} width={38} tick={{ className: styles.pressureChartTick }} />
+          <XAxis
+            dataKey="label"
+            height={40}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={12}
+            tick={{ className: styles.pressureChartTick }}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            width={38}
+            tick={{ className: styles.pressureChartTick }}
+          />
           <ReferenceLine y={0} className={styles.pressureZeroLine} />
           <Tooltip
             cursor={false}
             isAnimationActive={false}
             content={({ active, payload, coordinate }) => {
-              const point = payload?.[0]?.payload as (typeof data)[number] | undefined;
+              const point = payload?.[0]?.payload as
+                (typeof data)[number] | undefined;
               if (!active || !point) return null;
-              const signedDelta = point.delta == null
-                ? "--"
-                : `${point.delta >= 0 ? "+" : ""}${formatOneDecimal(point.delta)}`;
+              const signedDelta =
+                point.delta == null
+                  ? "--"
+                  : `${point.delta >= 0 ? "+" : ""}${formatOneDecimal(point.delta)}`;
               return (
                 <ChartTooltip
                   active
                   coordinate={coordinate}
                   containerRef={chartRef}
                   label={`${point.season ?? "----"} · ${point.venueName ?? point.roundName ?? "Unknown venue"}`}
-                  content={<TooltipRows rows={[
-                    `Pre-Final: ${formatOneDecimal(point.preFinalPace!)}`,
-                    `Final: ${formatOneDecimal(point.finalPace!)}`,
-                    `Delta: ${signedDelta}`,
-                  ]} />}
+                  content={
+                    <TooltipRows
+                      rows={[
+                        `Pre-Final: ${formatOneDecimal(point.preFinalPace!)}`,
+                        `Final: ${formatOneDecimal(point.finalPace!)}`,
+                        `Delta: ${signedDelta}`,
+                      ]}
+                    />
+                  }
                 />
               );
             }}
           />
-          <Bar dataKey="delta" maxBarSize={maximumBarSize} radius={1} activeBar={false} isAnimationActive={false}>
+          <Bar
+            dataKey="delta"
+            maxBarSize={maximumBarSize}
+            radius={1}
+            activeBar={false}
+            isAnimationActive={false}
+          >
             {data.map((point) => {
-              const color = point.delta != null && point.delta >= 0
-                ? "var(--color-status-success)"
-                : "var(--color-status-error)";
-              return <Cell key={point.roundId} fill={color} stroke={color} fillOpacity={0.58} strokeOpacity={0.95} />;
+              const color =
+                point.delta != null && point.delta >= 0
+                  ? "var(--color-status-success)"
+                  : "var(--color-status-error)";
+              return (
+                <Cell
+                  key={point.roundId}
+                  fill={color}
+                  stroke={color}
+                  fillOpacity={0.58}
+                  strokeOpacity={0.95}
+                />
+              );
             })}
           </Bar>
         </BarChart>
@@ -245,50 +287,60 @@ export default function RiderDetailsPage() {
   };
 
   const allPoints = [...sessionResults]
-    .sort(
-      (left, right) =>
-        `${left.date ?? ""}-${String(left.sessionOrder).padStart(2, "0")}-${left.sessionId}`.localeCompare(
-          `${right.date ?? ""}-${String(right.sessionOrder).padStart(2, "0")}-${right.sessionId}`,
-        ),
+    .sort((left, right) =>
+      `${left.date ?? ""}-${String(left.sessionOrder).padStart(2, "0")}-${left.sessionId}`.localeCompare(
+        `${right.date ?? ""}-${String(right.sessionOrder).padStart(2, "0")}-${right.sessionId}`,
+      ),
     )
     .map((result, index) =>
-      toChartPoint(
-        result,
-        resultPointColors[index % resultPointColors.length],
-      ),
+      toChartPoint(result, resultPointColors[index % resultPointColors.length]),
     );
   const orderedRoundResults = [...overview.roundResults].sort((left, right) =>
     `${left.roundStartDate ?? ""}-${String(left.roundNumber ?? 0).padStart(2, "0")}-${left.roundId}`.localeCompare(
       `${right.roundStartDate ?? ""}-${String(right.roundNumber ?? 0).padStart(2, "0")}-${right.roundId}`,
     ),
   );
-  const pointsByRound: PositionChartPoint[] = orderedRoundResults.map((round) => {
-    const cumulativePoints = overview.chartStatistics.cumulativePointsByRound[round.roundId] ?? null;
-    return {
-      label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-      position: cumulativePoints,
-      color: "var(--color-chart-points)",
-      tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · ${cumulativePoints ?? "--"} total points`,
-    };
-  });
-  const ratingByRound: PositionChartPoint[] = orderedRoundResults.map((round) => {
-    const rating = overview.chartStatistics.cumulativeRatingByRound[round.roundId] ?? null;
-    return {
-      label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-      position: rating,
-      color: "var(--color-chart-rating)",
-      tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Rating after round ${rating == null ? "--" : formatOneDecimal(rating)}`,
-    };
-  });
+  const pointsByRound: PositionChartPoint[] = orderedRoundResults.map(
+    (round) => {
+      const cumulativePoints =
+        overview.chartStatistics.cumulativePointsByRound[round.roundId] ?? null;
+      return {
+        label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+        position: cumulativePoints,
+        color: "var(--color-chart-points)",
+        tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · ${cumulativePoints ?? "--"} total points`,
+      };
+    },
+  );
+  const ratingByRound: PositionChartPoint[] = orderedRoundResults.map(
+    (round) => {
+      const rating =
+        overview.chartStatistics.cumulativeRatingByRound[round.roundId] ?? null;
+      return {
+        label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+        position: rating,
+        color: "var(--color-chart-rating)",
+        tooltip: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Rating after round ${rating == null ? "--" : formatOneDecimal(rating)}`,
+      };
+    },
+  );
   const consistencyPoints = orderedRoundResults.flatMap((round) =>
-    round.pace == null || round.consistency == null ? [] : [{
-      id: round.roundId,
-      label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-      x: round.pace,
-      y: round.consistency,
-      color: getCompetitionClassColors({ code: round.competitionClassCode, name: round.competitionClassName, abbreviation: round.competitionClassAbbreviation }).chart,
-      detail: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Pace ${formatOneDecimal(round.pace)} · Consistency ${formatOneDecimal(round.consistency)}`,
-    }],
+    round.pace == null || round.consistency == null
+      ? []
+      : [
+          {
+            id: round.roundId,
+            label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+            x: round.pace,
+            y: round.consistency,
+            color: getCompetitionClassColors({
+              code: round.competitionClassCode,
+              name: round.competitionClassName,
+              abbreviation: round.competitionClassAbbreviation,
+            }).chart,
+            detail: `${round.venueName ?? round.trackName ?? "Unknown venue"} · Pace ${formatOneDecimal(round.pace)} · Consistency ${formatOneDecimal(round.consistency)}`,
+          },
+        ],
   );
   const preFinalResults = sessionResults.filter((result) => !result.isFinal);
   const finalResults = sessionResults.filter((result) => result.isFinal);
@@ -345,11 +397,19 @@ export default function RiderDetailsPage() {
       : Math.max(0, Math.min(100, ((120 - data.averagePosition) * 100) / 119));
 
   const chartSeries = (points: PositionChartPoint[], color: string) => [
-    { id: riderId, name: data.fullName, color, href: riderHref, points, averagePosition: overview.chartStatistics.resultsAveragePosition },
+    {
+      id: riderId,
+      name: data.fullName,
+      color,
+      href: riderHref,
+      points,
+      averagePosition: overview.chartStatistics.resultsAveragePosition,
+    },
   ];
-  const displayedPressurePerformance = pressurePerformance?.pressurePerformance == null
-    ? null
-    : Math.round(pressurePerformance.pressurePerformance * 100) / 100;
+  const displayedPressurePerformance =
+    pressurePerformance?.pressurePerformance == null
+      ? null
+      : Math.round(pressurePerformance.pressurePerformance * 100) / 100;
 
   return (
     <div className={`${styles.content} ${styles.statsContent}`}>
@@ -464,7 +524,9 @@ export default function RiderDetailsPage() {
           <div className={styles.pressureCell}>
             <div className={styles.pressureChartBlock}>
               <div className={styles.pressureChartHeader}>
-                <h2><span>//</span> Final Pace - Pre-Final Pace</h2>
+                <h2>
+                  <span>//</span> Final Pace - Pre-Final Pace
+                </h2>
                 <strong
                   data-trend={
                     displayedPressurePerformance == null

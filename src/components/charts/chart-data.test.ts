@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  metricAxisConfiguration,
-  positionChartPointKey,
-} from "./chart-data";
+import { metricAxisConfiguration, positionChartPointKey } from "./chart-data";
 
 describe("metricAxisConfiguration", () => {
   it("adds a compact margin around the visible metric values", () => {

@@ -62,21 +62,47 @@ describe("rider session results", () => {
     });
   });
 
-  it.each(['DNS', 'DNF', 'DSQ'])('does not classify a %s result even if a position is present', (status) => {
-    const [result] = riderSessionResultsSchema.parse([{ ...rawResult, status }]);
-    expect(result.isClassified).toBe(false);
-    expect(result.isStart).toBe(status !== 'DNS');
-  });
+  it.each(["DNS", "DNF", "DSQ"])(
+    "does not classify a %s result even if a position is present",
+    (status) => {
+      const [result] = riderSessionResultsSchema.parse([
+        { ...rawResult, status },
+      ]);
+      expect(result.isClassified).toBe(false);
+      expect(result.isStart).toBe(status !== "DNS");
+    },
+  );
 
   it("uses new session display metadata without changing classification or chronological order", () => {
     applyDomainMetadata({
-      categories: [], roundStatuses: [], sessionStatuses: [],
-      sessionTypes: [{ code: "new_heat", name: "New Heat", shortName: "Heat", abbreviation: "NH", groupName: "New Heats", displayOrder: -1, aliases: ["NH"] }],
+      categories: [],
+      roundStatuses: [],
+      sessionStatuses: [],
+      sessionTypes: [
+        {
+          code: "new_heat",
+          name: "New Heat",
+          shortName: "Heat",
+          abbreviation: "NH",
+          groupName: "New Heats",
+          displayOrder: -1,
+          aliases: ["NH"],
+        },
+      ],
     });
-    const [result] = riderSessionResultsSchema.parse([{
-      ...rawResult,
-      sessions: { ...rawResult.sessions, sessionType: "new_heat" },
-    }]);
-    expect(result).toMatchObject({ abbreviation: "NH", kind: "other", sessionOrder: 50, isFinal: false, isClassified: true, isStart: true });
+    const [result] = riderSessionResultsSchema.parse([
+      {
+        ...rawResult,
+        sessions: { ...rawResult.sessions, sessionType: "new_heat" },
+      },
+    ]);
+    expect(result).toMatchObject({
+      abbreviation: "NH",
+      kind: "other",
+      sessionOrder: 50,
+      isFinal: false,
+      isClassified: true,
+      isStart: true,
+    });
   });
 });

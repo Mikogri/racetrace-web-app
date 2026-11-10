@@ -3,7 +3,6 @@
   padding: 0;
 }
 
-
 .riderHeader {
   display: flex;
   flex-direction: column;
@@ -225,8 +224,12 @@
 }
 
 @keyframes rider-update-progress {
-  from { transform: translateX(-110%); }
-  to { transform: translateX(320%); }
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(320%);
+  }
 }
 
 @media (max-width: 760px) {

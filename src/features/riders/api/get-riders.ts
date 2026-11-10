@@ -1,13 +1,13 @@
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { z } from 'zod'
-import { apiClient } from '../../../lib/api-client'
-import { GLOBAL_PAGE_SIZE } from '../../../config/pagination'
-import { entityIdSchema, paginationSchema } from '../../../lib/validation'
-import type { MetricsFilters, RiderSummary } from '../../../types/domain'
-import type { PaginatedResult } from '../../../types/api'
-import { riderQueryKeys } from './rider-query-keys'
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { z } from "zod";
+import { apiClient } from "../../../lib/api-client";
+import { GLOBAL_PAGE_SIZE } from "../../../config/pagination";
+import { entityIdSchema, paginationSchema } from "../../../lib/validation";
+import type { MetricsFilters, RiderSummary } from "../../../types/domain";
+import type { PaginatedResult } from "../../../types/api";
+import { riderQueryKeys } from "./rider-query-keys";
 
-const nullableString = z.string().nullish()
+const nullableString = z.string().nullish();
 
 const riderItemSchema = z
   .object({
@@ -25,13 +25,11 @@ const riderItemSchema = z
   })
   .passthrough()
   .transform((value): RiderSummary | null => {
-    const id = value.riderId ?? value.id
+    const id = value.riderId ?? value.id;
     const name =
       value.fullName ??
-      [value.firstName, value.lastName]
-        .filter(Boolean)
-        .join(' ')
-    if (!id || !name.trim()) return null
+      [value.firstName, value.lastName].filter(Boolean).join(" ");
+    if (!id || !name.trim()) return null;
     return {
       id,
       name: name.trim(),
@@ -39,8 +37,8 @@ const riderItemSchema = z
       country: value.countryCode ?? value.nation ?? null,
       category: value.category ?? value.categoryCode ?? null,
       profileImageUrl: value.profileImageUrl ?? null,
-    }
-  })
+    };
+  });
 
 const ridersResponseSchema = z
   .object({
@@ -56,35 +54,35 @@ const ridersResponseSchema = z
   .transform((value): PaginatedResult<RiderSummary> => {
     const items = (value.items ?? value.data ?? []).filter(
       (item): item is RiderSummary => item !== null,
-    )
+    );
     const fallback = {
       page: value.page ?? 1,
       pageSize: value.pageSize ?? GLOBAL_PAGE_SIZE,
       totalItems: value.totalItems ?? items.length,
       totalPages: value.totalPages ?? (items.length > 0 ? 1 : 0),
-    }
-    return { items, pagination: value.pagination ?? fallback }
-  })
+    };
+    return { items, pagination: value.pagination ?? fallback };
+  });
 
 export type GetRidersParams = {
-  search: string
-  filters: MetricsFilters
-  pageSize?: number
-  sortBy?: 'fullName' | 'points'
-  sortDirection?: 'asc' | 'desc'
-}
+  search: string;
+  filters: MetricsFilters;
+  pageSize?: number;
+  sortBy?: "fullName" | "points";
+  sortDirection?: "asc" | "desc";
+};
 
 function csv(values: string[]) {
-  return values.length > 0 ? values.join(',') : undefined
+  return values.length > 0 ? values.join(",") : undefined;
 }
 
 export function getRiders(params: GetRidersParams, signal?: AbortSignal) {
-  return apiClient.get('/api/v1/riders', ridersResponseSchema, {
+  return apiClient.get("/api/v1/riders", ridersResponseSchema, {
     ...(signal ? { signal } : {}),
     query: {
       search: params.search,
-      sortBy: params.sortBy ?? 'fullName',
-      sortDirection: params.sortDirection ?? 'asc',
+      sortBy: params.sortBy ?? "fullName",
+      sortDirection: params.sortDirection ?? "asc",
       pageSize: params.pageSize ?? GLOBAL_PAGE_SIZE,
       season: csv(params.filters.seasons),
       trackId: csv(params.filters.tracks),
@@ -92,19 +90,19 @@ export function getRiders(params: GetRidersParams, signal?: AbortSignal) {
       competitionClassId: csv(params.filters.classes),
       category: params.filters.categories[0],
     },
-  })
+  });
 }
 
 export function getRidersQueryOptions(params: GetRidersParams) {
   return queryOptions({
     queryKey: riderQueryKeys.list(params),
     queryFn: ({ signal }) => getRiders(params, signal),
-  })
+  });
 }
 
 export function useRiders(
   params: GetRidersParams,
   queryConfig?: { enabled?: boolean },
 ) {
-  return useQuery({ ...getRidersQueryOptions(params), ...queryConfig })
+  return useQuery({ ...getRidersQueryOptions(params), ...queryConfig });
 }

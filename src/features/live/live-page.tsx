@@ -8,7 +8,11 @@ import {
 } from "../../components/layout/page-container";
 import { routes } from "../../config/routes";
 import { formatCategoryLabel } from "../../utils/categories";
-import { formatLiveSessionLabel, formatSessionLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatLiveSessionLabel,
+  formatSessionLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import {
   useChronoRaceSessionResults,
   useChronoRaceCatalog,
@@ -34,7 +38,10 @@ function groupSessions(items: LiveSession[]) {
       const earlier = earlierStages.get(key) ?? new Set<string>();
       if (!earlier.has(previous)) {
         earlier.add(previous);
-        laterStageCounts.set(previous, (laterStageCounts.get(previous) ?? 0) + 1);
+        laterStageCounts.set(
+          previous,
+          (laterStageCounts.get(previous) ?? 0) + 1,
+        );
       }
       earlierStages.set(key, earlier);
     }
@@ -45,17 +52,30 @@ function groupSessions(items: LiveSession[]) {
   while (pending.size > 0) {
     const key = [...pending].find((stage) => !laterStageCounts.get(stage));
     // Conflicting provider sequences: retain remaining catalog order, without losing groups.
-    if (key === undefined) { ordered.push(...pending); break; }
+    if (key === undefined) {
+      ordered.push(...pending);
+      break;
+    }
     pending.delete(key);
     ordered.push(key);
     for (const earlier of earlierStages.get(key) ?? []) {
       laterStageCounts.set(earlier, laterStageCounts.get(earlier)! - 1);
     }
   }
-  return ordered.map((key) => ({ key, label: formatSessionLabel(key, "groupName"), sessions: groups.get(key)! }));
+  return ordered.map((key) => ({
+    key,
+    label: formatSessionLabel(key, "groupName"),
+    sessions: groups.get(key)!,
+  }));
 }
 
-function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterIndex: number }) {
+function LiveSessionCard({
+  session,
+  enterIndex,
+}: {
+  session: LiveSession;
+  enterIndex: number;
+}) {
   useDomainMetadata();
   const timingQuery = useChronoRaceSessionResults(session);
   const riderCount = timingQuery.data?.results.totalItems ?? session.riderCount;
@@ -70,7 +90,9 @@ function LiveSessionCard({ session, enterIndex }: { session: LiveSession; enterI
         session.season ?? undefined,
       )}
       className={`${styles.sessionCard} ${styles.sessionCardEnter}`}
-      style={{ "--card-enter-delay": `${enterIndex * 37.5}ms` } as CSSProperties}
+      style={
+        { "--card-enter-delay": `${enterIndex * 37.5}ms` } as CSSProperties
+      }
     >
       <div className={styles.cardCopy}>
         <div className={styles.cardHeader}>
@@ -96,7 +118,8 @@ export default function LivePage() {
   useDomainMetadata();
   const [searchParams] = useSearchParams();
   const seasonParam = searchParams.get("season");
-  const requestedSeason = seasonParam === null ? Number.NaN : Number(seasonParam);
+  const requestedSeason =
+    seasonParam === null ? Number.NaN : Number(seasonParam);
   const season = Number.isInteger(requestedSeason)
     ? requestedSeason
     : new Date().getUTCFullYear();
@@ -128,8 +151,10 @@ export default function LivePage() {
         title="Live Timing"
         eyebrow={[
           `${liveRoundQuery.data?.season ?? context?.season ?? season} Season`,
-          liveRoundQuery.data?.competitionClassName ?? context?.competitionName ?? "Competition",
-          liveRoundQuery.data?.roundNumber ?? context?.roundNumber
+          liveRoundQuery.data?.competitionClassName ??
+            context?.competitionName ??
+            "Competition",
+          (liveRoundQuery.data?.roundNumber ?? context?.roundNumber)
             ? `Round ${liveRoundQuery.data?.roundNumber ?? context?.roundNumber}`
             : "Round --",
         ].join(" / ")}
@@ -138,9 +163,7 @@ export default function LivePage() {
 
       <Section>
         {isPending ? <TableFeedbackState type="loading" /> : null}
-        {error ? (
-          <TableFeedbackState type="error" onRetry={retry} />
-        ) : null}
+        {error ? <TableFeedbackState type="error" onRetry={retry} /> : null}
         {!isPending && !error && !detectedRoundId ? (
           <TableFeedbackState
             type="empty"
@@ -163,7 +186,11 @@ export default function LivePage() {
                 <h2>{group.label}</h2>
                 <div className={styles.sessionGrid}>
                   {group.sessions.map((session) => (
-                    <LiveSessionCard session={session} enterIndex={sessionEnterIndexes.get(session.id) ?? 0} key={session.id} />
+                    <LiveSessionCard
+                      session={session}
+                      enterIndex={sessionEnterIndexes.get(session.id) ?? 0}
+                      key={session.id}
+                    />
                   ))}
                 </div>
               </section>

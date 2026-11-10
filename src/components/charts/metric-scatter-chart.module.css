@@ -17,7 +17,9 @@
   line-height: 18px;
 }
 
-.panel h2 span { color: var(--color-brand-primary); }
+.panel h2 span {
+  color: var(--color-brand-primary);
+}
 
 .chart {
   width: 100%;

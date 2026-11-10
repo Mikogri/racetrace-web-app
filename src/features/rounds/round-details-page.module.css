@@ -229,4 +229,6 @@
     flex-direction: column;
   }
 }
-.analyticsPage { padding-bottom: 0; }
+.analyticsPage {
+  padding-bottom: 0;
+}

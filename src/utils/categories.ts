@@ -2,10 +2,17 @@ import { useSyncExternalStore } from "react";
 
 export type CategoryGender = "male" | "female" | "open";
 
-export function juniorCategoryForAge(age: number | null | undefined, gender: string | null | undefined) {
+export function juniorCategoryForAge(
+  age: number | null | undefined,
+  gender: string | null | undefined,
+) {
   if (age == null || !Number.isFinite(age) || age <= 0 || age > 18) return null;
   const normalized = normalizeGender(gender);
-  return normalized === "male" ? "junior_men" : normalized === "female" ? "junior_women" : null;
+  return normalized === "male"
+    ? "junior_men"
+    : normalized === "female"
+      ? "junior_women"
+      : null;
 }
 
 export type KnownCategory = {
@@ -80,7 +87,11 @@ export function isCombinedRoundCategory(value: string) {
 }
 
 function canonicalValue(value: string) {
-  return metadataAliases[compact(value)] ?? knownAliases[compact(value)] ?? value.trim();
+  return (
+    metadataAliases[compact(value)] ??
+    knownAliases[compact(value)] ??
+    value.trim()
+  );
 }
 
 export function normalizeCategoryValue(value: string | null | undefined) {
@@ -173,12 +184,17 @@ function mergeCategories(initial: KnownCategory[], incoming: KnownCategory[]) {
 }
 
 function saveAndNotify(next: KnownCategory[]) {
-  categories = next.filter(item => !isCombinedRoundCategory(item.value));
+  categories = next.filter((item) => !isCombinedRoundCategory(item.value));
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(categories.filter((category) => !baseCategories.some((base) => base.value === category.value))),
+        JSON.stringify(
+          categories.filter(
+            (category) =>
+              !baseCategories.some((base) => base.value === category.value),
+          ),
+        ),
       );
     } catch {
       // The in-memory registry still works when browser storage is unavailable.
@@ -212,17 +228,21 @@ function registerCategory(
     saveAndNotify(merged);
 }
 
-export function registerCategoryMetadata(items: Array<{
-  code: string;
-  name: string;
-  shortName: string;
-  displayOrder: number;
-  aliases: string[];
-  gender: CategoryGender;
-}>) {
-  metadataAliases = Object.fromEntries(items.flatMap((item) =>
-    [item.code, ...item.aliases].map((alias) => [compact(alias), item.code]),
-  ));
+export function registerCategoryMetadata(
+  items: Array<{
+    code: string;
+    name: string;
+    shortName: string;
+    displayOrder: number;
+    aliases: string[];
+    gender: CategoryGender;
+  }>,
+) {
+  metadataAliases = Object.fromEntries(
+    items.flatMap((item) =>
+      [item.code, ...item.aliases].map((alias) => [compact(alias), item.code]),
+    ),
+  );
   authoritativeCodes = new Set(items.map((item) => item.code));
   const authoritative = [...items]
     .sort((left, right) => left.displayOrder - right.displayOrder)
@@ -232,7 +252,9 @@ export function registerCategoryMetadata(items: Array<{
       abbreviation: item.shortName,
       gender: item.gender,
     }));
-  const remaining = categories.filter((item) => !authoritativeCodes.has(canonicalValue(item.value)));
+  const remaining = categories.filter(
+    (item) => !authoritativeCodes.has(canonicalValue(item.value)),
+  );
   saveAndNotify([...authoritative, ...remaining]);
 }
 

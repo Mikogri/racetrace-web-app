@@ -21,7 +21,10 @@ export {
   resolveChronoRaceJsonUrl,
 } from "./chronorace-provider";
 export { normalizeTissotLivePayload } from "./tissot-provider";
-export { liveTimingPresentation, normalizeChronoRacePayload } from "./live-normalization";
+export {
+  liveTimingPresentation,
+  normalizeChronoRacePayload,
+} from "./live-normalization";
 export {
   useLiveRound,
   useChronoRaceCatalog,

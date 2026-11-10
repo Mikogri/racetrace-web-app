@@ -1,6 +1,11 @@
 import type { LiveRound, LiveSession } from "./live-models";
 import { normalizeCategoryValue } from "../../../utils/categories";
-import { asRecord, numberValue, stringValue, identifierValue } from "./live-values";
+import {
+  asRecord,
+  numberValue,
+  stringValue,
+  identifierValue,
+} from "./live-values";
 import { CHRONORACE_API_ROOT } from "./live-transport";
 
 type ChronoCatalogNode = {
@@ -22,7 +27,7 @@ function chronoHasNextToStart(root: Record<string, unknown>) {
   return Array.isArray(nextToStart)
     ? nextToStart.length > 0
     : asRecord(nextToStart) !== null ||
-      (nextToStart !== null && nextToStart !== undefined);
+        (nextToStart !== null && nextToStart !== undefined);
 }
 
 export function activeChronoOnTrack(root: Record<string, unknown>) {
@@ -34,8 +39,9 @@ export function activeChronoOnTrack(root: Record<string, unknown>) {
   // ChronoRace can retain stale InRace rows after a session closes. During an
   // active run at least one of these live-order markers is populated.
   return candidates.filter((item) =>
-    [item.ExpectedStartTime, item.SortOrder, item.StatusTime]
-      .some((value) => (numberValue(value) ?? 0) > 0),
+    [item.ExpectedStartTime, item.SortOrder, item.StatusTime].some(
+      (value) => (numberValue(value) ?? 0) > 0,
+    ),
   );
 }
 

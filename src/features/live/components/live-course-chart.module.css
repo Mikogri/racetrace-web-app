@@ -42,7 +42,9 @@
   left: 0;
 }
 
-.chart :focus { outline: none; }
+.chart :focus {
+  outline: none;
+}
 
 .chart path {
   stroke-linecap: round;
@@ -127,5 +129,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .legendItem a { transition: none; }
+  .legendItem a {
+    transition: none;
+  }
 }

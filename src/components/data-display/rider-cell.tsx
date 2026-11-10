@@ -46,9 +46,11 @@ export function RiderCell({
             </span>
           ) : null}
         </span>
-        {showTeam ? <span className={styles.metadata}>
-          {cycling ? <CyclingText value={displayTeam} /> : displayTeam}
-        </span> : null}
+        {showTeam ? (
+          <span className={styles.metadata}>
+            {cycling ? <CyclingText value={displayTeam} /> : displayTeam}
+          </span>
+        ) : null}
       </span>
     </span>
   );

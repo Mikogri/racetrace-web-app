@@ -57,7 +57,8 @@ function niceMaximum(value: number) {
   if (value <= 0) return 100;
   const magnitude = 10 ** Math.floor(Math.log10(value));
   const normalized = value / magnitude;
-  const rounded = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+  const rounded =
+    normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
   return rounded * magnitude;
 }
 
@@ -79,28 +80,40 @@ function scaleConfiguration(
       minimum: -5,
       maximum,
       ticks: Array.from({ length: 6 }, (_, index) =>
-        index === 5
-          ? maximum
-          : Math.round(-5 + ((maximum + 5) * index) / 5),
+        index === 5 ? maximum : Math.round(-5 + ((maximum + 5) * index) / 5),
       ),
       normalize: (value: number) => Math.min(maximum, Math.max(1, value)),
       accepts: (value: number) => value > 0,
     };
   }
   if (scale === "rating") {
-    const minimum = Math.min(ratingFloor, ...series.flatMap(item => item.points.flatMap(point =>
-      point.position !== null && Number.isFinite(point.position) && point.position >= 0 ? [point.position] : [])));
+    const minimum = Math.min(
+      ratingFloor,
+      ...series.flatMap((item) =>
+        item.points.flatMap((point) =>
+          point.position !== null &&
+          Number.isFinite(point.position) &&
+          point.position >= 0
+            ? [point.position]
+            : [],
+        ),
+      ),
+    );
     return {
       minimum,
       maximum: 100,
-      ticks: Array.from({ length: 5 }, (_, index) => Number((minimum + ((100 - minimum) * index) / 4).toFixed(2))),
+      ticks: Array.from({ length: 5 }, (_, index) =>
+        Number((minimum + ((100 - minimum) * index) / 4).toFixed(2)),
+      ),
       normalize: (value: number) => Math.min(100, Math.max(0, value)),
       accepts: (value: number) => value >= 0,
     };
   }
 
   const values = series.flatMap((item) =>
-    item.points.flatMap((point) => point.position === null ? [] : [point.position]),
+    item.points.flatMap((point) =>
+      point.position === null ? [] : [point.position],
+    ),
   );
   const maximum = niceMaximum(Math.max(0, ...values));
   return {
@@ -193,12 +206,19 @@ export function PositionChart({
     0,
     ...series.map((item) => item.points.length),
   );
-  const height = heightOverride ?? (compact ? (connectLines ? 275 : 291) : chartHeight);
-  const scaleConfig = scaleConfiguration(scale, series, positionPadding, ratingFloor);
+  const height =
+    heightOverride ?? (compact ? (connectLines ? 275 : 291) : chartHeight);
+  const scaleConfig = scaleConfiguration(
+    scale,
+    series,
+    positionPadding,
+    ratingFloor,
+  );
   const { minimum, maximum, ticks: yTicks, normalize, accepts } = scaleConfig;
-  const displayedXTicks = xEdgePadding > 0
-    ? [1 - xEdgePadding, ...xTicks, 11 + xEdgePadding]
-    : xTicks;
+  const displayedXTicks =
+    xEdgePadding > 0
+      ? [1 - xEdgePadding, ...xTicks, 11 + xEdgePadding]
+      : xTicks;
   const yAxisWidth =
     Math.max(...yTicks.map((tick) => String(tick).length)) * 7 + 14;
 
@@ -209,10 +229,7 @@ export function PositionChart({
       className={`${styles.chartPanel} ${compact ? styles.compact : ""} ${connectLines ? styles.lineChart : styles.scatterChart} ${className ?? ""}`}
     >
       <div className={styles.heading}>
-        <PanelHeader
-          title={title}
-          {...(description ? { description } : {})}
-        />
+        <PanelHeader title={title} {...(description ? { description } : {})} />
       </div>
       <div className={styles.scroll}>
         <div
@@ -237,9 +254,21 @@ export function PositionChart({
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor={item.color} stopOpacity="0.2" />
-                    <stop offset="62%" stopColor={item.color} stopOpacity="0.08" />
-                    <stop offset="100%" stopColor={item.color} stopOpacity="0" />
+                    <stop
+                      offset="0%"
+                      stopColor={item.color}
+                      stopOpacity="0.2"
+                    />
+                    <stop
+                      offset="62%"
+                      stopColor={item.color}
+                      stopOpacity="0.08"
+                    />
+                    <stop
+                      offset="100%"
+                      stopColor={item.color}
+                      stopOpacity="0"
+                    />
                   </linearGradient>
                 ))}
               </defs>
@@ -249,7 +278,8 @@ export function PositionChart({
                 cursor={false}
                 isAnimationActive={false}
                 content={({ active, payload, coordinate }) => {
-                  const point = payload?.[0]?.payload as LibraryPoint | undefined;
+                  const point = payload?.[0]?.payload as
+                    LibraryPoint | undefined;
                   if (!active || !point) return null;
                   const rows = series.flatMap((item) => {
                     const matchingPoint = item.points.find(
@@ -259,7 +289,8 @@ export function PositionChart({
                         candidate.position !== null &&
                         accepts(candidate.position),
                     );
-                    if (!matchingPoint || matchingPoint.position === null) return [];
+                    if (!matchingPoint || matchingPoint.position === null)
+                      return [];
                     return [
                       matchingPoint.tooltip ??
                         `${item.name}: ${tooltipValue(
@@ -325,7 +356,11 @@ export function PositionChart({
                     stroke={item.color}
                     strokeWidth={1.5}
                     strokeOpacity={0.7}
-                    fill={showArea ? `url(#${definitionId}-${item.id}-area)` : "transparent"}
+                    fill={
+                      showArea
+                        ? `url(#${definitionId}-${item.id}-area)`
+                        : "transparent"
+                    }
                     dot={false}
                     activeDot={{
                       r: 4,
@@ -359,9 +394,11 @@ export function PositionChart({
                           stroke={color}
                           strokeWidth={1}
                           className={styles.activeScatterPoint}
-                          style={{
-                            "--active-point-color": color,
-                          } as CSSProperties}
+                          style={
+                            {
+                              "--active-point-color": color,
+                            } as CSSProperties
+                          }
                         />
                       );
                     }}

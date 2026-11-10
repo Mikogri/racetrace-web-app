@@ -1,6 +1,10 @@
-import type { ApiSchema, AssertApiContract } from '../../../types/api-contract'
+import type { ApiSchema, AssertApiContract } from "../../../types/api-contract";
 import { z } from "zod";
-import { entityIdSchema, nullableNumberSchema, nullableStringSchema } from "../../../lib/validation";
+import {
+  entityIdSchema,
+  nullableNumberSchema,
+  nullableStringSchema,
+} from "../../../lib/validation";
 import { roundListItemSchema } from "../../results/api/get-rounds";
 
 export const liveRoundsResponseSchema = z.object({
@@ -16,26 +20,30 @@ export const tissotCatalogSchema = z.object({
   season: z.number().int(),
   competitionCode: z.string().nullish(),
   competitionName: z.string().nullish(),
-  sessions: z.array(z.object({
-    id: z.string(),
-    provider: z.literal("tissot"),
-    competitionCode: z.string(),
-    eventNumber: z.number().int().positive(),
-    phaseNumber: z.number().int().positive(),
-    name: z.string(),
-    sessionType: z.string().nullish(),
-    category: z.string().nullish(),
-    status: z.string(),
-    sessionDate: z.string().nullish(),
-    riderCount: z.number().int().nonnegative().nullish(),
-  })),
+  sessions: z.array(
+    z.object({
+      id: z.string(),
+      provider: z.literal("tissot"),
+      competitionCode: z.string(),
+      eventNumber: z.number().int().positive(),
+      phaseNumber: z.number().int().positive(),
+      name: z.string(),
+      sessionType: z.string().nullish(),
+      category: z.string().nullish(),
+      status: z.string(),
+      sessionDate: z.string().nullish(),
+      riderCount: z.number().int().nonnegative().nullish(),
+    }),
+  ),
 });
 
 export const resolvedRidersSchema = z.object({
-  items: z.array(z.object({
-    riderId: entityIdSchema,
-    uciId: z.string(),
-  })),
+  items: z.array(
+    z.object({
+      riderId: entityIdSchema,
+      uciId: z.string(),
+    }),
+  ),
 });
 
 const nestedSchema = z
@@ -165,7 +173,9 @@ export const sessionResultSchema = z
     status: value.status,
     startTime: value.startTime,
     ...(value.sessionType ? { sessionType: value.sessionType } : {}),
-    ...(value.liveStartedAt !== undefined ? { liveStartedAt: value.liveStartedAt } : {}),
+    ...(value.liveStartedAt !== undefined
+      ? { liveStartedAt: value.liveStartedAt }
+      : {}),
     topSpeed: value.topSpeed,
     averageSpeed: value.averageSpeed,
     finalTime: value.finalTime,
@@ -237,4 +247,10 @@ export type LiveTimingSummary = {
   splitCount: number;
 };
 
-export type SessionResultsWireContract = AssertApiContract<ApiSchema<'SessionResultsResponseDto'> extends z.input<typeof sessionResultsSchema> ? true : false>
+export type SessionResultsWireContract = AssertApiContract<
+  ApiSchema<"SessionResultsResponseDto"> extends z.input<
+    typeof sessionResultsSchema
+  >
+    ? true
+    : false
+>;

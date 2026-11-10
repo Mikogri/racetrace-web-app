@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
-import { routes } from '../../config/routes'
-import styles from './footer.module.css'
+import { Link } from "react-router-dom";
+import { routes } from "../../config/routes";
+import styles from "./footer.module.css";
 
 export function Footer() {
   return (
@@ -10,5 +10,5 @@ export function Footer() {
         <span>// Data source: ChronoRace, Tissot Timing</span>
       </div>
     </footer>
-  )
+  );
 }

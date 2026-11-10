@@ -18,8 +18,10 @@ export function stringValue(value: unknown) {
 }
 
 export function identifierValue(value: unknown) {
-  return stringValue(value) ??
-    (typeof value === "number" && Number.isFinite(value) ? String(value) : null);
+  return (
+    stringValue(value) ??
+    (typeof value === "number" && Number.isFinite(value) ? String(value) : null)
+  );
 }
 
 export function displayCase(value: string | null) {

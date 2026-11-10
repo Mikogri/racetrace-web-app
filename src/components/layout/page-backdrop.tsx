@@ -1,5 +1,5 @@
-import { LightRays } from '../backgrounds/light-rays'
-import styles from './page-backdrop.module.css'
+import { LightRays } from "../backgrounds/light-rays";
+import styles from "./page-backdrop.module.css";
 
 /** Decorative page background: neutral white light from the top that ignores the pointer, over a faint grid. */
 export function PageBackdrop() {
@@ -23,5 +23,5 @@ export function PageBackdrop() {
       />
       <span className={styles.grid} />
     </div>
-  )
+  );
 }

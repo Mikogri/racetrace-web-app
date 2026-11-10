@@ -14,7 +14,10 @@ import {
 import { routes } from "../../config/routes";
 import { formatDateRange } from "../../utils/formatters";
 import { EventClassBadge } from "../../components/data-display/event-class-badge";
-import { formatDomainLabel, useDomainMetadata } from "../../utils/domain-metadata";
+import {
+  formatDomainLabel,
+  useDomainMetadata,
+} from "../../utils/domain-metadata";
 import { LiveStatusBadge } from "../live/components/live-status-badge";
 import roundPlaceholder from "../../assets/round-placeholder.png";
 import { useRounds, type RoundListItem } from "./api/get-rounds";
@@ -143,39 +146,45 @@ export default function ResultsPage() {
             } as CSSProperties
           }
         >
-          {selectedSeasonIndex >= 0 ? <span className={styles.seasonIndicator} aria-hidden="true" /> : null}
-          {seasonsQuery.isPending ? (
-            Array.from({ length: 4 }, (_, index) => (
-              <span className={styles.seasonSkeleton} aria-hidden="true" key={index} />
-            ))
-          ) : seasonsQuery.isError ? (
-            Array.from({ length: 4 }, (_, index) => (
-              <button
-                className={styles.seasonMenuItem}
-                type="button"
-                disabled
-                aria-label="Season unavailable"
-                key={`unavailable-season-${index}`}
-              >
-                ----
-              </button>
-            ))
-          ) : seasonOptions.map((option) => {
-            const availableSeason = Number(option.value);
-            const value = String(availableSeason);
-            const isSelected = availableSeason === season;
-            return (
-              <button
-                className={`${styles.seasonMenuItem} ${isSelected ? styles.seasonMenuItemActive : ""}`}
-                type="button"
-                aria-current={isSelected ? "page" : undefined}
-                onClick={() => changeSeason(value)}
-                key={value}
-              >
-                {value}
-              </button>
-            );
-          })}
+          {selectedSeasonIndex >= 0 ? (
+            <span className={styles.seasonIndicator} aria-hidden="true" />
+          ) : null}
+          {seasonsQuery.isPending
+            ? Array.from({ length: 4 }, (_, index) => (
+                <span
+                  className={styles.seasonSkeleton}
+                  aria-hidden="true"
+                  key={index}
+                />
+              ))
+            : seasonsQuery.isError
+              ? Array.from({ length: 4 }, (_, index) => (
+                  <button
+                    className={styles.seasonMenuItem}
+                    type="button"
+                    disabled
+                    aria-label="Season unavailable"
+                    key={`unavailable-season-${index}`}
+                  >
+                    ----
+                  </button>
+                ))
+              : seasonOptions.map((option) => {
+                  const availableSeason = Number(option.value);
+                  const value = String(availableSeason);
+                  const isSelected = availableSeason === season;
+                  return (
+                    <button
+                      className={`${styles.seasonMenuItem} ${isSelected ? styles.seasonMenuItemActive : ""}`}
+                      type="button"
+                      aria-current={isSelected ? "page" : undefined}
+                      onClick={() => changeSeason(value)}
+                      key={value}
+                    >
+                      {value}
+                    </button>
+                  );
+                })}
         </nav>
         {isUpdating ? (
           <div
@@ -270,15 +279,22 @@ export default function ResultsPage() {
                         <div className={styles.cardDivider} />
                         <div className={styles.cardFooter}>
                           {isLiveRound(round.status) ? (
-                            <LiveStatusBadge status={round.status} domain="roundStatuses" />
+                            <LiveStatusBadge
+                              status={round.status}
+                              domain="roundStatuses"
+                            />
                           ) : (
                             <span
                               className={`${styles.roundStatus} ${round.status === "upcoming" || round.status === "scheduled" ? styles.upcomingStatus : ""}`}
                             >
                               //{" "}
-                              {formatDomainLabel("roundStatuses", round.status, round.status === "scheduled"
-                                ? "upcoming"
-                                : round.status).toLowerCase()}
+                              {formatDomainLabel(
+                                "roundStatuses",
+                                round.status,
+                                round.status === "scheduled"
+                                  ? "upcoming"
+                                  : round.status,
+                              ).toLowerCase()}
                             </span>
                           )}
                           <EventClassBadge

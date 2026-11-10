@@ -1,32 +1,32 @@
-import type { HTMLAttributes } from 'react'
-import { joinClassNames } from '../../utils/join-class-names'
-import { getRatingTone } from '../../utils/rating'
-import { formatOneDecimal } from '../../utils/formatters'
-import { AnimatedNumber } from './animated-number'
-import styles from './rating-value.module.css'
+import type { HTMLAttributes } from "react";
+import { joinClassNames } from "../../utils/join-class-names";
+import { getRatingTone } from "../../utils/rating";
+import { formatOneDecimal } from "../../utils/formatters";
+import { AnimatedNumber } from "./animated-number";
+import styles from "./rating-value.module.css";
 
 const sizeClasses = {
   small: styles.sizesmall,
   medium: styles.sizemedium,
   large: styles.sizelarge,
-} as const
+} as const;
 
-type RatingValueProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
-  value: number | null
-  format?: 'integer' | 'decimal' | ((value: number) => string)
-  showSuffix?: boolean
-  size?: 'small' | 'medium' | 'large'
-  capAtHigh?: boolean
-  animate?: boolean
-  animationDuration?: number
-  animationLoop?: boolean
-}
+type RatingValueProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
+  value: number | null;
+  format?: "integer" | "decimal" | ((value: number) => string);
+  showSuffix?: boolean;
+  size?: "small" | "medium" | "large";
+  capAtHigh?: boolean;
+  animate?: boolean;
+  animationDuration?: number;
+  animationLoop?: boolean;
+};
 
 export function RatingValue({
   value,
-  format = 'decimal',
+  format = "decimal",
   showSuffix = false,
-  size = 'small',
+  size = "small",
   capAtHigh = false,
   animate = false,
   animationDuration = 450,
@@ -36,35 +36,45 @@ export function RatingValue({
 }: RatingValueProps) {
   if (value === null || !Number.isFinite(value)) {
     return (
-      <span className={joinClassNames(styles.value, styles.missing, sizeClasses[size], className)} {...props}>
+      <span
+        className={joinClassNames(
+          styles.value,
+          styles.missing,
+          sizeClasses[size],
+          className,
+        )}
+        {...props}
+      >
         —
       </span>
-    )
+    );
   }
 
   const formatValue = (currentValue: number) =>
-    typeof format === 'function'
+    typeof format === "function"
       ? format(currentValue)
-      : format === 'integer'
+      : format === "integer"
         ? Math.round(currentValue).toString()
-        : formatOneDecimal(currentValue)
-  const formatted = formatValue(value)
+        : formatOneDecimal(currentValue);
+  const formatted = formatValue(value);
 
-  const ratingTone = getRatingTone(value)
+  const ratingTone = getRatingTone(value);
   const cappedToneClass = (currentValue: number) => {
-    const displayedValue = Math.round(currentValue * 10) / 10
+    const displayedValue = Math.round(currentValue * 10) / 10;
 
     return displayedValue >= 75
-    ? styles.cappedTop
-    : displayedValue > 55
-      ? styles.medium
-      : styles.low
-  }
-  const displayedToneClass = capAtHigh ? cappedToneClass(value) : styles[ratingTone]
+      ? styles.cappedTop
+      : displayedValue > 55
+        ? styles.medium
+        : styles.low;
+  };
+  const displayedToneClass = capAtHigh
+    ? cappedToneClass(value)
+    : styles[ratingTone];
   const animatedToneClass = (currentValue: number) => {
-    const currentTone = getRatingTone(currentValue)
-    return capAtHigh ? cappedToneClass(currentValue) : styles[currentTone]
-  }
+    const currentTone = getRatingTone(currentValue);
+    return capAtHigh ? cappedToneClass(currentValue) : styles[currentTone];
+  };
 
   return (
     <span
@@ -76,8 +86,18 @@ export function RatingValue({
       )}
       {...props}
     >
-      {animate ? <AnimatedNumber value={value} duration={animationDuration} format={formatValue} getClassName={animatedToneClass} loop={animationLoop} /> : formatted}
+      {animate ? (
+        <AnimatedNumber
+          value={value}
+          duration={animationDuration}
+          format={formatValue}
+          getClassName={animatedToneClass}
+          loop={animationLoop}
+        />
+      ) : (
+        formatted
+      )}
       {showSuffix ? <span className={styles.suffix}>/100</span> : null}
     </span>
-  )
+  );
 }

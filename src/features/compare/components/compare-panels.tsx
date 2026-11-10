@@ -1,4 +1,11 @@
-import { comparisonResultsSeries, pointsSeries, ratingSeries, riderColors, riderName, shortRiderName } from "../compare-chart-data";
+import {
+  comparisonResultsSeries,
+  pointsSeries,
+  ratingSeries,
+  riderColors,
+  riderName,
+  shortRiderName,
+} from "../compare-chart-data";
 import { useRef } from "react";
 import { useDomainMetadata } from "../../../utils/domain-metadata";
 import { useLocation } from "react-router-dom";
@@ -20,7 +27,10 @@ import {
   DataTableRow,
 } from "../../../components/data-display/data-table";
 import { RiderLink } from "../../../components/navigation/rider-navigation";
-import { ChartTooltip, TooltipRows } from "../../../components/overlays/tooltip";
+import {
+  ChartTooltip,
+  TooltipRows,
+} from "../../../components/overlays/tooltip";
 import { formatOneDecimal } from "../../../utils/formatters";
 import type { CompareData, CompareRider } from "../api/get-compare";
 import styles from "./compare-panels.module.css";
@@ -47,7 +57,11 @@ function RiderName({ rider }: { rider: CompareRider }) {
 }
 
 function CompareSectionTitle({ children }: { children: string }) {
-  return <h2 className={styles.sectionTitle}><span>//</span> {children}</h2>;
+  return (
+    <h2 className={styles.sectionTitle}>
+      <span>//</span> {children}
+    </h2>
+  );
 }
 
 function comparisonClass(
@@ -85,29 +99,56 @@ function CompareBarsPanel({
     }),
   );
   const rawMaximum = maximum ?? Math.max(1, ...values);
-  const tickStep = maximum === undefined ? Math.max(1, Math.ceil(rawMaximum / 4)) : 25;
+  const tickStep =
+    maximum === undefined ? Math.max(1, Math.ceil(rawMaximum / 4)) : 25;
   const chartMaximum = maximum === undefined ? tickStep * 5 : 125;
   const chartData = metrics.map((metric) => ({
     metric: metric.label,
     riderA: metric.value(riders[0]),
     riderB: metric.value(riders[1]),
-    riderALabel: metric.format?.(metric.value(riders[0])) ?? displayValue(metric.value(riders[0])),
-    riderBLabel: metric.format?.(metric.value(riders[1])) ?? displayValue(metric.value(riders[1])),
+    riderALabel:
+      metric.format?.(metric.value(riders[0])) ??
+      displayValue(metric.value(riders[0])),
+    riderBLabel:
+      metric.format?.(metric.value(riders[1])) ??
+      displayValue(metric.value(riders[1])),
   }));
-  const yTicks = maximum === undefined
-    ? Array.from({ length: 6 }, (_, index) => tickStep * index)
-    : [0, 25, 50, 75, 100, 125];
+  const yTicks =
+    maximum === undefined
+      ? Array.from({ length: 6 }, (_, index) => tickStep * index)
+      : [0, 25, 50, 75, 100, 125];
 
   return (
     <div className={styles.comparisonPanel}>
       <CompareSectionTitle>{title}</CompareSectionTitle>
       <div ref={chartRef} className={styles.barChart}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 0, bottom: 0, left: 0 }} barCategoryGap="24%" barGap={8} accessibilityLayer={false}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 10, right: 0, bottom: 0, left: 0 }}
+            barCategoryGap="24%"
+            barGap={8}
+            accessibilityLayer={false}
+          >
             <PlotAreaBlur />
             <CartesianGrid className={styles.chartGrid} />
-            <XAxis dataKey="metric" tickLine={false} axisLine={false} tickMargin={12} height={38} tick={{ className: styles.chartTick }} />
-            <YAxis domain={[0, chartMaximum]} ticks={yTicks} tickLine={false} axisLine={false} tickMargin={8} width={38} tick={{ className: styles.chartTick }} />
+            <XAxis
+              dataKey="metric"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={12}
+              height={38}
+              tick={{ className: styles.chartTick }}
+            />
+            <YAxis
+              domain={[0, chartMaximum]}
+              ticks={yTicks}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              width={38}
+              tick={{ className: styles.chartTick }}
+            />
             <Tooltip
               cursor={false}
               isAnimationActive={false}
@@ -122,8 +163,13 @@ function CompareBarsPanel({
                     content={
                       <TooltipRows
                         rows={payload.map((entry, index) => {
-                          const labelKey = entry.dataKey === "riderA" ? "riderALabel" : "riderBLabel";
-                          const formatted = (entry.payload as Record<string, unknown> | undefined)?.[labelKey];
+                          const labelKey =
+                            entry.dataKey === "riderA"
+                              ? "riderALabel"
+                              : "riderBLabel";
+                          const formatted = (
+                            entry.payload as Record<string, unknown> | undefined
+                          )?.[labelKey];
                           return `${shortRiderName(riders[index])}: ${String(formatted ?? "--")}`;
                         })}
                       />
@@ -146,7 +192,12 @@ function CompareBarsPanel({
                 maxBarSize={34}
                 isAnimationActive={false}
               >
-                <LabelList dataKey={index === 0 ? "riderALabel" : "riderBLabel"} position="top" offset={10} className={styles.barValue} />
+                <LabelList
+                  dataKey={index === 0 ? "riderALabel" : "riderBLabel"}
+                  position="top"
+                  offset={10}
+                  className={styles.barValue}
+                />
               </Bar>
             ))}
           </BarChart>
@@ -162,10 +213,30 @@ export function CompareResultsChart({ data }: { data: CompareData }) {
       title="Finals Comparison"
       riders={data.riders}
       metrics={[
-        { label: "Wins", value: (rider) => rider.winsCount, format: (value) => value === null ? "--" : String(Math.round(value)) },
-        { label: "Podiums", value: (rider) => rider.podiumsCount, format: (value) => value === null ? "--" : String(Math.round(value)) },
-        { label: "Top 5s", value: (rider) => rider.top5Count, format: (value) => value === null ? "--" : String(Math.round(value)) },
-        { label: "Top 10s", value: (rider) => rider.top10Count, format: (value) => value === null ? "--" : String(Math.round(value)) },
+        {
+          label: "Wins",
+          value: (rider) => rider.winsCount,
+          format: (value) =>
+            value === null ? "--" : String(Math.round(value)),
+        },
+        {
+          label: "Podiums",
+          value: (rider) => rider.podiumsCount,
+          format: (value) =>
+            value === null ? "--" : String(Math.round(value)),
+        },
+        {
+          label: "Top 5s",
+          value: (rider) => rider.top5Count,
+          format: (value) =>
+            value === null ? "--" : String(Math.round(value)),
+        },
+        {
+          label: "Top 10s",
+          value: (rider) => rider.top10Count,
+          format: (value) =>
+            value === null ? "--" : String(Math.round(value)),
+        },
       ]}
     />
   );
@@ -195,28 +266,36 @@ export function CompareConsistencyChart({ data }: { data: CompareData }) {
       xLabel="Pace"
       yLabel="Consistency"
       showAxisLabels={false}
-      points={data.riders.flatMap((rider, index) => rider.roundMetrics.flatMap((round) =>
-        round.pace == null || round.consistency == null ? [] : [{
-          id: `${rider.riderId}-${round.roundId}`,
-          label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
-          x: round.pace,
-          y: round.consistency,
-          color: riderColors[index],
-          detail: `${shortRiderName(rider)} · ${round.venueName ?? round.trackName ?? "Unknown venue"} · Pace ${formatOneDecimal(round.pace)} · Consistency ${formatOneDecimal(round.consistency)}`,
-        }],
-      ))}
+      points={data.riders.flatMap((rider, index) =>
+        rider.roundMetrics.flatMap((round) =>
+          round.pace == null || round.consistency == null
+            ? []
+            : [
+                {
+                  id: `${rider.riderId}-${round.roundId}`,
+                  label: `${round.season ?? "----"} · ${round.roundNumber == null ? "R--" : `R${round.roundNumber}`}`,
+                  x: round.pace,
+                  y: round.consistency,
+                  color: riderColors[index],
+                  detail: `${shortRiderName(rider)} · ${round.venueName ?? round.trackName ?? "Unknown venue"} · Pace ${formatOneDecimal(round.pace)} · Consistency ${formatOneDecimal(round.consistency)}`,
+                },
+              ],
+        ),
+      )}
     />
   );
 }
 
 export function CompareSectorTable({ data }: { data: CompareData }) {
-  const sectorIndexes = [...new Set(
-    data.riders.flatMap((rider) =>
-      rider.averageSectorGapsToBestSelected
-        .filter((sector) => !sector.isFinishSector)
-        .map((sector) => sector.sectorIndex),
+  const sectorIndexes = [
+    ...new Set(
+      data.riders.flatMap((rider) =>
+        rider.averageSectorGapsToBestSelected
+          .filter((sector) => !sector.isFinishSector)
+          .map((sector) => sector.sectorIndex),
+      ),
     ),
-  )].sort((left, right) => left - right);
+  ].sort((left, right) => left - right);
 
   return (
     <div className={styles.tablePanel}>
@@ -225,34 +304,50 @@ export function CompareSectorTable({ data }: { data: CompareData }) {
         <DataTableHeader>
           <tr>
             <th>Rider</th>
-            {sectorIndexes.map((sector) => <th key={sector}>S{sector}</th>)}
+            {sectorIndexes.map((sector) => (
+              <th key={sector}>S{sector}</th>
+            ))}
             <th>Gap</th>
           </tr>
         </DataTableHeader>
         <tbody>
           {data.riders.map((rider, riderIndex) => (
             <DataTableRow key={rider.riderId}>
-              <td><RiderName rider={rider} /></td>
+              <td>
+                <RiderName rider={rider} />
+              </td>
               {sectorIndexes.map((sector) => {
-                const gap = rider.sectorGapSummary.find((entry) => entry.sectorIndex === sector)?.averageGap ?? null;
+                const gap =
+                  rider.sectorGapSummary.find(
+                    (entry) => entry.sectorIndex === sector,
+                  )?.averageGap ?? null;
                 return (
                   <td key={sector}>
-                    <span className={`${styles.sector} ${gap !== null && gap <= 0 ? styles.sectorBest : styles.sectorLoss}`}>
+                    <span
+                      className={`${styles.sector} ${gap !== null && gap <= 0 ? styles.sectorBest : styles.sectorLoss}`}
+                    >
                       {comparisonGap(gap)}
                     </span>
                   </td>
                 );
               })}
-              <td className={comparisonClass(
-                rider.averageFinishGapToBestSelected,
-                data.riders[1 - riderIndex]?.averageFinishGapToBestSelected ?? null,
-                false,
-              )}>{comparisonGap(rider.averageFinishGapToBestSelected)}</td>
+              <td
+                className={comparisonClass(
+                  rider.averageFinishGapToBestSelected,
+                  data.riders[1 - riderIndex]?.averageFinishGapToBestSelected ??
+                    null,
+                  false,
+                )}
+              >
+                {comparisonGap(rider.averageFinishGapToBestSelected)}
+              </td>
             </DataTableRow>
           ))}
         </tbody>
       </DataTable>
-      <p className={styles.note}>Average loss in each sector and at the finish.</p>
+      <p className={styles.note}>
+        Average loss in each sector and at the finish.
+      </p>
     </div>
   );
 }
@@ -275,18 +370,54 @@ export function CompareStatisticsTable({ data }: { data: CompareData }) {
           {data.riders.map((rider, riderIndex) => {
             const other = data.riders[1 - riderIndex];
             return (
-            <DataTableRow key={rider.riderId}>
-              <td><RiderName rider={rider} /></td>
-              <td className={comparisonClass(rider.wonSplitsCount, other?.wonSplitsCount ?? null, true)}>{rider.wonSplitsCount}</td>
-              <td className={comparisonClass(rider.wonSectorsCount, other?.wonSectorsCount ?? null, true)}>{rider.wonSectorsCount}</td>
-              <td className={comparisonClass(rider.averageFinalPosition, other?.averageFinalPosition ?? null, false)}>{displayValue(rider.averageFinalPosition)}</td>
-              <td className={comparisonClass(rider.averagePreFinalPosition, other?.averagePreFinalPosition ?? null, false)}>{displayValue(rider.averagePreFinalPosition)}</td>
-            </DataTableRow>
+              <DataTableRow key={rider.riderId}>
+                <td>
+                  <RiderName rider={rider} />
+                </td>
+                <td
+                  className={comparisonClass(
+                    rider.wonSplitsCount,
+                    other?.wonSplitsCount ?? null,
+                    true,
+                  )}
+                >
+                  {rider.wonSplitsCount}
+                </td>
+                <td
+                  className={comparisonClass(
+                    rider.wonSectorsCount,
+                    other?.wonSectorsCount ?? null,
+                    true,
+                  )}
+                >
+                  {rider.wonSectorsCount}
+                </td>
+                <td
+                  className={comparisonClass(
+                    rider.averageFinalPosition,
+                    other?.averageFinalPosition ?? null,
+                    false,
+                  )}
+                >
+                  {displayValue(rider.averageFinalPosition)}
+                </td>
+                <td
+                  className={comparisonClass(
+                    rider.averagePreFinalPosition,
+                    other?.averagePreFinalPosition ?? null,
+                    false,
+                  )}
+                >
+                  {displayValue(rider.averagePreFinalPosition)}
+                </td>
+              </DataTableRow>
             );
           })}
         </tbody>
       </DataTable>
-      <p className={styles.note}>Average positions, timing wins and selected-range performance.</p>
+      <p className={styles.note}>
+        Average positions, timing wins and selected-range performance.
+      </p>
     </div>
   );
 }

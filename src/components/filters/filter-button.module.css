@@ -23,7 +23,7 @@
   border-color: var(--color-border-strong);
 }
 
-.button[aria-expanded='true'] {
+.button[aria-expanded="true"] {
   background: var(--color-interaction-hover-background);
   border-color: var(--color-border-strong);
 }

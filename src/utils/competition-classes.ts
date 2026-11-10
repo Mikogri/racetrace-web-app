@@ -27,16 +27,22 @@ const neutralColors = {
 };
 
 const classColors = new Map<string, typeof neutralColors>([
-  ["world_cup", {
-    text: "var(--color-event-class-world-cup-text)",
-    border: "var(--color-event-class-world-cup-border)",
-    chart: "var(--color-rating-top)",
-  }],
-  ["world_championship", {
-    text: "var(--color-event-class-world-championship-text)",
-    border: "var(--color-event-class-world-championship-border)",
-    chart: "var(--color-event-class-world-championship-text)",
-  }],
+  [
+    "world_cup",
+    {
+      text: "var(--color-event-class-world-cup-text)",
+      border: "var(--color-event-class-world-cup-border)",
+      chart: "var(--color-rating-top)",
+    },
+  ],
+  [
+    "world_championship",
+    {
+      text: "var(--color-event-class-world-championship-text)",
+      border: "var(--color-event-class-world-championship-border)",
+      chart: "var(--color-event-class-world-championship-text)",
+    },
+  ],
 ]);
 
 const classAliases = new Map([
@@ -45,9 +51,17 @@ const classAliases = new Map([
   ["world_championships", "world_championship"],
 ]);
 
-export function getCompetitionClassColors({ code, abbreviation, name }: CompetitionClassDisplay) {
+export function getCompetitionClassColors({
+  code,
+  abbreviation,
+  name,
+}: CompetitionClassDisplay) {
   for (const value of [code, abbreviation, name]) {
-    const key = value?.trim().toLowerCase().replace(/[\s-]+/g, "_") ?? "";
+    const key =
+      value
+        ?.trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_") ?? "";
     const colors = classColors.get(classAliases.get(key) ?? key);
     if (colors) return colors;
   }

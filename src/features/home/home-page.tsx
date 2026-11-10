@@ -6,7 +6,11 @@ import {
   PodiumPredictorSection,
   TopRatedSection,
 } from "./components/home-sections";
-import { FieldSpreadSection, TrackFingerprintSection, SpeedVsRunTimeSection } from "../../components/analytics/analytics-sections";
+import {
+  FieldSpreadSection,
+  TrackFingerprintSection,
+  SpeedVsRunTimeSection,
+} from "../../components/analytics/analytics-sections";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { seasonsQueryOptions } from "../../components/filters/api/get-seasons";
@@ -38,12 +42,21 @@ export default function HomePage() {
   const [standingsCategory, setStandingsCategory] = useState(initialCategory);
   const overviewQuery = useSeasonOverview(season);
   const needsSeasonHistory = overviewQuery.data?.progress.roundsCount === 0;
-  const seasonsQuery = useQuery({ ...seasonsQueryOptions(), enabled: needsSeasonHistory });
-  const latestSeason = seasonsQuery.data?.items.filter((year) => year <= season).sort((a, b) => b - a)[0];
+  const seasonsQuery = useQuery({
+    ...seasonsQueryOptions(),
+    enabled: needsSeasonHistory,
+  });
+  const latestSeason = seasonsQuery.data?.items
+    .filter((year) => year <= season)
+    .sort((a, b) => b - a)[0];
   const roundProfileQuery = useRoundProfile(season, lastResultsCategory);
   const predictionQuery = usePodiumPredictor(season, podiumCategory);
   const topRatedQuery = useHomeRanking(season, topRatedCategory, "rating");
-  const standingsQuery = useHomeRanking(season, standingsCategory, "totalPoints");
+  const standingsQuery = useHomeRanking(
+    season,
+    standingsCategory,
+    "totalPoints",
+  );
 
   const createSummary = (
     category: string,
@@ -56,24 +69,32 @@ export default function HomePage() {
     category,
     nextRound: overviewQuery.data?.nextRound ?? null,
     lastCompletedRound:
-      roundProfileQuery.data?.round ?? overviewQuery.data?.lastCompletedRound ?? null,
-    lastRoundResults: (roundProfileQuery.data?.results ?? []).slice(0, 5).map((item) => ({
-      ...item,
-      time: item.raceTime,
-    })),
+      roundProfileQuery.data?.round ??
+      overviewQuery.data?.lastCompletedRound ??
+      null,
+    lastRoundResults: (roundProfileQuery.data?.results ?? [])
+      .slice(0, 5)
+      .map((item) => ({
+        ...item,
+        time: item.raceTime,
+      })),
     seasonTopRated: (options?.topRated ?? []).flatMap((item) =>
-      item.rating == null ? [] : [{
-        position: item.position,
-        riderId: item.riderId,
-        fullName: item.fullName,
-        countryCode: item.countryCode,
-        teamId: item.teamId,
-        teamName: item.teamName,
-        rating: item.rating,
-        pace: item.pace,
-        consistency: item.consistency,
-        confidence: item.confidence,
-      }],
+      item.rating == null
+        ? []
+        : [
+            {
+              position: item.position,
+              riderId: item.riderId,
+              fullName: item.fullName,
+              countryCode: item.countryCode,
+              teamId: item.teamId,
+              teamName: item.teamName,
+              rating: item.rating,
+              pace: item.pace,
+              consistency: item.consistency,
+              confidence: item.confidence,
+            },
+          ],
     ),
     currentStandings: (options?.standings ?? []).map((item) => ({
       position: item.position,
@@ -127,9 +148,17 @@ export default function HomePage() {
       <Section className={styles.homeSection}>
         <NextRoundSection
           summary={overviewSummary}
-          loading={overviewQuery.isPending || (needsSeasonHistory && seasonsQuery.isPending)}
-          error={overviewQuery.isError || (needsSeasonHistory && seasonsQuery.isError)}
-          {...(needsSeasonHistory && latestSeason != null ? { nextSeason: latestSeason + 1 } : {})}
+          loading={
+            overviewQuery.isPending ||
+            (needsSeasonHistory && seasonsQuery.isPending)
+          }
+          error={
+            overviewQuery.isError ||
+            (needsSeasonHistory && seasonsQuery.isError)
+          }
+          {...(needsSeasonHistory && latestSeason != null
+            ? { nextSeason: latestSeason + 1 }
+            : {})}
         />
       </Section>
       <Section className={styles.homeSection}>
@@ -154,7 +183,9 @@ export default function HomePage() {
       </Section>
       <Section className={styles.homeSection}>
         <TrackFingerprintSection
-          {...(roundProfileQuery.data ? { profile: roundProfileQuery.data } : {})}
+          {...(roundProfileQuery.data
+            ? { profile: roundProfileQuery.data }
+            : {})}
           loading={roundProfileQuery.isFetching}
           error={roundProfileQuery.isError}
           category={lastResultsCategory}
@@ -163,7 +194,9 @@ export default function HomePage() {
       </Section>
       <Section className={styles.homeSection}>
         <FieldSpreadSection
-          {...(roundProfileQuery.data ? { profile: roundProfileQuery.data } : {})}
+          {...(roundProfileQuery.data
+            ? { profile: roundProfileQuery.data }
+            : {})}
           loading={roundProfileQuery.isFetching}
           error={roundProfileQuery.isError}
           category={lastResultsCategory}

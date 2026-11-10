@@ -5,18 +5,35 @@ export type ApiResponseMeta = {
   serverTimings?: Record<string, number>;
 };
 
-const rankingPhases = new Set(['filters', 'sessions', 'packages', 'metrics', 'rows', 'comparison', 'supabase_headers', 'supabase_io', 'cache', 'snapshot_cache', 'api']);
+const rankingPhases = new Set([
+  "filters",
+  "sessions",
+  "packages",
+  "metrics",
+  "rows",
+  "comparison",
+  "supabase_headers",
+  "supabase_io",
+  "cache",
+  "snapshot_cache",
+  "api",
+]);
 
-export function parseServerTiming(header: string | null): Record<string, number> {
+export function parseServerTiming(
+  header: string | null,
+): Record<string, number> {
   const phases: Record<string, number> = {};
-  for (const entry of header?.split(',') ?? []) {
-    const [name, ...parameters] = entry.trim().split(';');
+  for (const entry of header?.split(",") ?? []) {
+    const [name, ...parameters] = entry.trim().split(";");
     if (!rankingPhases.has(name)) continue;
-    if (name === 'cache' || name === 'snapshot_cache') {
+    if (name === "cache" || name === "snapshot_cache") {
       phases[name] = 0;
       continue;
     }
-    const duration = parameters.find(parameter => parameter.trim().startsWith('dur='))?.trim().slice(4);
+    const duration = parameters
+      .find((parameter) => parameter.trim().startsWith("dur="))
+      ?.trim()
+      .slice(4);
     if (duration === undefined) continue;
     const value = Number(duration);
     if (Number.isFinite(value) && value >= 0) phases[name] = value;

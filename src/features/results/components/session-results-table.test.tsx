@@ -118,28 +118,59 @@ const data: SessionResults = {
 
 describe("SessionResultsTable", () => {
   it("keeps five live sector columns even when only one sector is available", () => {
-    render(<MemoryRouter><SessionResultsTable data={data} category="elite_men" sortBy="finalTime" sortDirection="desc" onSort={vi.fn()} liveGrouping timeView="sectors" /></MemoryRouter>);
+    render(
+      <MemoryRouter>
+        <SessionResultsTable
+          data={data}
+          category="elite_men"
+          sortBy="finalTime"
+          sortDirection="desc"
+          onSort={vi.fn()}
+          liveGrouping
+          timeView="sectors"
+        />
+      </MemoryRouter>,
+    );
     for (const index of [1, 2, 3, 4, 5]) {
-      expect(screen.getByRole("columnheader", { name: new RegExp(`S${index}`) })).toBeInTheDocument();
+      expect(
+        screen.getByRole("columnheader", { name: new RegExp(`S${index}`) }),
+      ).toBeInTheDocument();
     }
   });
   it("shows the source session in its own column for All", () => {
-    const combined = { ...data, session: { ...data.session, sessionType: "all" },
-      items: [{ ...data.items[0], sessionType: "qualifying_1" }] };
-    render(<MemoryRouter><SessionResultsTable data={combined} category="elite_men" sortBy="finalTime" sortDirection="desc" onSort={vi.fn()} /></MemoryRouter>);
-    expect(screen.getByRole("columnheader", { name: "Session" })).toBeInTheDocument();
+    const combined = {
+      ...data,
+      session: { ...data.session, sessionType: "all" },
+      items: [{ ...data.items[0], sessionType: "qualifying_1" }],
+    };
+    render(
+      <MemoryRouter>
+        <SessionResultsTable
+          data={combined}
+          category="elite_men"
+          sortBy="finalTime"
+          sortDirection="desc"
+          onSort={vi.fn()}
+        />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole("columnheader", { name: "Session" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("cell", { name: "Quali 1" })).toBeInTheDocument();
   });
   it("keeps rider metadata visible when the rider cannot be resolved locally", () => {
     const unresolvedRiderData: SessionResults = {
       ...data,
-      items: [{
-        ...data.items[0],
-        riderId: null,
-        fullName: "Jonty Williamson",
-        countryCode: null,
-        teamName: "New Zealand",
-      }],
+      items: [
+        {
+          ...data.items[0],
+          riderId: null,
+          fullName: "Jonty Williamson",
+          countryCode: null,
+          teamName: "New Zealand",
+        },
+      ],
     };
 
     render(
@@ -156,21 +187,25 @@ describe("SessionResultsTable", () => {
 
     expect(screen.getByText("Jonty Williamson")).toBeInTheDocument();
     expect(screen.getByText("New Zealand")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Jonty Williamson" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Jonty Williamson" }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows the published start time for an upcoming rider", () => {
     const upcomingData: SessionResults = {
       ...data,
-      items: [{
-        ...data.items[0],
-        position: null,
-        finalTime: null,
-        finalGapToBest: null,
-        status: "Upcoming",
-        startTime: "11:00:30",
-        times: [],
-      }],
+      items: [
+        {
+          ...data.items[0],
+          position: null,
+          finalTime: null,
+          finalGapToBest: null,
+          status: "Upcoming",
+          startTime: "11:00:30",
+          times: [],
+        },
+      ],
     };
 
     render(
@@ -299,9 +334,7 @@ describe("SessionResultsTable", () => {
     );
 
     const riderRow = screen.getByRole("row", { name: /Partial Run/ });
-    expect(within(riderRow).getByText("−0.000")).toHaveClass(
-      styles.sectorBest,
-    );
+    expect(within(riderRow).getByText("−0.000")).toHaveClass(styles.sectorBest);
   });
 
   it("uses two decimals for minute-long split times and three below a minute", () => {

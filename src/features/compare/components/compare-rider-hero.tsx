@@ -32,14 +32,22 @@ export function CompareRiderHero({
           animate={false}
           label="No Rider In Comparison"
           description="Select a rider to start the comparison."
-          action={(
-            <button type="button" className={styles.selectButton} onClick={onSelect}>
+          action={
+            <button
+              type="button"
+              className={styles.selectButton}
+              onClick={onSelect}
+            >
               <span>Select Rider</span>
-              <svg className={styles.selectArrow} viewBox="0 0 16 16" aria-hidden="true">
+              <svg
+                className={styles.selectArrow}
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
                 <path d="M2.5 8h10M8.5 3.75 12.75 8 8.5 12.25" />
               </svg>
             </button>
-          )}
+          }
         />
       </article>
     );
@@ -52,7 +60,9 @@ export function CompareRiderHero({
   const image = slot === "a" ? riderGreen : riderBlue;
 
   return (
-    <article className={`${styles.card} ${slot === "a" ? styles.riderA : styles.riderB}`}>
+    <article
+      className={`${styles.card} ${slot === "a" ? styles.riderA : styles.riderB}`}
+    >
       <div className={styles.visual}>
         <button
           type="button"
@@ -65,14 +75,23 @@ export function CompareRiderHero({
         <img src={image} alt="" />
       </div>
       <div className={styles.about}>
-        <h2><RiderLink className={styles.riderName} riderId={rider.id}>{name}</RiderLink></h2>
+        <h2>
+          <RiderLink className={styles.riderName} riderId={rider.id}>
+            {name}
+          </RiderLink>
+        </h2>
         <div className={styles.team}>
           <span title={team}>{team}</span>
           {details?.teamCode ? <strong>{details.teamCode}</strong> : null}
         </div>
         <p>
           <span>{category}</span>
-          {details?.age != null ? <><i>//</i><span>{details.age} y.o</span></> : null}
+          {details?.age != null ? (
+            <>
+              <i>//</i>
+              <span>{details.age} y.o</span>
+            </>
+          ) : null}
           <i>//</i>
           <span>{country}</span>
         </p>
