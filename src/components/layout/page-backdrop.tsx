@@ -15,7 +15,7 @@ export function PageBackdrop() {
         haze={0.2}
         atmosphere={0}
         saturation={0}
-        raysSpeed={0.3}
+        raysSpeed={0.4}
         followMouse={false}
         cursorShadow={false}
         clickPulse={false}
