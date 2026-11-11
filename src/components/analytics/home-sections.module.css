@@ -178,7 +178,7 @@
   text-align: center;
 }
 
-.lastResultsTable {
+.homePanel .lastResultsTable {
   width: 100%;
   min-width: 0;
   table-layout: fixed;
@@ -994,7 +994,7 @@
   line-height: 13px;
 }
 
-.currentStandingsTable {
+.homePanel .currentStandingsTable {
   width: 100%;
   min-width: 0;
   table-layout: fixed;
@@ -1009,7 +1009,7 @@
 }
 
 .lastResultsTable th:nth-child(4) {
-  width: 6em;
+  width: 7.5em;
 }
 
 .currentStandingsTable th:first-child,
