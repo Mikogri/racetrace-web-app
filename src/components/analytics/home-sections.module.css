@@ -180,7 +180,8 @@
 
 .lastResultsTable {
   width: 100%;
-  min-width: 100%;
+  min-width: 0;
+  table-layout: fixed;
   border-top: var(--component-border-width) solid var(--color-border-default);
 }
 
@@ -995,11 +996,20 @@
 
 .currentStandingsTable {
   width: 100%;
-  min-width: 100%;
+  min-width: 0;
+  table-layout: fixed;
 }
 
-.currentStandingsTable table {
-  height: auto;
+.lastResultsTable th:first-child {
+  width: 42px;
+}
+
+.lastResultsTable th:nth-child(3) {
+  width: 7.5em;
+}
+
+.lastResultsTable th:nth-child(4) {
+  width: 6em;
 }
 
 .currentStandingsTable th:first-child,
