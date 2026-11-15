@@ -14,12 +14,15 @@
 .option {
   /* The global button hover reads this; menu items need a clearer highlight. */
   --color-interaction-subtle-hover-background: rgb(255 255 255 / 7%);
+  /* Menu text sits on a translucent blurred surface, so it is a step lighter than page text. */
+  --menu-option-text: #d6d6d5;
+  --menu-option-text-unselected: #bfbfbe;
   display: flex;
   gap: var(--space-12);
   align-items: center;
   width: 100%;
   padding: var(--space-6) var(--space-8);
-  color: var(--color-text-secondary);
+  color: var(--menu-option-text);
   font-family: var(--font-family-ui);
   font-size: var(--font-size-control);
   text-align: left;
@@ -33,7 +36,7 @@
 }
 
 .option[aria-selected="false"] {
-  color: var(--color-text-unselected);
+  color: var(--menu-option-text-unselected);
 }
 
 .option:hover {
@@ -47,7 +50,7 @@
 }
 
 [aria-multiselectable="false"] .option[aria-selected="true"]:hover {
-  color: var(--color-text-secondary);
+  color: var(--menu-option-text);
   background: transparent;
 }
 
