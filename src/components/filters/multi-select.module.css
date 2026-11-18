@@ -15,8 +15,8 @@
   /* The global button hover reads this; menu items need a clearer highlight. */
   --color-interaction-subtle-hover-background: rgb(255 255 255 / 7%);
   /* Menu text sits on a translucent blurred surface, so it is a step lighter than page text. */
-  --menu-option-text: #d6d6d5;
-  --menu-option-text-unselected: #bfbfbe;
+  --menu-option-text: #c3c3c2;
+  --menu-option-text-unselected: #acacab;
   display: flex;
   gap: var(--space-12);
   align-items: center;
